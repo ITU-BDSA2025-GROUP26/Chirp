@@ -1,21 +1,34 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="33.1.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="CsvHelper" Version="33.1.0" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="chirp_cli_db.csv" />
-    <Compile Include="chirp_cli_db.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-  </ItemGroup>
+    <ItemGroup>
+        <None Remove="chirp_cli_db.csv" />
+        <Compile Include="chirp_cli_db.csv">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Compile>
+        <Compile Update="SimpleDB\Program.cs">
+          <Link>test\Program.cs</Link>
+        </Compile>
+        <Compile Update="SimpleDB\CSVDatabase.cs">
+          <Link>test\CSVDatabase.cs</Link>
+        </Compile>
+        <Compile Update="SimpleDB\IDatabaseRepository.cs">
+          <Link>test\IDatabaseRepository.cs</Link>
+        </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="SimpleDB\SimpleDB.csproj" />
+    </ItemGroup>
 
 </Project>
