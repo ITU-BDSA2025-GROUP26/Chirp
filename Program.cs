@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Chirp.CLI;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
@@ -92,7 +93,7 @@ class Program
     {
         if (args.Length == 0)
         {
-            Console.Error.WriteLine("Usage: read | cheep \"message\"");
+            UserInterface.ShowUsage();
             return 1;
         }
 
@@ -100,13 +101,13 @@ class Program
         {
             case "read":
                 foreach (var c in Db.Load())
-                    Console.WriteLine(Formatting.Pretty(c));
+                    UserInterface.ShowCheep(c);
                 return 0;
 
             case "cheep":
                 if (args.Length < 2)
                 {
-                    Console.Error.WriteLine("cheep requires a message, e.g. cheep \"Hello, world!\"");
+                    UserInterface.ShowUsage();
                     return 2;
                 }
                 var message = args[1];                 // quotes keep this as one arg
@@ -116,7 +117,7 @@ class Program
                 return 0;
 
             default:
-                Console.Error.WriteLine($"Unknown command: {args[0]}");
+                UserInterface.ShowUnknownCommand(args[0]);
                 return 3;
         }
     }
