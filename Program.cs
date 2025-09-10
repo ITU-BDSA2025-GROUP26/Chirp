@@ -99,7 +99,7 @@ class Program
     {
         var rootCommand = new RootCommand("Chirp.CLI - a simple microblogging tool");
 
-        var readCommand = new System.CommandLine.Command("read", "Read all cheeps");
+        var readCommand = new Command("read", "Read all cheeps");
         readCommand.SetHandler(() =>
         {
             foreach (var c in Db.Load())
