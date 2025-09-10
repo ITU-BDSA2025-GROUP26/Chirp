@@ -14,13 +14,13 @@
 
     <ItemGroup>
         <None Remove="chirp_cli_db.csv" />
-        <Compile Include="chirp_cli_db.csv">
+        <Compile Include="..\..\data\chirp_cli_db.csv">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Compile>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="src\SimpleDB\SimpleDB.csproj" />
+        <ProjectReference Include="..\SimpleDB\SimpleDB.csproj" />
     </ItemGroup>
 
 </Project>
