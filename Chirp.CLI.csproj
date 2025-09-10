@@ -5,25 +5,18 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="CsvHelper" Version="33.1.0" />
+        <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
     </ItemGroup>
 
     <ItemGroup>
         <None Remove="chirp_cli_db.csv" />
         <Compile Include="chirp_cli_db.csv">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Compile>
-        <Compile Update="SimpleDB\Program.cs">
-          <Link>test\Program.cs</Link>
-        </Compile>
-        <Compile Update="SimpleDB\CSVDatabase.cs">
-          <Link>test\CSVDatabase.cs</Link>
-        </Compile>
-        <Compile Update="SimpleDB\IDatabaseRepository.cs">
-          <Link>test\IDatabaseRepository.cs</Link>
         </Compile>
     </ItemGroup>
 

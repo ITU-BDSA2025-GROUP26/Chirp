@@ -2,10 +2,16 @@
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Chirp.CLI;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
+using System.CommandLine;
+using System.CommandLine.Invocation;
+using System.CommandLine.Parsing;
+using System.ComponentModel;
+using System.Runtime.Intrinsics.Arm;
 
 public record Cheep(string Author, string Message, long Timestamp);
 
@@ -89,36 +95,31 @@ static class Formatting
 
 class Program
 {
-    static int Main(string[] args)
+    static async Task<int> Main(string[] args)
     {
-        if (args.Length == 0)
+        var rootCommand = new RootCommand("Chirp.CLI - a simple microblogging tool");
+
+        var readCommand = new Command("read", "Read all cheeps");
+        readCommand.SetHandler(() =>
         {
-            UserInterface.ShowUsage();
-            return 1;
-        }
+            foreach (var c in Db.Load())
+                UserInterface.ShowCheep(c);
+        });
+        rootCommand.AddCommand(readCommand);
 
-        switch (args[0])
+        var messageArg = new Argument<string>("message", "Message to post");
+        var cheepCommand = new Command("cheep", "Post a new cheep");
+        cheepCommand.AddArgument(messageArg);
+
+        cheepCommand.SetHandler((string message) =>
         {
-            case "read":
-                foreach (var c in Db.Load())
-                    UserInterface.ShowCheep(c);
-                return 0;
+            var author = Environment.UserName;
+            var ts = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            Db.Append(new Cheep(author, message, ts));
+        }, messageArg);
 
-            case "cheep":
-                if (args.Length < 2)
-                {
-                    UserInterface.ShowUsage();
-                    return 2;
-                }
-                var message = args[1];                 // quotes keep this as one arg
-                var author = Environment.UserName;     // current OS user
-                var ts = DateTimeOffset.UtcNow.ToUnixTimeSeconds(); // Unix timestamp
-                Db.Append(new Cheep(author, message, ts));
-                return 0;
+        rootCommand.AddCommand(cheepCommand);
 
-            default:
-                UserInterface.ShowUnknownCommand(args[0]);
-                return 3;
-        }
+        return await rootCommand.InvokeAsync(args);
     }
 }
