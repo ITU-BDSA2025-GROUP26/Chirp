@@ -33,12 +33,8 @@ static class Db
 {
     // Store DB next to the executable
     public static readonly string PathToCsv =
-        //System.IO.Path.Combine(
-            //Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-            //".chirp_cli",
-            //"chirp_cli_db.csv"
-        //);
-        System.IO.Path.Combine(AppContext.BaseDirectory, "chirp_cli_db.csv");
+        Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "data", "chirp.cli.db.csv");
+
 
     public static IEnumerable<Cheep> Load()
     {
