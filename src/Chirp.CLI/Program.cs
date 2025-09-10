@@ -82,7 +82,7 @@ static class Db
     }
 }
 
-static class Formatting
+public static class Formatting
 {
     public static string Pretty(Cheep c)
     {
