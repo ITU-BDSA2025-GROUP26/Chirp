@@ -20,7 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="src\SimpleDB\SimpleDB.csproj" />
+        <ProjectReference Include="src\SimpleDB\SimpleDB.csproj" />
     </ItemGroup>
 
 </Project>
