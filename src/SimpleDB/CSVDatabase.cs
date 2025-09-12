@@ -12,10 +12,24 @@ namespace SimpleDB;
 public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 {
 	private readonly string _path;
+	private static CSVDatabase<T> instance = null;
 
-	public CSVDatabase(string path)
+	private CSVDatabase()
 	{
-		_path = path;
+		_path = Path.Combine(AppContext.BaseDirectory, "..", "..", "..","..","..", "data", "chirp.cli.db.csv");;
+	}
+
+	public static CSVDatabase<T> Instance
+	{
+		get
+		{
+			if (instance == null)
+			{
+				instance = new CSVDatabase<T>();
+			}
+
+			return instance;
+		}
 	}
 
     public IEnumerable<T> Read(int? limit = null)

@@ -25,8 +25,8 @@ class Program
 {
     static async Task<int> Main(string[] args)
     {
-        string dbPath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..","..","..", "data", "chirp.cli.db.csv");
-        IDatabaseRepository<Cheep> database = new CSVDatabase<Cheep>(dbPath);
+        //IDatabaseRepository<Cheep> database = new CSVDatabase<Cheep>();
+        var database = CSVDatabase<Cheep>.Instance;
         
         var rootCommand = new RootCommand("Chirp.CLI - a simple microblogging tool");
 
