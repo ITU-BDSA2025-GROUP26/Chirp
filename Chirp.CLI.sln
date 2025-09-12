@@ -1,18 +1,38 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1330749F-2DE7-48C1-B1ED-B02B116DEAAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.CLI", "src\Chirp.CLI\Chirp.CLI.csproj", "{B238DFCC-2B20-40CE-B553-02C4A9D91F5C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{F981F6E0-7667-4883-A63E-4BCB8E390633}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.CLI.Tests", "test\Chirp.CLI.Tests\Chirp.CLI.Tests.csproj", "{8C1DF040-0978-4A0B-A285-5A951A58EC4E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B238DFCC-2B20-40CE-B553-02C4A9D91F5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B238DFCC-2B20-40CE-B553-02C4A9D91F5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B238DFCC-2B20-40CE-B553-02C4A9D91F5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B238DFCC-2B20-40CE-B553-02C4A9D91F5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C1DF040-0978-4A0B-A285-5A951A58EC4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C1DF040-0978-4A0B-A285-5A951A58EC4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C1DF040-0978-4A0B-A285-5A951A58EC4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C1DF040-0978-4A0B-A285-5A951A58EC4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {501667BC-008D-499B-9E91-C7D07EE01D62}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B238DFCC-2B20-40CE-B553-02C4A9D91F5C} = {1330749F-2DE7-48C1-B1ED-B02B116DEAAF}
+		{8C1DF040-0978-4A0B-A285-5A951A58EC4E} = {F981F6E0-7667-4883-A63E-4BCB8E390633}
 	EndGlobalSection
 EndGlobal
