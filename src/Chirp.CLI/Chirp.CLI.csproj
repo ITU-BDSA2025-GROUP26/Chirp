@@ -14,9 +14,6 @@
 
     <ItemGroup>
         <None Remove="chirp_cli_db.csv" />
-        <Compile Include="..\..\data\chirp_cli_db.csv">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Compile>
     </ItemGroup>
 
     <ItemGroup>
