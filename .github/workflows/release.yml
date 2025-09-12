@@ -27,15 +27,15 @@ jobs:
     - name: Publish executables
       run: |
         # Windows (x64)
-        dotnet publish -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o publish/win-x64
+        dotnet publish src/Chirp.CLI/Chirp.CLI.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o publish/win-x64
         zip -j chirp-win-x64.zip publish/win-x64/*
 
         # Linux (x64)
-        dotnet publish -c Release -r linux-x64 --self-contained false -p:PublishSingleFile=true -o publish/linux-x64
+        dotnet publish src/Chirp.CLI/Chirp.CLI.csproj -c Release -r linux-x64 --self-contained false -p:PublishSingleFile=true -o publish/linux-x64
         zip -j chirp-linux-x64.zip publish/linux-x64/*
 
         # macOS (x64)
-        dotnet publish -c Release -r osx-x64 --self-contained false -p:PublishSingleFile=true -o publish/osx-x64
+        dotnet publish src/Chirp.CLI/Chirp.CLI.csproj -c Release -r osx-x64 --self-contained false -p:PublishSingleFile=true -o publish/osx-x64
         zip -j chirp-osx-x64.zip publish/osx-x64/*
 
     - name: Create GitHub Release
