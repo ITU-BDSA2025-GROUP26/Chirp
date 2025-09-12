@@ -4,79 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Chirp.CLI;
-using CsvHelper;
-using CsvHelper.Configuration;
-using CsvHelper.Configuration.Attributes;
 using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.Parsing;
-using System.ComponentModel;
-using System.Runtime.Intrinsics.Arm;
+using SimpleDB;
 
 public record Cheep(string Author, string Message, long Timestamp);
 
-public class Messages
-{
-    //[Name("Author")]
-    [Index(0)]
-    public required string Author  { get; set; }
-    //[Name("Message")]
-    [Index(1)]
-    public required string Message { get; set; }
-    //[Name("Timestamp")]
-    [Index(2)]
-    public long Timestamp { get; set; }
-}
-    
-
-static class Db
-{
-    // Store DB next to the executable
-    public static readonly string PathToCsv =
-        Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "data", "chirp.cli.db.csv");
-
-
-    public static IEnumerable<Cheep> Load()
-    {
-        if (!File.Exists(PathToCsv)) yield break;
-        
-        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
-        {
-            HasHeaderRecord = true,
-        };
-        
-        using var reader = new StreamReader(PathToCsv);
-        using var csv = new CsvReader(reader, config);
-        
-        var records = csv.GetRecords<Messages>();
-
-        foreach (var r in records)
-        {
-            yield return new Cheep(r.Author, r.Message, r.Timestamp);
-        }
-        
-    }
-
-    public static void Append(Cheep c)
-    {
-        Directory.CreateDirectory(System.IO.Path.GetDirectoryName(PathToCsv)!);
-        
-        var fileExists = File.Exists(PathToCsv);
-        
-        using var stream = new FileStream(PathToCsv, FileMode.Append, FileAccess.Write, FileShare.Read);
-        using var writer = new StreamWriter(stream);
-        using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-
-        if (!fileExists)
-        {
-            csv.WriteHeader<Messages>();
-            csv.NextRecord();
-        }
-        
-        csv.WriteRecord(new Messages { Author = c.Author, Message = c.Message, Timestamp = c.Timestamp });
-        csv.NextRecord();
-    }
-}
 
 public static class Formatting
 {
@@ -93,12 +25,15 @@ class Program
 {
     static async Task<int> Main(string[] args)
     {
+        string dbPath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..","..","..", "data", "chirp.cli.db.csv");
+        IDatabaseRepository<Cheep> database = new CSVDatabase<Cheep>(dbPath);
+        
         var rootCommand = new RootCommand("Chirp.CLI - a simple microblogging tool");
 
         var readCommand = new Command("read", "Read all cheeps");
         readCommand.SetHandler(() =>
         {
-            foreach (var c in Db.Load())
+            foreach (var c in database.Read())
                 UserInterface.ShowCheep(c);
         });
         rootCommand.AddCommand(readCommand);
@@ -111,7 +46,7 @@ class Program
         {
             var author = Environment.UserName;
             var ts = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            Db.Append(new Cheep(author, message, ts));
+            database.Store(new Cheep(author, message, ts));
         }, messageArg);
 
         rootCommand.AddCommand(cheepCommand);
