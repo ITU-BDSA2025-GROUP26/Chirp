@@ -41,4 +41,17 @@ jobs:
     - name: Create GitHub Release (dry run)
       if: github.ref != 'refs/heads/main'
       run: echo "Skipping GitHub release in feature branch"
+      
+      #    - name: Create GitHub Release
+      #      if: github.ref == 'refs/heads/main'
+      #      uses: softprops/action-gh-release@v2
+      #      with:
+      #        files: |
+      #          chirp-win-x64.zip
+      #          chirp-linux-x64.zip
+      #          chirp-osx-x64.zip
+      #      env:
+      #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
 
