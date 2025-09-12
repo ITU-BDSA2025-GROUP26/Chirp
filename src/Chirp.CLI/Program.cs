@@ -42,7 +42,7 @@ static class Db
         
         var config = new CsvConfiguration(CultureInfo.InvariantCulture)
         {
-            HasHeaderRecord = false,
+            HasHeaderRecord = true,
         };
         
         using var reader = new StreamReader(PathToCsv);
