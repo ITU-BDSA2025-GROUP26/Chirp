@@ -9,7 +9,6 @@ using SimpleDB;
 
 public record Cheep(string Author, string Message, long Timestamp);
 
-
 public static class Formatting
 {
     public static string Pretty(Cheep c)
@@ -23,11 +22,25 @@ public static class Formatting
 
 class Program
 {
-    static async Task<int> Main(string[] args)
+    public static void Main(string[] args)
     {
-        //IDatabaseRepository<Cheep> database = new CSVDatabase<Cheep>();
-        var database = CSVDatabase<Cheep>.Instance;
-        
+        var builder = WebApplication.CreateBuilder(args);
+        var app = builder.Build();
+
+        IDatabaseRepository<Cheep> database = CSVDatabase<Cheep>.Instance;
+
+        app.MapGet("/cheeps", () => { return database.Read(); });
+
+        app.MapPost("/cheep", (Cheep cheep) =>
+        {
+            database.Store(cheep);
+            return Results.Ok(new { Status = "Stored", Cheep = cheep });
+        });
+
+        app.Run();
+
+        /*
+
         var rootCommand = new RootCommand("Chirp.CLI - a simple microblogging tool");
 
         var readCommand = new Command("read", "Read all cheeps");
@@ -52,5 +65,6 @@ class Program
         rootCommand.AddCommand(cheepCommand);
 
         return await rootCommand.InvokeAsync(args);
+        */
     }
 }
