@@ -3,7 +3,7 @@ name: Release Chirp
 on:
   push:
     tags:
-      - "v*"   # Workflow kører kun, når du laver et tag som fx v1.0.0
+      - "v*"   # Kører kun på tags som v1.0.0
 
 jobs:
   release:
@@ -37,17 +37,14 @@ jobs:
         # macOS (x64)
         dotnet publish src/Chirp.CLI/Chirp.CLI.csproj -c Release -r osx-x64 --self-contained false -p:PublishSingleFile=true -o publish/osx-x64
         zip -j chirp-osx-x64.zip publish/osx-x64/*
-      
-      - name: Create GitHub Release
-      if: github.ref == 'refs/heads/main'
+
+    - name: Create GitHub Release
+      if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v2
       with:
-      files: |
-      chirp-win-x64.zip
-      chirp-linux-x64.zip
-      chirp-osx-x64.zip
+        files: |
+          chirp-win-x64.zip
+          chirp-linux-x64.zip
+          chirp-osx-x64.zip
       env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
