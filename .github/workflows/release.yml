@@ -24,6 +24,15 @@ jobs:
     - name: Build and Test
       run: dotnet test --configuration Release
 
+    - name: Publish WebApp
+      run: dotnet publish src/Chirp.WebApp/Chirp.WebApp.csproj -c Release -o publish/webapp
+
+    - name: Upload WebApp artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: .net-app
+        path: publish/webapp
+
     - name: Publish executables
       run: |
         # Windows (x64)
@@ -48,3 +57,24 @@ jobs:
           chirp-osx-x64.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: release
+    environment:
+      name: 'Development'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: .net-app
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: .
