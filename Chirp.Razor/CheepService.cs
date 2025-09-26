@@ -8,45 +8,29 @@ public interface ICheepService
 
 public class CheepService : ICheepService
 {
-    var sqlDBFilePath = "/data/chirp.db"
-    var sqlQuery = @"SELECT * FROM message ORDER by message.pub_date desc";
-    // These would normally be loaded from a database for example
-    private static readonly List<CheepViewModel> _cheeps = new()
-        {
-            //new CheepViewModel("Helge", "Hello, BDSA students!", UnixTimeStampToDateTimeString(1690892208)),
-            //new CheepViewModel("Adrian", "Hej, velkommen til kurset.", UnixTimeStampToDateTimeString(1690895308)),
-            using (var connection = new SqliteConnection($"Data Source={sqlDBFilePath}"))
-            {
-            connection.Open();
+    private static readonly List<CheepViewModel> _cheeps = new();
 
-            var command = connection.CreateCommand();
-            command.CommandText = sqlQuery;
+    public CheepService()
+    {
+        // Load cheeps from database
+        var db = new DBFacade();
 
-            using var reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-            new CheepViewModel(reader.)
-        }
-}
-        };
+    }
 
     public List<CheepViewModel> GetCheeps()
     {
-        return _cheeps;
+        return db.GetCheeps();
     }
 
     public List<CheepViewModel> GetCheepsFromAuthor(string author)
     {
-        // filter by the provided author name
-        return _cheeps.Where(x => x.Author == author).ToList();
+        return db.GetCheepsFromAuthor(author);
     }
 
     private static string UnixTimeStampToDateTimeString(double unixTimeStamp)
     {
-        // Unix timestamp is seconds past epoch
-        DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+        DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         dateTime = dateTime.AddSeconds(unixTimeStamp);
         return dateTime.ToString("MM/dd/yy H:mm:ss");
     }
-
 }
