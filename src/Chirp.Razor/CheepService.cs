@@ -1,5 +1,4 @@
-using DBFacade;
-namespace Chirp.Razor
+using Chirp.Razor;
 {
 
     public record CheepViewModel(string Author, string Message, string Timestamp);
@@ -14,7 +13,8 @@ namespace Chirp.Razor
     {
         private static readonly List<CheepViewModel> _cheeps = new();
 
-        public CheepService()
+        private DBFacade db = new DBFacade();
+        public CheepService(DBFacade _db)
         {
             // Load cheeps from database
             _db = new DBFacade();
