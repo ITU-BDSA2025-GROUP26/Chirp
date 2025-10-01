@@ -4,8 +4,9 @@
     ViewData["Title"] = "Chirp!";
     Layout = "Shared/_Layout";
 
-    var currentPage = Request.Query.ContainsKey("page") 
-        ? int.Parse(Request.Query["page"]) 
+    var pageParam = Request.Query["page"].ToString();
+    var currentPage = int.TryParse(pageParam, out var parsedPage) && parsedPage > 0
+        ? parsedPage
         : 1;
 
     var prevPage = currentPage > 1 ? currentPage - 1 : 1;
@@ -46,4 +47,4 @@
         <a href="/?page=@nextPage" class="btn btn-primary">Next</a>
         <span style="margin-left:10px;">Page @currentPage</span>
     </div>
-</div
+</div>
