@@ -66,13 +66,13 @@ namespace Chirp.Razor
                 ));
             }
 
-            return _cheeps;
+            return cheeps;
         }
         
         //returns all cheeps by a specific author from "chirp.db"
         public List<CheepViewModel> GetCheepsFromAuthor(string author)
         {
-            var _cheeps = new List<CheepViewModel>();
+            var cheeps = new List<CheepViewModel>();
 
             using (var connection = new SqliteConnection(_connectionString))
             {
@@ -82,7 +82,7 @@ namespace Chirp.Razor
                 command.CommandText = @"
                     SELECT u.username, m.text, m.pub_date
                     FROM message m
-                    JOIN user u ON u.author_id = u.id
+                    JOIN user u ON m.author_id = u.id
                     WHERE u.username = $author
                     ORDER BY m.pub_date DESC";
                 command.Parameters.AddWithValue("@author", author);
@@ -98,7 +98,7 @@ namespace Chirp.Razor
                 }
             }
 
-            return _cheeps;
+            return cheeps;
         }
 
         private static string UnixTimeStampToDateTimeString(long unixTimeStamp)
