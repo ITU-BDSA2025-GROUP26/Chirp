@@ -21,11 +21,12 @@ namespace Chirp.Razor
             connection.Open();
 
             using var command = connection.CreateCommand();
-            string script = File.ReadAllText("../data/schema.sql");
+            string script = File.ReadAllText("../../data/schema.sql");
             command.CommandText = script;
             command.ExecuteNonQuery();
 
             connection.Close();
+            DBDataDump();
         }
 
         //populates "chirp.db" with test data from "dump.sql"
@@ -35,7 +36,7 @@ namespace Chirp.Razor
             connection.Open();
 
             using var command = connection.CreateCommand();
-            string script = File.ReadAllText("../data/dump.sql");
+            string script = File.ReadAllText("../../data/dump.sql");
             command.CommandText = script;
             command.ExecuteNonQuery();
 
@@ -53,7 +54,7 @@ namespace Chirp.Razor
             command.CommandText = @"
                 SELECT u.username, m.text, m.pub_date
                 FROM message m
-                JOIN user u ON m.author_id = u.id
+                JOIN user u ON m.author_id = u.user_id
                 ORDER BY m.pub_date DESC";
 
             using var reader = command.ExecuteReader();
@@ -82,7 +83,7 @@ namespace Chirp.Razor
                 command.CommandText = @"
                     SELECT u.username, m.text, m.pub_date
                     FROM message m
-                    JOIN user u ON m.author_id = u.id
+                    JOIN user u ON m.author_id = u.user_id
                     WHERE u.username = $author
                     ORDER BY m.pub_date DESC";
                 command.Parameters.AddWithValue("@author", author);
