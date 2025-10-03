@@ -39,5 +39,58 @@ namespace  Chirp.Razor
             dateTime = dateTime.AddSeconds(unixTimeStamp);
             return dateTime.ToString("MM/dd/yy H:mm:ss");
         }
+        
+        class Author
+        {
+            string Name { get; set; }
+            string Email {get; set;}
+    
+            ICollection<Cheep> Cheeps {get; set;}
+        }
+
+        class Cheep
+        {
+            string Text { get; set; } 
+            Datetime Timestamp { get; set; }
+            Author Author { get; set; }
+        }
+
+        class CheepDto
+        {
+    
+        }
     }
-}
+    
+    namespace Chirp.Razor
+    {
+        public interface ICheepRepository
+        {
+            public void CreateCheep(CheepDto cheep)
+            {
+
+            }
+
+            public List<CheepDto> ReadCheeps(string authorName)
+            {
+
+            }
+
+            public void UpdateCheep(CheepDto alteredCheep)
+            {
+
+
+
+            }
+        }
+
+        public class CheepDBContext : DbContext
+        {
+            DbSet<Cheep> cheeps { get; set; }
+            DbSet<Author> authors { get; set; }
+
+            public CheepDBContext(DbContextOptions<CheepDBContext> options)
+                : base(options)
+            {
+            }
+        }
+    }
