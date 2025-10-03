@@ -1,4 +1,4 @@
-using Chirp.Razor;
+using Chirp.Razor.Pages;
 
 namespace  Chirp.Razor
 {
@@ -7,8 +7,8 @@ namespace  Chirp.Razor
 
     public interface ICheepService
     {
-        public List<CheepViewModel> GetCheeps();
-        public List<CheepViewModel> GetCheepsFromAuthor(string author);
+        public List<CheepViewModel> GetCheeps(int page, int pageSize);
+        public List<CheepViewModel> GetCheepsFromAuthor(string author, int page, int pageSize);
     }
 
     public class CheepService : ICheepService
@@ -23,14 +23,14 @@ namespace  Chirp.Razor
 
         }
 
-        public List<CheepViewModel> GetCheeps()
+        public List<CheepViewModel> GetCheeps(int page, int pageSize)
         {
-            return _db.GetCheeps();
+            return _db.GetCheeps(page, pageSize);
         }
 
-        public List<CheepViewModel> GetCheepsFromAuthor(string author)
+        public List<CheepViewModel> GetCheepsFromAuthor(string author, int page, int pageSize)
         {
-            return _db.GetCheepsFromAuthor(author);
+            return _db.GetCheepsFromAuthor(author, page, pageSize);
         }
 
         private static string UnixTimeStampToDateTimeString(double unixTimeStamp)

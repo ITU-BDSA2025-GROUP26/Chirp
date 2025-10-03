@@ -2,16 +2,21 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Chirp.Razor.Pages;
 
 namespace Chirp.Razor
 {
     public class DBFacade
     {
         private readonly string _connectionString;
+        //private int page;
+        //private int pagesize;
 
         //Instantiates DBFacade, instantiates relvant tables in "chirp.db" if not extant
         public DBFacade()
         {
+            //page = 32;
+            //pagesize = 12;
             var dbPath = Environment.GetEnvironmentVariable("CHIRPDBPATH")
                          ?? Path.Combine(Path.GetTempPath(), "chirp.db");
 
@@ -44,18 +49,24 @@ namespace Chirp.Razor
         }
         
         //returns a list of all cheeps in "chirp.db"
-        public List<CheepViewModel> GetCheeps()
+        public List<CheepViewModel> GetCheeps(int page, int pageSize)
         {
             var cheeps = new List<CheepViewModel>();
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
+
+            var offset = (page - 1) * pageSize;
 
             var command = connection.CreateCommand();
             command.CommandText = @"
                 SELECT u.username, m.text, m.pub_date
                 FROM message m
                 JOIN user u ON m.author_id = u.user_id
-                ORDER BY m.pub_date DESC";
+                ORDER BY m.pub_date DESC
+                LIMIT $pageSize OFFSET $offset";
+            command.Parameters.AddWithValue("$pageSize", pageSize);
+            command.Parameters.AddWithValue("$offset", offset);
+                
 
             using var reader = command.ExecuteReader();
             while (reader.Read())
@@ -71,13 +82,15 @@ namespace Chirp.Razor
         }
         
         //returns all cheeps by a specific author from "chirp.db"
-        public List<CheepViewModel> GetCheepsFromAuthor(string author)
+        public List<CheepViewModel> GetCheepsFromAuthor(string author, int page, int pageSize)
         {
             var cheeps = new List<CheepViewModel>();
 
             using (var connection = new SqliteConnection(_connectionString))
             {
                 connection.Open();
+                
+                var offset = (page - 1) * pageSize;
 
                 var command = connection.CreateCommand();
                 command.CommandText = @"
@@ -85,9 +98,12 @@ namespace Chirp.Razor
                     FROM message m
                     JOIN user u ON m.author_id = u.user_id
                     WHERE u.username = $author
-                    ORDER BY m.pub_date DESC";
-                command.Parameters.AddWithValue("@author", author);
-
+                    ORDER BY m.pub_date DESC
+                    LIMIT $pageSize OFFSET $offset";
+                command.Parameters.AddWithValue("$author", author);
+                command.Parameters.AddWithValue("$pageSize", pageSize);
+                command.Parameters.AddWithValue("$offset", offset);
+                
                 using var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
