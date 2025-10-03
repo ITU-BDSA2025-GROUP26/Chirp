@@ -6,16 +6,17 @@ namespace Chirp.Razor.Pages;
 public class PublicModel : PageModel
 {
     private readonly ICheepService _service;
-    public List<CheepViewModel> Cheeps { get; set; }
+    public List<CheepViewModel> Cheeps { get; set; } = new();
 
     public PublicModel(ICheepService service)
     {
         _service = service;
     }
 
-    public ActionResult OnGet()
+    public ActionResult OnGet([FromQuery] int page = 1)
     {
-        Cheeps = _service.GetCheeps();
+        int pageSize = 32;
+        Cheeps = _service.GetCheeps(page, pageSize);
         return Page();
     }
 }
