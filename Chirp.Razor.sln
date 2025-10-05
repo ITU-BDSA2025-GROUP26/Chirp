@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.Razor", "src\Chirp.Ra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheepServiceTest", "test\CheepServiceTest\CheepServiceTest.csproj", "{9116E308-5BAE-49C3-8C2E-ED55CA3578A2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HTTPTest", "test\IntegrationTest\HTTPTest\HTTPTest.csproj", "{5D6BCB79-B98E-4B56-829B-32EC377D716E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{9116E308-5BAE-49C3-8C2E-ED55CA3578A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9116E308-5BAE-49C3-8C2E-ED55CA3578A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9116E308-5BAE-49C3-8C2E-ED55CA3578A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D6BCB79-B98E-4B56-829B-32EC377D716E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D6BCB79-B98E-4B56-829B-32EC377D716E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D6BCB79-B98E-4B56-829B-32EC377D716E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D6BCB79-B98E-4B56-829B-32EC377D716E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{49E46A63-1ACE-48ED-9ECA-EED3F412FE88} = {471633D2-8368-40ED-BB53-D4D8FDD821DB}
