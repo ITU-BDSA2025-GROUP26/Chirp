@@ -1,13 +1,19 @@
-﻿namespace CheepServiceTest;
+﻿using Chirp.Razor;
 
-public class CheepServiceTest
-{
-    [Fact]
-    public void GetCheeps_ReturnsData_FromDatabase()
+namespace CheepServiceTest{
+    
+    public class CheepServiceTest
     {
-        var stubdb = new IDBInterface();
+        [Fact]
+        public void GetCheeps_ReturnsData_FromDatabase()
+        {
+            //Arrange
+            var db = new StubDBFacade();
+            var service = new CheepService(db);
 
-        
 
+
+
+        }
     }
 }

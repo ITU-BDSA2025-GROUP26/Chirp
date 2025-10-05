@@ -15,8 +15,9 @@ namespace  Chirp.Razor
     {
         private static readonly List<CheepViewModel> _cheeps = new();
 
-        private IDBInterface _db;
-        public CheepService(IDBInterface db)
+        private IDBFacade _db;
+
+        public CheepService(IDBFacade db)
         {
             // Load cheeps from database
             _db = db;
