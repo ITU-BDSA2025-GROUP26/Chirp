@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{471633D2-836
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.Razor", "src\Chirp.Razor\Chirp.Razor.csproj", "{49E46A63-1ACE-48ED-9ECA-EED3F412FE88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheepServiceTest", "test\CheepServiceTest\CheepServiceTest.csproj", "{9116E308-5BAE-49C3-8C2E-ED55CA3578A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheepServiceTest", "test\IntegrationTest\CheepServiceTest\CheepServiceTest.csproj", "{9116E308-5BAE-49C3-8C2E-ED55CA3578A2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HTTPTest", "test\IntegrationTest\HTTPTest\HTTPTest.csproj", "{5D6BCB79-B98E-4B56-829B-32EC377D716E}"
 EndProject

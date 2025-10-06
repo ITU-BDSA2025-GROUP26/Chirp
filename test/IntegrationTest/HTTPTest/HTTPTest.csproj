@@ -6,10 +6,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
-    <ItemGroup>
-        <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting"/>
-    </ItemGroup>
     
     <ItemGroup>
         <ProjectReference Include="..\..\..\src\Chirp.Razor\Chirp.Razor.csproj"/>
