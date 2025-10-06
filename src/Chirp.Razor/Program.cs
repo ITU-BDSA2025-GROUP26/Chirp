@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<ICheepService, CheepService>();
-//builder.Services.AddSingleton<IDBFacade, DBFacade>();
+builder.Services.AddSingleton<IDBFacade, DBFacade>();
 
 
 var app = builder.Build();
