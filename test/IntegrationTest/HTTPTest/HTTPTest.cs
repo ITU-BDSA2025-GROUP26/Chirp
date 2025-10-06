@@ -1,12 +1,22 @@
 ﻿using Chirp.Razor;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
 namespace HTTPTest
 {
 
-    public class HTTPTest
+    public class HTTPTest:IClassFixture<WebApplicationFactory<Program>>
     {
-        [Fact]
-        public void TestMethod1()
+        private readonly WebApplicationFactory<Program> _factory;
+        public HTTPTest(WebApplicationFactory<Program> factory)
         {
+            _factory = factory;
+        }
+
+        [Fact]
+        public void GetEndpointsReturnSucces()
+        {
+            var client = _factory.CreateClient();
         }
     }
 }
