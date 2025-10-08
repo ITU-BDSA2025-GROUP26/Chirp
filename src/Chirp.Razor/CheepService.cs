@@ -1,6 +1,6 @@
 using Chirp.Razor.Pages;
 
-namespace  Chirp.Razor
+namespace Chirp.Razor
 {
 
     public record CheepViewModel(string Author, string Message, string Timestamp);
@@ -16,6 +16,7 @@ namespace  Chirp.Razor
         private static readonly List<CheepViewModel> _cheeps = new();
 
         private DBFacade _db;
+
         public CheepService()
         {
             // Load cheeps from database
@@ -39,5 +40,6 @@ namespace  Chirp.Razor
             dateTime = dateTime.AddSeconds(unixTimeStamp);
             return dateTime.ToString("MM/dd/yy H:mm:ss");
         }
-        
+
     }
+}

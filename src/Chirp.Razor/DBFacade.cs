@@ -1,8 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using Chirp.Razor.Pages;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chirp.Razor
 {
@@ -58,6 +56,7 @@ namespace Chirp.Razor
 
             var offset = (page - 1) * pageSize;
 
+            
             var command = connection.CreateCommand();
             command.CommandText = @"
                 SELECT u.username, m.text, m.pub_date
@@ -126,29 +125,31 @@ namespace Chirp.Razor
         }
     }
     
-    class Author
-    {
-        string Name { get; set; }
-        string Email {get; set;}
-    
-        ICollection<Cheep> Cheeps {get; set;}
-    }
-
-    class Cheep
-    {
-        string Text { get; set; } 
-        Datetime Timestamp { get; set; }
-        Author Author { get; set; }
-    }
-
-    class CheepDto
-    {
-    
-    }
 }
 
 namespace Chirp.Razor
 {
+    public class Author
+    {
+        public string Name { get; set; }
+        public string Email {get; set;}
+        public int AuthorId { get; set;}
+        public ICollection<Cheep> Cheeps {get; set;}
+    }
+
+    public class Cheep
+    {
+        public int CheepId {get; set;}
+        public string Text { get; set; }
+        public DateTime TimeStamp { get; set; }
+        public int AuthorId { get; set; }
+        public Author Author {get; set;}
+    }
+
+    public class CheepDto
+    {
+    
+    }
     public interface ICheepRepository
     {
         public void CreateCheep(CheepDto cheep)
@@ -158,7 +159,7 @@ namespace Chirp.Razor
 
         public List<CheepDto> ReadCheeps(string authorName)
         {
-
+            return new List<CheepDto>(); //!!
         }
 
         public void UpdateCheep(CheepDto alteredCheep)
@@ -169,7 +170,7 @@ namespace Chirp.Razor
         }
     }
 
-    public class CheepRepository : ICheepRepository
+    public class ChirpRepository : ICheepRepository
     {
         private readonly ChirpDBContext _dbContext;
 
@@ -178,11 +179,10 @@ namespace Chirp.Razor
             _dbContext = dbContext;
         }
     }
-
     public class ChirpDBContext : DbContext
     {
-        DbSet<Cheep> cheeps { get; set; }
-        DbSet<Author> authors { get; set; }
+        public DbSet<Cheep> Cheeps { get; set; }
+        public DbSet<Author> Authors { get; set; }
 
         public ChirpDBContext(DbContextOptions<ChirpDBContext> options)
             : base(options)

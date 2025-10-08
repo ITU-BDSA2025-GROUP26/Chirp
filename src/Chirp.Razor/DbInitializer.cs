@@ -1,4 +1,4 @@
-using System;
+namespace Chirp.Razor;
 
 public static class DbInitializer
 {
