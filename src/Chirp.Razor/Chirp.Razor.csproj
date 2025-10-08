@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net$(NETCoreAppMaximumVersion)</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
@@ -9,5 +9,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.9" />
   </ItemGroup>
+
+  <PropertyGroup>
+  <PreserveCompilationContext>true</PreserveCompilationContext>
+</PropertyGroup>
 
 </Project>

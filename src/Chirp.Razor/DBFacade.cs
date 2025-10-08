@@ -6,7 +6,31 @@ using Chirp.Razor.Pages;
 
 namespace Chirp.Razor
 {
-    public class DBFacade
+    public interface IDBFacade{
+        public List<CheepViewModel> GetCheeps(int page,int pagesize);
+        public List<CheepViewModel> GetCheepsFromAuthor(string author,int page,int pagesize);
+    }
+
+    public class StubDBFacade:IDBFacade{
+
+        public List<CheepViewModel> GetCheeps(int page,int pagesize){
+            var list = new List<CheepViewModel>();
+
+            var cheepOne = new CheepViewModel("Bo","Hej Anne","2025 oktober");
+            var cheepTwo = new CheepViewModel("Anne","Hej Bo","2025 september");
+
+            list.Add(cheepOne);
+            list.Add(cheepTwo);
+
+            return list;
+        }
+
+        public List<CheepViewModel> GetCheepsFromAuthor(string author,int page,int pagesize){
+            return GetCheeps(page,pagesize).Where(c => c.Author == author).ToList();
+        }
+    }
+
+    public class DBFacade:IDBFacade
     {
         private readonly string _connectionString;
         //private int page;

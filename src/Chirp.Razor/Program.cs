@@ -5,6 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<ICheepService, CheepService>();
+builder.Services.AddSingleton<IDBFacade, DBFacade>();
 
 
 var app = builder.Build();
@@ -25,3 +26,7 @@ app.UseRouting();
 app.MapRazorPages();
 
 app.Run();
+public partial class Program
+{
+    
+}
