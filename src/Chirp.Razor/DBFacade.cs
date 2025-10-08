@@ -31,7 +31,8 @@ namespace Chirp.Razor
             command.ExecuteNonQuery();
 
             connection.Close();
-            DBDataDump();
+            
+            
         }
 
         //populates "chirp.db" with test data from "dump.sql"
@@ -168,14 +169,25 @@ namespace Chirp.Razor
         }
     }
 
-    public class CheepDBContext : DbContext
+    public class CheepRepository : ICheepRepository
+    {
+        private readonly ChirpDBContext _dbContext;
+
+        public ChirpRepository(ChirpDBContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+    }
+
+    public class ChirpDBContext : DbContext
     {
         DbSet<Cheep> cheeps { get; set; }
         DbSet<Author> authors { get; set; }
 
-        public CheepDBContext(DbContextOptions<CheepDBContext> options)
+        public ChirpDBContext(DbContextOptions<ChirpDBContext> options)
             : base(options)
         {
+            
         }
     }
 }
