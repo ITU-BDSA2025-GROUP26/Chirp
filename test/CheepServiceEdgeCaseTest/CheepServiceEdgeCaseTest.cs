@@ -37,7 +37,8 @@ namespace CheepServiceEdgeCaseTest
             var db = new StubDBFacade();
             var service = new CheepService(db);
 
-            var result = service.GetCheepsFromAuthor(null, 1, 32);
+            string? author = null;
+            var result = service.GetCheepsFromAuthor(author!, 1, 32);
 
             Assert.Empty(result);
         }
