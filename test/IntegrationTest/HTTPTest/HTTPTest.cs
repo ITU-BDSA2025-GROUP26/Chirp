@@ -14,30 +14,55 @@ namespace HTTPTest
         {
             builder.ConfigureServices(services =>
             {
-                var cheepService = services.SingleOrDefault(
-                    d => d.ServiceType == typeof(ICheepService));
+                var dbContext = services.SingleOrDefault(
+                    d => d.ServiceType ==
+                    typeof(DBFacade));
+                if (dbContext != null) { services.Remove(dbContext); }
+                ;
 
-                if (cheepService != null)
-                {
-                    services.Remove(cheepService);
-                }
-                services.AddSingleton<ICheepService, CheepService>();
                 services.AddSingleton<IDBFacade, StubDBFacade>();
             });
+            builder.UseEnvironment("Development");
         }
     }
     public class HTTPTest : IClassFixture<CustomWebApplicationFactory>
     {
         private readonly HttpClient _client;
+        private readonly CustomWebApplicationFactory _factory;
         public HTTPTest(CustomWebApplicationFactory factory)
         {
+            _factory = factory;
             _client = factory.CreateClient();
         }
 
         [Fact]
-        public void GetEndpointsReturnSucces()
+        public async Task GetEndpointsReturnSuccess()
         {
+            //Arrange
+            var response = await _client.GetAsync("/");
 
+            //Act
+            var result = response.IsSuccessStatusCode;
+
+            //Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task ChirpPageContainsDummyCheeps()
+        {
+            //Arrange
+            var response = await _client.GetAsync("/");
+
+            //Act
+            var list = await response.Content.ReadAsStringAsync();
+
+            //Assert
+            Assert.Contains("Bo", list);
+            Assert.Contains("Anne", list);
+            Assert.Contains("Hej Anne", list);
+            Assert.Contains("Hej Bo", list);
+            Assert.True(response.IsSuccessStatusCode);
         }
     }
 }
