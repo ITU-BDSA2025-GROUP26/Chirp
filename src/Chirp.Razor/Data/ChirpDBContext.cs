@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-namespace Chirp.Razor;
+using Chirp.Razor.Models;
+namespace Chirp.Razor.Data;
 
 public class ChirpDBContext : DbContext
 {

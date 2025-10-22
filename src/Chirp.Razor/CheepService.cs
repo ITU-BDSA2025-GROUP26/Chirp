@@ -1,4 +1,5 @@
 using Chirp.Razor.Pages;
+using Chirp.Razor.Interfaces;
 
 namespace Chirp.Razor
 {

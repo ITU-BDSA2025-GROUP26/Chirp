@@ -1,4 +1,4 @@
-namespace Chirp.Razor;
+namespace Chirp.Razor.Models;
 
 public class Cheep
 {
