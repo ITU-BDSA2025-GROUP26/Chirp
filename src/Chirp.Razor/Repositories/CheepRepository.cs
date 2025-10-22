@@ -11,17 +11,28 @@ public class CheepRepository:ICheepRepository
     {
         _context = context;
     }
-    public void CreateCheep(CheepDto cheep)
+    public Task CreateCheep(CheepDto cheep)
+    {
+        
+
+    }
+
+    public Task<List<CheepDto>> ReadCheeps(string authorName)
     {
         
     }
 
-    public List<CheepDto> ReadCheeps(string authorName)
+    public Task UpdateCheep(CheepDto alteredCheep)
+    {
+        
+    }
+
+    public List<CheepDto> GetCheeps(int page, int pageSize)
     {
         return new List<CheepDto>();
     }
 
-    public void UpdateCheep(CheepDto alteredCheep)
+    public List<CheepDto> GetCheepsFromAuthor(string author, int page, int pageSize)
     {
         
     }
