@@ -10,53 +10,53 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
 
-    - name: Restore dependencies
-      run: dotnet restore
+      - name: Restore dependencies
+        run: dotnet restore
 
-    - name: Build and Test
-      run: dotnet test --configuration Release
+      - name: Build and Test
+        run: dotnet test --configuration Release
 
-    - name: Publish WebApp
-      run: dotnet publish src/Chirp.WebApp/Chirp.WebApp.csproj -c Release -o publish/webapp
+      - name: Publish WebApp
+        run: dotnet publish src/Chirp.WebApp/Chirp.WebApp.csproj -c Release -o publish/webapp
 
-    - name: Upload WebApp artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: .net-app
-        path: publish/webapp
+      - name: Upload WebApp artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: .net-app
+          path: publish/webapp
 
-    - name: Publish executables
-      run: |
-        # Windows (x64)
-        dotnet publish src/Chirp.CLI/Chirp.CLI.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o publish/win-x64
-        zip -j chirp-win-x64.zip publish/win-x64/*
+      - name: Publish executables
+        run: |
+          # Windows (x64)
+          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o publish/win-x64
+          zip -j chirp-win-x64.zip publish/win-x64/*
+          
+          # Linux (x64)
+          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj -c Release -r linux-x64 --self-contained false -p:PublishSingleFile=true -o publish/linux-x64
+          zip -j chirp-linux-x64.zip publish/linux-x64/*
+          
+          # macOS (x64)
+          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj -c Release -r osx-x64 --self-contained false -p:PublishSingleFile=true -o publish/osx-x64
+          zip -j chirp-osx-x64.zip publish/osx-x64/*
 
-        # Linux (x64)
-        dotnet publish src/Chirp.CLI/Chirp.CLI.csproj -c Release -r linux-x64 --self-contained false -p:PublishSingleFile=true -o publish/linux-x64
-        zip -j chirp-linux-x64.zip publish/linux-x64/*
-
-        # macOS (x64)
-        dotnet publish src/Chirp.CLI/Chirp.CLI.csproj -c Release -r osx-x64 --self-contained false -p:PublishSingleFile=true -o publish/osx-x64
-        zip -j chirp-osx-x64.zip publish/osx-x64/*
-
-    - name: Create GitHub Release
-      if: startsWith(github.ref, 'refs/tags/')
-      uses: softprops/action-gh-release@v2
-      with:
-        files: |
-          chirp-win-x64.zip
-          chirp-linux-x64.zip
-          chirp-osx-x64.zip
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            chirp-win-x64.zip
+            chirp-linux-x64.zip
+            chirp-osx-x64.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy:
     runs-on: ubuntu-latest

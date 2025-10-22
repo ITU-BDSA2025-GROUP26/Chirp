@@ -20,10 +20,10 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore dependencies
-        run: dotnet restore Chirp.Razor/Chirp.Razor.csproj
+        run: dotnet restore Chirp.Razor.sln
 
-      - name: Build Razor Pages app
-        run: dotnet build Chirp.Razor/Chirp.Razor.csproj --configuration Release
+      - name: Build solution
+        run: dotnet build Chirp.Razor.sln --configuration Release --no-restore
 
-      - name: Test all
-        run: dotnet test --no-build --configuration Release --verbosity normal
+      - name: Run all tests
+        run: dotnet test Chirp.Razor.sln --configuration Release --no-restore --verbosity normal
