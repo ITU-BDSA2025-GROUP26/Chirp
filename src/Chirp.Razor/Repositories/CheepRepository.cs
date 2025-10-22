@@ -1,5 +1,7 @@
 using Chirp.Razor.Interfaces;
 using Chirp.Razor.Data;
+using Chirp.Razor.Models;
+using System.Threading.Tasks;
 
 namespace Chirp.Razor.Repositories;
 
@@ -11,30 +13,36 @@ public class CheepRepository:ICheepRepository
     {
         _context = context;
     }
-    public Task CreateCheep(CheepDto cheep)
-    {
-        
-
-    }
-
-    public Task<List<CheepDto>> ReadCheeps(string authorName)
-    {
-        
-    }
-
-    public Task UpdateCheep(CheepDto alteredCheep)
-    {
-        
-    }
-
     public List<CheepDto> GetCheeps(int page, int pageSize)
     {
-        return new List<CheepDto>();
+        return _context.Cheeps
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(c => new CheepDto
+            {
+                Text = c.Text,
+                Author = c.Author.Name,
+                TimeStamp = c.TimeStamp.ToString("yyyy-MM-dd HH:mm") //convert to string
+            })
+            .ToList();
     }
 
     public List<CheepDto> GetCheepsFromAuthor(string author, int page, int pageSize)
     {
-        
+        return _context.Cheeps
+            .Where(c => c.Author.Name == author)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(c => new CheepDto
+            {
+                Text = c.Text,
+                Author = c.Author.Name,
+                TimeStamp = c.TimeStamp.ToString("yyyy-MM-dd HH:mm") //convert to string
+            })
+            .ToList();
+
     }
+
+    //lave egen metode til at konvertere unix timestamp til datetime string
     
 }

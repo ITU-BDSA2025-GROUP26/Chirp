@@ -1,11 +1,14 @@
 using Chirp.Razor;
+using Chirp.Razor.Interfaces;
+using Chirp.Razor.Repositories;
+using Chirp.Razor.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddSingleton<ICheepService, CheepService>();
+builder.Services.AddScoped<ICheepService, CheepService>();
 builder.Services.AddScoped<ICheepRepository, CheepRepository>();
 // Load database connection via configuration
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -23,6 +26,7 @@ using (var scope = app.Services.CreateScope())
 
     // Execute the migration from code.
     context?.Database.Migrate();
+    DbInitializer.SeedDatabase(context);
 }
 
 
