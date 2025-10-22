@@ -2,15 +2,6 @@ using Chirp.Razor.Pages;
 
 namespace Chirp.Razor
 {
-
-    public record CheepViewModel(string Author, string Message, string Timestamp);
-
-    public interface ICheepService
-    {
-        public List<CheepDto> GetCheeps(int page, int pageSize);
-        public List<CheepDto> GetCheepsFromAuthor(string author, int page, int pageSize);
-    }
-
     public class CheepService : ICheepService
     {
         private static readonly List<CheepDto> _cheeps = new();
