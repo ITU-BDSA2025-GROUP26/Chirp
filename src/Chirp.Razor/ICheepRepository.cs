@@ -1,6 +1,10 @@
 namespace Chirp.Razor;
 
-public interface ICheepRepository
-{
-    
-}
+    public interface ICheepRepository
+    {
+        public void CreateCheep(CheepDto cheep);
+
+        public List<CheepDto> ReadCheeps(string authorName);
+
+        public void UpdateCheep(CheepDto alteredCheep);
+    }
