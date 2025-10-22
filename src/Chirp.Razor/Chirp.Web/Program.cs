@@ -1,6 +1,6 @@
 using Chirp.Razor;
-using Chirp.Razor.Interfaces;
-using Chirp.Razor.Repositories;
+using Chirp.Razor.Chirp.Infrastructure.Chirp.Service;
+using Chirp.Razor.Chirp.Infrastructure.Chirp.Repositories;
 using Chirp.Razor.Data;
 using Microsoft.EntityFrameworkCore;
 

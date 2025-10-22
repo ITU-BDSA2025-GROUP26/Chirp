@@ -1,4 +1,4 @@
-namespace Chirp.Razor.Models;
+namespace Chirp.Razor.Core.Models;
 
 public class Author
 {

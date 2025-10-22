@@ -1,7 +1,6 @@
-using Chirp.Razor.Interfaces;
 using Chirp.Razor.Data;
 
-namespace Chirp.Razor.Repositories;
+namespace Chirp.Razor.Chirp.Infrastructure.Chirp.Repositories;
 
 public class CheepRepository:ICheepRepository
 {

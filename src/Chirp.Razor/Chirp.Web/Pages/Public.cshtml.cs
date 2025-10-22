@@ -1,23 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Chirp.Razor.Interfaces;
+using Chirp.Razor.Chirp.Infrastructure.Chirp.Service;
 
 namespace Chirp.Razor.Pages
 {
-    public class UserTimelineModel : PageModel
+
+    public class PublicModel : PageModel
     {
         private readonly ICheepService _service;
         public List<CheepDto> Cheeps { get; set; } = new();
 
-        public UserTimelineModel(ICheepService service)
+        public PublicModel(ICheepService service)
         {
             _service = service;
         }
 
-        public ActionResult OnGet(string author, [FromQuery] int page = 1)
+        public ActionResult OnGet([FromQuery] int page = 1)
         {
             int pageSize = 32;
-            Cheeps = _service.GetCheepsFromAuthor(author, page, pageSize);
+            Cheeps = _service.GetCheeps(page, pageSize);
             return Page();
         }
     }

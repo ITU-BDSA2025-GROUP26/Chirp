@@ -1,4 +1,4 @@
-namespace Chirp.Razor.Interfaces;
+namespace Chirp.Razor.Chirp.Infrastructure.Chirp.Service;
 
 public interface ICheepService
 {

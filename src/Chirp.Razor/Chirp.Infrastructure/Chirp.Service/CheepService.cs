@@ -1,7 +1,7 @@
 using Chirp.Razor.Pages;
-using Chirp.Razor.Interfaces;
+using Chirp.Razor.Chirp.Infrastructure.Chirp.Repositories;
 
-namespace Chirp.Razor
+namespace Chirp.Razor.Chirp.Infrastructure.Chirp.Service
 {
     public class CheepService : ICheepService
     {
