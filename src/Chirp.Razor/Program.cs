@@ -1,14 +1,34 @@
 using Chirp.Razor;
+using Chirp.Razor.Interfaces;
+using Chirp.Razor.Repositories;
+using Chirp.Razor.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddSingleton<ICheepService, CheepService>();
-builder.Services.AddSingleton<IDBFacade, DBFacade>();
+builder.Services.AddScoped<ICheepService, CheepService>();
+builder.Services.AddScoped<ICheepRepository, CheepRepository>();
+// Load database connection via configuration
+string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<ChirpDBContext>(options => options.UseSqlite(connectionString));
 
 
 var app = builder.Build();
+
+// Create a disposable service scope
+using (var scope = app.Services.CreateScope())
+{
+    // From the scope, get an instance of our database context.
+    // Through the `using` keyword, we make sure to dispose it after we are done.
+    using var context = scope.ServiceProvider.GetService<ChirpDBContext>();
+
+    // Execute the migration from code.
+    context?.Database.Migrate();
+    DbInitializer.SeedDatabase(context);
+}
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -26,7 +46,3 @@ app.UseRouting();
 app.MapRazorPages();
 
 app.Run();
-public partial class Program
-{
-    
-}

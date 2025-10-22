@@ -1,44 +1,31 @@
 using Chirp.Razor.Pages;
+using Chirp.Razor.Interfaces;
 
-namespace  Chirp.Razor
+namespace Chirp.Razor
 {
-
-    public record CheepViewModel(string Author, string Message, string Timestamp);
-
-    public interface ICheepService
-    {
-        public List<CheepViewModel> GetCheeps(int page, int pageSize);
-        public List<CheepViewModel> GetCheepsFromAuthor(string author, int page, int pageSize);
-    }
-
     public class CheepService : ICheepService
     {
-        private static readonly List<CheepViewModel> _cheeps = new();
+        private static readonly List<CheepDto> _cheeps = new();
 
-        private IDBFacade _db;
+        private readonly ICheepRepository _cheepRepository;
 
-        public CheepService(IDBFacade db)
+
+        public CheepService(ICheepRepository cheepRepository)
         {
-            // Load cheeps from database
-            _db = db;
+            _cheepRepository = cheepRepository;
 
         }
 
-        public List<CheepViewModel> GetCheeps(int page, int pageSize)
+        public List<CheepDto> GetCheeps(int page, int pageSize)
         {
-            return _db.GetCheeps(page, pageSize);
+            return _cheepRepository.GetCheeps(page, pageSize);
         }
 
-        public List<CheepViewModel> GetCheepsFromAuthor(string author, int page, int pageSize)
+        public List<CheepDto> GetCheepsFromAuthor(string author, int page, int pageSize)
         {
-            return _db.GetCheepsFromAuthor(author, page, pageSize);
+            return _cheepRepository.GetCheepsFromAuthor(author, page, pageSize);
         }
 
-        private static string UnixTimeStampToDateTimeString(double unixTimeStamp)
-        {
-            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            dateTime = dateTime.AddSeconds(unixTimeStamp);
-            return dateTime.ToString("MM/dd/yy H:mm:ss");
-        }
+
     }
 }
