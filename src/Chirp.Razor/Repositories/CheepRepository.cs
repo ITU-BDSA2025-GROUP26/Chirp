@@ -1,7 +1,5 @@
 using Chirp.Razor.Interfaces;
 using Chirp.Razor.Data;
-using Chirp.Razor.Models;
-using System.Threading.Tasks;
 
 namespace Chirp.Razor.Repositories;
 
@@ -13,6 +11,7 @@ public class CheepRepository:ICheepRepository
     {
         _context = context;
     }
+
     public List<CheepDto> GetCheeps(int page, int pageSize)
     {
         return _context.Cheeps
