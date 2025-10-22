@@ -1,5 +1,4 @@
-using Chirp.Razor.Models;
-using Chirp.Razor.Data;
+using Chirp.Razor.Core.Models;
 
 namespace Chirp.Razor.Data;
 
