@@ -1,7 +1,7 @@
-using Chirp.Razor.Models;
-using Chirp.Razor.Data;
+using Chirp.Core.Models;
+using Chirp.Infrastructure;
 
-namespace Chirp.Razor.Data;
+namespace Chirp.Web;
 
 public static class DbInitializer
 {

@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Chirp.Razor</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +15,17 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SQLite" Version="9.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="Pages\Public.cshtml" />
+    <AdditionalFiles Include="Pages\Shared\_Layout.cshtml" />
+    <AdditionalFiles Include="Pages\UserTimeline.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Chirp.Core\Chirp.Core.csproj" />
+    <ProjectReference Include="..\Chirp.Infrastructure\Chirp.Infrastructure.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

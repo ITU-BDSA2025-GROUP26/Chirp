@@ -1,4 +1,4 @@
-namespace Chirp.Razor.Models;
+namespace Chirp.Core.Models;
 
 public class Cheep
 {
@@ -6,5 +6,5 @@ public class Cheep
     public string Text { get; set; }
     public DateTime TimeStamp { get; set; }
     public int AuthorId { get; set; }
-    public Author Author {get; set;}
+    public Author Author { get; set; }
 }
