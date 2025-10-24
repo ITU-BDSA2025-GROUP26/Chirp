@@ -3,6 +3,7 @@ using System;
 using Chirp.Razor.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,14 +11,16 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chirp.Razor.Migrations
 {
     [DbContext(typeof(ChirpDBContext))]
-    partial class ChirpDBContextModelSnapshot : ModelSnapshot
+    [Migration("20251022130854_DatabaseSetup")]
+    partial class DatabaseSetup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
 
-            modelBuilder.Entity("Chirp.Razor.Models.Author", b =>
+            modelBuilder.Entity("Chirp.Web.Models.Author", b =>
                 {
                     b.Property<int>("AuthorId")
                         .ValueGeneratedOnAdd()
@@ -36,7 +39,7 @@ namespace Chirp.Razor.Migrations
                     b.ToTable("Authors");
                 });
 
-            modelBuilder.Entity("Chirp.Razor.Models.Cheep", b =>
+            modelBuilder.Entity("Chirp.Web.Models.Cheep", b =>
                 {
                     b.Property<int>("CheepId")
                         .ValueGeneratedOnAdd()
@@ -59,9 +62,9 @@ namespace Chirp.Razor.Migrations
                     b.ToTable("Cheeps");
                 });
 
-            modelBuilder.Entity("Chirp.Razor.Models.Cheep", b =>
+            modelBuilder.Entity("Chirp.Web.Models.Cheep", b =>
                 {
-                    b.HasOne("Chirp.Razor.Models.Author", "Author")
+                    b.HasOne("Chirp.Web.Models.Author", "Author")
                         .WithMany("Cheeps")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -70,7 +73,7 @@ namespace Chirp.Razor.Migrations
                     b.Navigation("Author");
                 });
 
-            modelBuilder.Entity("Chirp.Razor.Models.Author", b =>
+            modelBuilder.Entity("Chirp.Web.Models.Author", b =>
                 {
                     b.Navigation("Cheeps");
                 });

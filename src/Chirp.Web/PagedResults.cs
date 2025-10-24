@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Chirp.Razor;
+namespace Chirp.Web;
 
 public class PagedResults<T>
 {
