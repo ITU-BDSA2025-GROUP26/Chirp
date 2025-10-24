@@ -7,4 +7,13 @@ public class Cheep
     public DateTime TimeStamp { get; set; }
     public int AuthorId { get; set; }
     public Author Author {get; set;}
+
+    public CheepDto ToDto()
+    {
+        CheepDto dto = new CheepDto();
+        dto.Author =  this.Author;
+        dto.TimeStamp = this.TimeStamp;
+        dto.Text = this.Text;
+        return dto;
+    }
 }
