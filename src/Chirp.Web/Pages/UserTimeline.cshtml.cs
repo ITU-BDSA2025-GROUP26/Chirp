@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Chirp.Infrastructure.Chirp.Service;
 using Chirp.Core;
 
-namespace Chirp.Razor.Pages
+namespace Chirp.Web.Pages
 {
     public class UserTimelineModel : PageModel
     {
