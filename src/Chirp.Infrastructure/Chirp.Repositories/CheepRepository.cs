@@ -24,6 +24,7 @@ public class CheepRepository:ICheepRepository
                 TimeStamp = c.TimeStamp
             })
             .ToList();
+            //return new List<CheepDto>();
     }
 
     public List<CheepDto> GetCheepsFromAuthor(string author, int page, int pageSize)
@@ -70,7 +71,7 @@ public class CheepRepository:ICheepRepository
 
     public void AddCheep(CheepDto cheepdto)
     {
-        Cheep cheep = new Cheep();
+       Cheep cheep = new Cheep();
         cheep.TimeStamp = cheepdto.TimeStamp;
         cheep.Text = cheepdto.Text;
 
