@@ -11,11 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chirp.Infrastructure.Migrations
 {
     [DbContext(typeof(ChirpDBContext))]
-<<<<<<<< HEAD:src/Chirp.Infrastructure/Migrations/20251029125812_DatabaseSetup.Designer.cs
     [Migration("20251029125812_DatabaseSetup")]
-========
-    [Migration("20251027120110_DatabaseSetup")]
->>>>>>>> 02234a5d5fdda20d8c0582d42e9ee6529ae570ac:src/Chirp.Infrastructure/Migrations/20251027120110_DatabaseSetup.Designer.cs
     partial class DatabaseSetup
     {
         /// <inheritdoc />
