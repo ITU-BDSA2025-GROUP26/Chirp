@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Xunit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.InMemory;
 using Chirp.Core.Models;
 using Chirp.Infrastructure.Chirp.Repositories;
 using Chirp.Core;
