@@ -1,0 +1,51 @@
+@page "/{author}"
+@model Chirp.Web.Pages.UserTimelineModel
+@{
+    ViewData["Title"] = "Chirp!";
+    Layout = "Shared/_Layout";
+    var routeName = HttpContext.GetRouteValue("author");
+
+    var pageParam = Request.Query["page"].ToString();
+    var currentPage = int.TryParse(pageParam, out var parsedPage) && parsedPage > 0
+        ? parsedPage
+        : 1;
+
+    var prevPage = currentPage > 1 ? currentPage - 1 : 1;
+    var nextPage = currentPage + 1;
+}
+
+<div>
+    <h2> @routeName's Timeline </h2>
+
+    @if (Model.Cheeps.Any())
+    {
+        <ul id="messagelist" class="cheeps">
+            @foreach (var cheep in Model.Cheeps)
+            {
+                <li>
+                    <p>
+                        <strong>
+                            <a href="/@cheep.Author">@cheep.Author</a>
+                        </strong>
+                        @cheep.Text
+                        <small>&mdash; @cheep.TimeStamp</small>
+                    </p>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <em>There are no cheeps so far.</em>
+    }
+
+    <!-- Pagination Controls -->
+    <div class="pagination" style="margin-top: 20px;">
+        @if (currentPage > 1)
+        {
+            <a href="/@routeName?page=@prevPage" class="btn btn-secondary">Previous</a>
+        }
+        <a href="/@routeName?page=@nextPage" class="btn btn-primary">Next</a>
+        <span style="margin-left:10px;">Page @currentPage</span>
+    </div>
+</div>

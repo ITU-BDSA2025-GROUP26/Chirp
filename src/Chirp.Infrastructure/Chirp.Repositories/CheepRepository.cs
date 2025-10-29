@@ -20,8 +20,8 @@ public class CheepRepository:ICheepRepository
             .Select(c => new CheepDto
             {
                 Text = c.Text,
-                Author = c.Author,
-                TimeStamp = c.TimeStamp
+                Author = c.Author.Name,
+                TimeStamp = c.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss")
             })
             .ToList();
     }
@@ -35,8 +35,8 @@ public class CheepRepository:ICheepRepository
             .Select(c => new CheepDto
             {
                 Text = c.Text,
-                Author = c.Author,
-                TimeStamp = c.TimeStamp
+                Author = c.Author.Name,
+                TimeStamp = c.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss")
             })
             .ToList();
 
@@ -71,20 +71,36 @@ public class CheepRepository:ICheepRepository
     public void AddCheep(CheepDto cheepdto)
     {
         Cheep cheep = new Cheep();
-        cheep.TimeStamp = cheepdto.TimeStamp;
+        cheep.TimeStamp = StringTimeStampToDateTime(cheepdto.TimeStamp);
         cheep.Text = cheepdto.Text;
 
-        if (!_context.Authors.Contains(cheepdto.Author))
+        var author = _context.Authors
+            .SingleOrDefault(a => a.Name == cheepdto.Author);
+
+        if (author == null)
         {
-            AddAuthor(cheepdto.Author);
+            author = new Author
+            {
+                Name = cheepdto.Author,
+                Email = cheepdto.AuthorEmail,
+                AuthorId = _context.Authors.Count() + 1,
+                Cheeps = new List<Cheep>()
+            };
+
+            AddAuthor(author);
+            _context.SaveChanges();
         }
-        
-        cheep.AuthorId = cheepdto.Author.AuthorId;
+
+        cheep.AuthorId = author.AuthorId;
         cheep.CheepId = _context.Cheeps.Count() + 1;
         _context.Add(cheep);
         cheep.Author.Cheeps.Add(cheep);
     }
-
-    //lave egen metode til at konvertere unix timestamp til datetime string
+    
+    private static DateTime StringTimeStampToDateTime(string stringTimeStamp)
+    {
+        DateTime dateTime = DateTime.Parse(stringTimeStamp);
+        return dateTime;
+    }
     
 }

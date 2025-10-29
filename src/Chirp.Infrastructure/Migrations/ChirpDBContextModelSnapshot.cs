@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Chirp.Web.Migrations
+namespace Chirp.Infrastructure.Migrations
 {
     [DbContext(typeof(ChirpDBContext))]
     partial class ChirpDBContextModelSnapshot : ModelSnapshot
@@ -17,7 +17,7 @@ namespace Chirp.Web.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
 
-            modelBuilder.Entity("Chirp.Web.Models.Author", b =>
+            modelBuilder.Entity("Chirp.Core.Models.Author", b =>
                 {
                     b.Property<int>("AuthorId")
                         .ValueGeneratedOnAdd()
@@ -36,7 +36,7 @@ namespace Chirp.Web.Migrations
                     b.ToTable("Authors");
                 });
 
-            modelBuilder.Entity("Chirp.Web.Models.Cheep", b =>
+            modelBuilder.Entity("Chirp.Core.Models.Cheep", b =>
                 {
                     b.Property<int>("CheepId")
                         .ValueGeneratedOnAdd()
@@ -59,9 +59,9 @@ namespace Chirp.Web.Migrations
                     b.ToTable("Cheeps");
                 });
 
-            modelBuilder.Entity("Chirp.Web.Models.Cheep", b =>
+            modelBuilder.Entity("Chirp.Core.Models.Cheep", b =>
                 {
-                    b.HasOne("Chirp.Web.Models.Author", "Author")
+                    b.HasOne("Chirp.Core.Models.Author", "Author")
                         .WithMany("Cheeps")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -70,7 +70,7 @@ namespace Chirp.Web.Migrations
                     b.Navigation("Author");
                 });
 
-            modelBuilder.Entity("Chirp.Web.Models.Author", b =>
+            modelBuilder.Entity("Chirp.Core.Models.Author", b =>
                 {
                     b.Navigation("Cheeps");
                 });
