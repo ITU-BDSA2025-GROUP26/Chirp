@@ -25,7 +25,7 @@ using (var scope = app.Services.CreateScope())
     using var context = scope.ServiceProvider.GetRequiredService<ChirpDBContext>();
 
     // Execute the migration from code.
-    //context?.Database.Migrate();
+    context.Database.Migrate();
     DbInitializer.SeedDatabase(context);
 }
 
