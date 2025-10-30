@@ -59,4 +59,42 @@ public class UserTimelineModelTests
         Assert.Equal(1, stub.LastPage);
         Assert.Equal(32, stub.LastSize);
     }
+    
+    [Theory]
+    [InlineData("bob", 2)]
+    [InlineData("charlie", 7)]
+    public void OnGet_CustomPage_UsesAuthorAndPage_ReturnsEmptyIfNoData(string author, int page)
+    {
+        // Arrange
+        var stub = new StubCheepService(); 
+        var model = new UserTimelineModel(stub);
+
+        // Act
+        var result = model.OnGet(author, page);
+
+        // Assert
+        Assert.IsType<PageResult>(result);
+        Assert.Empty(model.Cheeps);
+        Assert.Equal(author, stub.LastAuthor);
+        Assert.Equal(page, stub.LastPage);
+        Assert.Equal(32, stub.LastSize);
+    }
+
+    [Fact]
+    public void OnGet_EmptyAuthor_CallsService_WithEmptyString()
+    {
+        // Arrange
+        var stub = new StubCheepService();
+        var model = new UserTimelineModel(stub);
+
+        // Act
+        var result = model.OnGet(string.Empty);
+
+        // Assert
+        Assert.IsType<PageResult>(result);
+        Assert.Empty(model.Cheeps);
+        Assert.Equal(string.Empty, stub.LastAuthor);
+        Assert.Equal(1, stub.LastPage);
+        Assert.Equal(32, stub.LastSize);
+    }
 }
