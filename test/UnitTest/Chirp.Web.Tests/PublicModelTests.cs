@@ -35,4 +35,27 @@ public class PublicModelTests
             return NextGetCheepsFromAuthorResult ?? new List<CheepDto>();
         }
     }
+    [Fact]
+    public void OnGet_DefaultPage_FetchesPage1_Size32_SetsCheeps_AndReturnsPage()
+    {
+        // Arrange
+        var stub = new StubCheepService();
+        var expected = new List<CheepDto>
+        {
+            new CheepDto { Author = "alice", Text = "hi", TimeStamp = DateTime.UtcNow.ToString("O") },
+            new CheepDto { Author = "bob",   Text = "yo", TimeStamp = DateTime.UtcNow.ToString("O") },
+        };
+        stub.NextGetCheepsResult = expected;
+        var model = new PublicModel(stub);
+
+        // Act
+        var result = model.OnGet(); // default page = 1
+
+        // Assert
+        Assert.IsType<PageResult>(result);
+        Assert.Same(expected, model.Cheeps);
+        Assert.Equal(1, stub.LastPage);
+        Assert.Equal(32, stub.LastSize);
+        Assert.Null(stub.LastAuthor);
+    }
 }
