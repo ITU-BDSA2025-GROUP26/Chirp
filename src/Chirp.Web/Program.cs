@@ -22,10 +22,10 @@ using (var scope = app.Services.CreateScope())
 {
     // From the scope, get an instance of our database context.
     // Through the `using` keyword, we make sure to dispose it after we are done.
-    using var context = scope.ServiceProvider.GetService<ChirpDBContext>();
+    using var context = scope.ServiceProvider.GetRequiredService<ChirpDBContext>();
 
     // Execute the migration from code.
-    context?.Database.Migrate();
+    context.Database.Migrate();
     DbInitializer.SeedDatabase(context);
 }
 
