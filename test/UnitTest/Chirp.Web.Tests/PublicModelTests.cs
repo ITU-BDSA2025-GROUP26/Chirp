@@ -35,6 +35,7 @@ public class PublicModelTests
             return NextGetCheepsFromAuthorResult ?? new List<CheepDto>();
         }
     }
+    
     [Fact]
     public void OnGet_DefaultPage_FetchesPage1_Size32_SetsCheeps_AndReturnsPage()
     {
@@ -49,7 +50,7 @@ public class PublicModelTests
         var model = new PublicModel(stub);
 
         // Act
-        var result = model.OnGet(); // default page = 1
+        var result = model.OnGet();
 
         // Assert
         Assert.IsType<PageResult>(result);
@@ -57,5 +58,25 @@ public class PublicModelTests
         Assert.Equal(1, stub.LastPage);
         Assert.Equal(32, stub.LastSize);
         Assert.Null(stub.LastAuthor);
+    }
+    
+    [Theory]
+    [InlineData(1)]
+    [InlineData(4)]
+    [InlineData(9)]
+    public void OnGet_CustomPage_UsesProvidedPage_AndReturnsEmptyIfNoData(int page)
+    {
+        // Arrange
+        var stub = new StubCheepService();
+        var model = new PublicModel(stub);
+
+        // Act
+        var result = model.OnGet(page);
+
+        // Assert
+        Assert.IsType<PageResult>(result);
+        Assert.Empty(model.Cheeps);
+        Assert.Equal(page, stub.LastPage);
+        Assert.Equal(32, stub.LastSize);
     }
 }
