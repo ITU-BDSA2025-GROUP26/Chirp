@@ -3,7 +3,9 @@ using Chirp.Infrastructure.Chirp.Repositories;
 using Chirp.Infrastructure;
 using Chirp.Web;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Chirp.Core.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +17,8 @@ builder.Services.AddScoped<ICheepRepository, CheepRepository>();
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ChirpDBContext>(options => options.UseSqlite(connectionString));
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ChirpDBContext>();
+//builder.Services.AddDefaultIdentity<Author>(options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<ChirpDBContext>();
 
 var app = builder.Build();
 
