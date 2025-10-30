@@ -35,4 +35,28 @@ public class UserTimelineModelTests
             return NextGetCheepsFromAuthorResult ?? new List<CheepDto>();
         }
     }
+    
+    [Fact]
+    public void OnGet_DefaultPage_FetchesAuthorPage1_Size32_SetsCheeps_AndReturnsPage()
+    {
+        // Arrange
+        var author = "alice";
+        var stub = new StubCheepService();
+        var expected = new List<CheepDto>
+        {
+            new CheepDto { Author = author, Text = "first", TimeStamp = DateTime.UtcNow.ToString("O") }
+        };
+        stub.NextGetCheepsFromAuthorResult = expected;
+        var model = new UserTimelineModel(stub);
+
+        // Act
+        var result = model.OnGet(author);
+
+        // Assert
+        Assert.IsType<PageResult>(result);
+        Assert.Same(expected, model.Cheeps);
+        Assert.Equal(author, stub.LastAuthor);
+        Assert.Equal(1, stub.LastPage);
+        Assert.Equal(32, stub.LastSize);
+    }
 }
