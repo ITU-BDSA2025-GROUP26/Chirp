@@ -109,6 +109,14 @@ public sealed class CheepRepository : ICheepRepository
 
     public void AddCheep(CheepDto cheepdto)
     {
+        if (String.IsNullOrEmpty(cheepdto.Text))
+        {
+            throw new ArgumentException("You must write something in your cheep");
+        } else if (cheepdto.Text.Length > 160)
+        {
+            throw new ArgumentException("Your cheep must not exceed 160 characters");
+        }
+        
         Cheep cheep = new Cheep();
         cheep.TimeStamp = StringTimeStampToDateTime(cheepdto.TimeStamp);
         cheep.Text = cheepdto.Text;
