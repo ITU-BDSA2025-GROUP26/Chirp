@@ -32,7 +32,7 @@ jobs:
         run: dotnet publish src/Chirp.Web/Chirp.Web.csproj -c Release -o publish/webapp
 
       - name: Upload WebApp artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: .net-app
           path: publish/webapp
