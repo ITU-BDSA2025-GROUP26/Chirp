@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 namespace Chirp.Core.Models;
 
-public class Author : IdentityUser
+public class Author
 {
     public string Name { get; set; } = String.Empty;
     public string Email { get; set; } = String.Empty;
