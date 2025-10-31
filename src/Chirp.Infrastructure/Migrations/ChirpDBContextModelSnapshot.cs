@@ -15,7 +15,7 @@ namespace Chirp.Infrastructure.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
 
             modelBuilder.Entity("Chirp.Core.Models.Author", b =>
                 {
@@ -33,7 +33,13 @@ namespace Chirp.Infrastructure.Migrations
 
                     b.HasKey("AuthorId");
 
-                    b.ToTable("Authors", (string)null);
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Authors");
                 });
 
             modelBuilder.Entity("Chirp.Core.Models.Cheep", b =>
@@ -57,7 +63,7 @@ namespace Chirp.Infrastructure.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("Cheeps", (string)null);
+                    b.ToTable("Cheeps");
                 });
 
             modelBuilder.Entity("Chirp.Core.Models.Cheep", b =>
