@@ -10,4 +10,13 @@ public class Cheep
     public DateTime TimeStamp { get; set; }
     public int AuthorId { get; set; }
     public Author Author { get; set; } = null!;
+    
+    public CheepDto ToDto()
+    {
+        CheepDto dto = new CheepDto();
+        dto.Author =  this.Author;
+        dto.TimeStamp = this.TimeStamp.ToLongDateString();
+        dto.Text = this.Text;
+        return dto;
+    }
 }

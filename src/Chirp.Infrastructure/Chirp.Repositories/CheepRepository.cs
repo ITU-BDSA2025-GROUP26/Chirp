@@ -25,7 +25,7 @@ public sealed class CheepRepository : ICheepRepository
             .Select(c => new CheepDto
             {
                 Text = c.Text,
-                Author = c.Author.Name,
+                Author = c.Author,
                 TimeStamp = c.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss")
             })
             .ToList();
@@ -40,7 +40,7 @@ public sealed class CheepRepository : ICheepRepository
             .Select(c => new CheepDto
             {
                 Text = c.Text,
-                Author = c.Author.Name,
+                Author = c.Author,
                 TimeStamp = c.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss")
             })
             .ToList();
@@ -122,13 +122,13 @@ public sealed class CheepRepository : ICheepRepository
         cheep.Text = cheepdto.Text;
 
         var author = _context.Authors
-            .SingleOrDefault(a => a.Name == cheepdto.Author);
+            .SingleOrDefault(a => a.Name == cheepdto.Author.Name);
 
         if (author == null)
         {
             author = new Author
             {
-                Name = cheepdto.Author,
+                Name = cheepdto.Author.Name,
                 Email = cheepdto.AuthorEmail,
                 AuthorId = _context.Authors.Count() + 1,
                 Cheeps = new List<Cheep>()
