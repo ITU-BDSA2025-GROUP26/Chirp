@@ -25,7 +25,7 @@ public sealed class CheepRepository : ICheepRepository
             .Select(c => new CheepDto
             {
                 Text = c.Text,
-                Author = c.Author.Name,
+                Author = c.Author.UserName,
                 TimeStamp = c.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss")
             })
             .ToList();
@@ -34,13 +34,13 @@ public sealed class CheepRepository : ICheepRepository
     public List<CheepDto> GetCheepsFromAuthor(string author, int page, int pageSize)
     {
         return _context.Cheeps
-            .Where(c => c.Author.Name == author)
+            .Where(c => c.Author.UserName == author)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(c => new CheepDto
             {
                 Text = c.Text,
-                Author = c.Author.Name,
+                Author = c.Author.UserName,
                 TimeStamp = c.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss")
             })
             .ToList();
@@ -73,7 +73,7 @@ public sealed class CheepRepository : ICheepRepository
         if (pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size must be >= 1.");
 
         return await _context.Cheeps
-            .Where(c => c.Author.Name == authorName)
+            .Where(c => c.Author.UserName == authorName)
             .OrderByDescending(c => c.TimeStamp)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
@@ -84,7 +84,7 @@ public sealed class CheepRepository : ICheepRepository
     public Author GetAuthorByName(string authorName)
     {
         return _context.Authors
-            .Single(a => a.Name == authorName);
+            .Single(a => a.UserName == authorName);
     }
 
     public Author GetAuthorByEmail(string email)
@@ -96,9 +96,8 @@ public sealed class CheepRepository : ICheepRepository
     public void AddAuthor(string authorName, string email)
     {
         Author author = new Author();
-        author.Name = authorName;
+        author.UserName = authorName;
         author.Email = email;
-        author.AuthorId = _context.Authors.Count() + 1;
         _context.Authors.Add(author);
     }
 
@@ -122,15 +121,14 @@ public sealed class CheepRepository : ICheepRepository
         cheep.Text = cheepdto.Text;
 
         var author = _context.Authors
-            .SingleOrDefault(a => a.Name == cheepdto.Author);
+            .SingleOrDefault(a => a.UserName == cheepdto.Author);
 
         if (author == null)
         {
             author = new Author
             {
-                Name = cheepdto.Author,
+                UserName = cheepdto.Author,
                 Email = cheepdto.AuthorEmail,
-                AuthorId = _context.Authors.Count() + 1,
                 Cheeps = new List<Cheep>()
             };
 
@@ -138,7 +136,7 @@ public sealed class CheepRepository : ICheepRepository
             _context.SaveChanges();
         }
 
-        cheep.AuthorId = author.AuthorId;
+        cheep.AuthorId = author.Id;
         cheep.CheepId = _context.Cheeps.Count() + 1;
         _context.Add(cheep);
         cheep.Author.Cheeps.Add(cheep);
