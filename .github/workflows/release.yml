@@ -64,7 +64,7 @@ jobs:
             chirp-win-x64.zip
             chirp-osx-x64.zip
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.Hemmelighed }}
 
   deploy:
     runs-on: ubuntu-latest
