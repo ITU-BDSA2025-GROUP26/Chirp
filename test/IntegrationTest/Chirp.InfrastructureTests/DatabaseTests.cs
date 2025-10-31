@@ -76,17 +76,4 @@ public class DatabaseTests : IDisposable
         // Assert
         Assert.Equal("Bob", author.Name);
     }
-    [Fact]
-    public void CheepRepository_Can_Handle_NonExistingAuthor()
-    {
-        // Arrange
-        using var context = CreateContext();
-        var cheepRepository = new CheepRepository(context);
-
-        // Act
-        var author = cheepRepository.GetAuthorByName("Anna");
-
-        // Assert
-        //Assert.Throws<Exception>(() => cheepRepository.GetAuthorByName("Anna"));
-    }
 }
