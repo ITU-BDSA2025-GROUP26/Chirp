@@ -79,10 +79,17 @@ jobs:
         with:
           name: .net-app
 
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_08C4F9B8641F4547A08E0DFC635181A1 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_9C83DE56A53D46F1A16579B52272CAEC }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_9F783CAB418E406A8DF2EB057F7DBB49 }}
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
+        uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          app-name: 'bdsagroup262025chirpremotedb'
+          slot-name: 'Production'
           package: .
