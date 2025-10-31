@@ -2,8 +2,12 @@ name: Release Chirp
 
 on:
   push:
+    branches: [ main ]
     tags:
       - "v*"   # Kører kun på tags som v1.0.0
+    pull_request:
+      branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   release:
@@ -25,7 +29,7 @@ jobs:
         run: dotnet test --configuration Release
 
       - name: Publish WebApp
-        run: dotnet publish src/Chirp.WebApp/Chirp.WebApp.csproj -c Release -o publish/webapp
+        run: dotnet publish src/Chirp.Web/Chirp.Web.csproj -c Release -o publish/webapp
 
       - name: Upload WebApp artifact
         uses: actions/upload-artifact@v3
@@ -35,16 +39,20 @@ jobs:
 
       - name: Publish executables
         run: |
+          # Linux (x64)
+          dotnet publish src/Chirp.Web/Chirp.Web.csproj -c Release -r linux-x64 --self-contained false -p:PublishSingleFile=true -o publish/linux-x64
+          zip -j chirp-linux-x64.zip publish/linux-x64/*
+
+      - name: Publish executables
+        run: |
           # Windows (x64)
-          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o publish/win-x64
+          dotnet publish src/Chirp.Web/Chirp.Web.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o publish/win-x64
           zip -j chirp-win-x64.zip publish/win-x64/*
           
-          # Linux (x64)
-          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj -c Release -r linux-x64 --self-contained false -p:PublishSingleFile=true -o publish/linux-x64
-          zip -j chirp-linux-x64.zip publish/linux-x64/*
-          
+      - name: Publish executables
+        run: |
           # macOS (x64)
-          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj -c Release -r osx-x64 --self-contained false -p:PublishSingleFile=true -o publish/osx-x64
+          dotnet publish src/Chirp.Web/Chirp.Web.csproj -c Release -r osx-x64 --self-contained false -p:PublishSingleFile=true -o publish/osx-x64
           zip -j chirp-osx-x64.zip publish/osx-x64/*
 
       - name: Create GitHub Release
@@ -52,8 +60,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            chirp-win-x64.zip
             chirp-linux-x64.zip
+            chirp-win-x64.zip
             chirp-osx-x64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
