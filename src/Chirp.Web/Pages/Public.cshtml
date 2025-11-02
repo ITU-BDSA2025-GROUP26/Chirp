@@ -25,9 +25,8 @@
             </div>
         } else {
             <a href="/">public timeline</a> 
-            //<a ...>login</a>
-            //<a ...>register</a>
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">register</a>
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">login</a>
         }
     </div>
     @if (Model.Cheeps.Any())
