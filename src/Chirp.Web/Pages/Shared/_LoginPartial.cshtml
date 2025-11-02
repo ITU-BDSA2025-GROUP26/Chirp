@@ -1,7 +1,8 @@
+@using Chirp.Core.Models
 @using Microsoft.AspNetCore.Identity
 
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<Author> SignInManager
+@inject UserManager<Author> UserManager
 
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
