@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Chirp.Core.Models;
+using Chirp.Razor.Areas.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
