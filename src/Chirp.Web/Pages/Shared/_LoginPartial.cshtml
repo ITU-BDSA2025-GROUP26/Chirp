@@ -11,7 +11,7 @@
                 <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
                 <a href="/@User.Identity.Name">my timeline</a> |
                 <a href="/">public timeline</a> |
-                <a ...>logout [@(User.Identity.Name)]</a>
+                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Logout">logout [@(User.Identity.Name)]</a>
             </div>
         } else {
             <a href="/">public timeline</a> 
