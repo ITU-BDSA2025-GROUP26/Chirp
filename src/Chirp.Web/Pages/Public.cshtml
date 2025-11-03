@@ -15,20 +15,8 @@
 
 <div>
     <h2> Public Timeline </h2>
-    <div class="navigation">
-        @if(User.Identity.IsAuthenticated)
-        {
-            <div>
-                <a href="/@User.Identity.Name">my timeline</a> |
-                <a href="/">public timeline</a> |
-                <a ...>logout [@(User.Identity.Name)]</a>
-            </div>
-        } else {
-            <a href="/">public timeline</a> 
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">register</a>
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">login</a>
-        }
-    </div>
+    <partial name="_LoginPartial" />
+    
     @if (Model.Cheeps.Any())
     {
         <ul id="messagelist" class="cheeps">
