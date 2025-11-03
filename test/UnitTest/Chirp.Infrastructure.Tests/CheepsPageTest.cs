@@ -23,7 +23,7 @@ public class CheepsPageTest
     {
         // Arrange: In-memory database and repository setup
         var context = GetInMemoryDbContext();
-        var author = new Author { Name = "Daid", Email = "daid@itu.com" };
+        var author = new Author { UserName = "Daid", Email = "daid@itu.com" };
         context.Authors.Add(author);
         context.Cheeps.AddRange(
             new Cheep { Text = "First Cheep", Author = author, TimeStamp = DateTime.Now },

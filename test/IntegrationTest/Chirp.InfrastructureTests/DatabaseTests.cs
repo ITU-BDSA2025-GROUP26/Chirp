@@ -22,11 +22,13 @@ public class DatabaseTests : IDisposable
 
         context.Database.EnsureCreated();
 
-        context.AddRange(
-            new Author { Name = "Bob", Email = "bob@mail.dk", AuthorId = 1 },
-            new Author { Name = "Ib", Email = "ib@mail.dk", AuthorId = 2 },
-            new Cheep { Text = "Hello", TimeStamp = DateTime.Now, CheepId = 1, AuthorId = 1 },
-            new Cheep { Text = "Halloween", TimeStamp = DateTime.Now, CheepId = 2, AuthorId = 2 }
+        var bob = new Author { UserName = "Bob", Email = "bob@email.dk" };
+        var ib = new Author { UserName = "Ib", Email = "ib@email.dk" };
+
+        context.Authors.AddRange(bob, ib);
+        context.Cheeps.AddRange(
+            new Cheep { Text = "Hello", TimeStamp = DateTime.UtcNow, Author = bob },
+            new Cheep { Text = "Halloween", TimeStamp = DateTime.UtcNow, Author = ib }
         );
         context.SaveChanges();
     }
@@ -60,7 +62,7 @@ public class DatabaseTests : IDisposable
         var author = cheepRepository.GetAuthorByName("Bob");
 
         // Assert
-        Assert.Equal("Bob", author.Name);
+        Assert.Equal("Bob", author.UserName);
     }
 
     [Fact]
@@ -72,9 +74,9 @@ public class DatabaseTests : IDisposable
         var cheepRepository = new CheepRepository(context);
 
         // Act
-        var author = cheepRepository.GetAuthorByEmail("bob@mail.dk");
+        var author = cheepRepository.GetAuthorByEmail("bob@email.dk");
 
         // Assert
-        Assert.Equal("Bob", author.Name);
+        Assert.Equal("Bob", author.UserName);
     }
 }
