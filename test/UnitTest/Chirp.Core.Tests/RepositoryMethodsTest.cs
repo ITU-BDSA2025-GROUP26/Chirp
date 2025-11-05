@@ -26,7 +26,7 @@ namespace Chirp.Core.Tests
         }
 
         [Fact]
-        public Author_By_Name()
+        public void Author_By_Name()
         {
             var cheepDto = new Chirp.Core.CheepDto
             {
@@ -37,12 +37,36 @@ namespace Chirp.Core.Tests
             };
             
             _repository.AddCheep(cheepDto);
-            Chirp.Core.Models.Author author = _repository.GetAuthorByName("Daid");
+            Author author = _repository.GetAuthorByName("Daid");
 
-            Xunit.Assert.Equivalent(author.Email, cheepDto.AuthorEmail);
+            Assert.Equivalent(author.Email, cheepDto.AuthorEmail);
             
         }
+        
+        [Fact]
+        public void Author_By_Email()
+        {
+            var cheepDto = new Chirp.Core.CheepDto
+            {
+                Text = new string('a', 160),
+                Author = "Daid",
+                AuthorEmail = "daid@itu.com",
+                TimeStamp = System.DateTime.Now.ToString()
+            };
+            
+            _repository.AddCheep(cheepDto);
+            Author author = _repository.GetAuthorByEmail("daid@itu.com");
 
+            Assert.Equivalent(author.Name, cheepDto.Author);
+        }
+
+        [Fact]
+        public void new_author()
+        {
+            _repository.AddAuthor("John", "john@itu.com");
+            Author author = _repository.GetAuthorByName("John");
+            Assert.Equivalent(author.Email, "john@itu.com");
+        }
 
     }
 }
