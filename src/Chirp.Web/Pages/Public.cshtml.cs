@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Chirp.Infrastructure.Chirp.Service;
 using Chirp.Core;
 
-namespace Chirp.Web.Pages
+namespace Chirp.Razor.Pages
 {
 
     public class PublicModel : PageModel
