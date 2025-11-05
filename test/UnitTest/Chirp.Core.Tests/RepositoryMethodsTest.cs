@@ -57,7 +57,7 @@ namespace Chirp.Core.Tests
             _repository.AddCheep(cheepDto);
             Author author = _repository.GetAuthorByEmail("daid@itu.com");
 
-            Assert.Equivalent(author.UserName, cheepDto.Author);
+            Assert.Equal(author.UserName, cheepDto.Author);
         }
 
         [Fact]
