@@ -26,6 +26,7 @@ builder.Services
     {
         options.RequireAuthenticatedSignIn = true;
     })
+    .AddCookie()
     .AddGitHub(options =>
     {
         options.ClientId = builder.Configuration["authentication:github:clientId"];
