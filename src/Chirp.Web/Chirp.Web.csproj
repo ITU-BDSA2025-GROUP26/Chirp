@@ -22,6 +22,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
+    <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>

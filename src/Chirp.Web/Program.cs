@@ -21,7 +21,17 @@ builder.Services.AddDbContext<ChirpDBContext>(options => options.UseSqlite(conne
 
 builder.Services.AddDefaultIdentity<Author>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ChirpDBContext>();
-
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.RequireAuthenticatedSignIn = true;
+    })
+    .AddGitHub(options =>
+    {
+        options.ClientId = builder.Configuration["authentication:github:clientId"];
+        options.ClientSecret = builder.Configuration["authentication:github:clientSecret"];
+        options.CallbackPath = "/signin-github";
+    });
 var app = builder.Build();
 
 // Create a disposable service scope
@@ -52,6 +62,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+//app.UseSession();
 
 app.MapRazorPages();
 
