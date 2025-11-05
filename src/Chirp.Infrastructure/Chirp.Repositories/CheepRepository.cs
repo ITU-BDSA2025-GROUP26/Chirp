@@ -111,15 +111,12 @@ public sealed class CheepRepository : ICheepRepository
         if (String.IsNullOrEmpty(cheepdto.Text))
         {
             throw new ArgumentException("You must write something in your cheep");
-        } else if (cheepdto.Text.Length > 160)
+        } if (cheepdto.Text.Length > 160)
         {
             throw new ArgumentException("Your cheep must not exceed 160 characters");
         }
         
-        Cheep cheep = new Cheep();
-        cheep.TimeStamp = StringTimeStampToDateTime(cheepdto.TimeStamp);
-        cheep.Text = cheepdto.Text;
-
+   
         var author = _context.Authors
             .SingleOrDefault(a => a.UserName == cheepdto.Author);
 
@@ -129,23 +126,35 @@ public sealed class CheepRepository : ICheepRepository
             {
                 UserName = cheepdto.Author,
                 Email = cheepdto.AuthorEmail,
-                Cheeps = new List<Cheep>()
+                Cheeps = new List<Cheep>()  
             };
 
             AddAuthor(author);
             _context.SaveChanges();
         }
 
-        cheep.AuthorId = author.Id;
-        cheep.CheepId = _context.Cheeps.Count() + 1;
-        _context.Add(cheep);
-        cheep.Author.Cheeps.Add(cheep);
+        var timeStamp = StringTimeStampToDateTime(cheepdto.TimeStamp);
+
+        var cheep = new Cheep
+        {
+            Text = cheepdto.Text,
+            TimeStamp = timeStamp,
+            AuthorId = author.Id,
+            Author = author
+        };
+
+        _context.Cheeps.Add(cheep);
+        author.Cheeps.Add(cheep);
+        _context.SaveChanges();
     }
     
     private static DateTime StringTimeStampToDateTime(string stringTimeStamp)
     {
-        DateTime dateTime = DateTime.Parse(stringTimeStamp);
-        return dateTime;
+        if (!string.IsNullOrWhiteSpace(stringTimeStamp) && DateTime.TryParse(stringTimeStamp, out var parsed))
+        {
+            return parsed;
+        }
+        return DateTime.UtcNow;
     }
     
 }

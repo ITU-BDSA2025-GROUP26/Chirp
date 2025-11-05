@@ -10,6 +10,8 @@ namespace Chirp.Razor.Pages
         private readonly ICheepService _service;
         public List<CheepDto> Cheeps { get; set; } = new();
 
+        [BindProperty]
+        public string Text { get; set; }
         public UserTimelineModel(ICheepService service)
         {
             _service = service;

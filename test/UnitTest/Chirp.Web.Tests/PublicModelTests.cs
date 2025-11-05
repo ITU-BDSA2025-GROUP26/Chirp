@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Chirp.Core;
 using Chirp.Infrastructure.Chirp.Service;
-using Chirp.Web.Pages;
+using Chirp.Razor.Pages;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Xunit;
 
