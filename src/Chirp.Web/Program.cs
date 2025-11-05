@@ -26,11 +26,11 @@ builder.Services
     {
         options.RequireAuthenticatedSignIn = true;
     })
-    .AddCookie()
+    //.AddCookie()
     .AddGitHub(options =>
     {
-        options.ClientId = builder.Configuration["authentication:github:clientId"];
-        options.ClientSecret = builder.Configuration["authentication:github:clientSecret"];
+        options.ClientId = builder.Configuration["authentication_github_clientId"];
+        options.ClientSecret = builder.Configuration["authentication_github_clientSecret"];
         options.CallbackPath = "/signin-github";
     });
 var app = builder.Build();
