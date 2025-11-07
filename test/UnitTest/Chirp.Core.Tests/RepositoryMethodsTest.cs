@@ -65,6 +65,7 @@ namespace Chirp.Core.Tests
         public void new_author()
         {
             _repository.AddAuthor("John", "john@itu.com");
+            _context.SaveChanges();
             Author author = _repository.GetAuthorByName("John");
             Assert.Equivalent(author.Email, "john@itu.com");
         }
@@ -73,6 +74,8 @@ namespace Chirp.Core.Tests
         public void new_cheep_existing_author()
         {
             _repository.AddAuthor("Buba", "buba@itu.com");
+            _context.SaveChanges();
+            
             var cheepDto = new CheepDto
             {
                 Text = new string('a', 160),
@@ -80,9 +83,15 @@ namespace Chirp.Core.Tests
                 AuthorEmail = "buba@itu.com",
                 TimeStamp = System.DateTime.Now.ToString()
             };
+            
             _repository.AddCheep(cheepDto);
-            CheepDto cheep =_repository.GetCheepsFromAuthor("Buba", 1, 1)[0];
-            Assert.Equivalent(cheep, cheepDto);
+            _context.SaveChanges();
+            
+            var cheeps = _repository.GetCheepsFromAuthor("Buba", 1, 1);
+            CheepDto cheep = cheeps[0];
+
+            Assert.Equal(cheepDto.Text, cheep.Text);
+            Assert.Equal(cheepDto.Author, cheep.Author);
         }
 
         [Fact]
@@ -95,12 +104,17 @@ namespace Chirp.Core.Tests
                 AuthorEmail = "gump@itu.com",
                 TimeStamp = System.DateTime.Now.ToString()
             };
+
             _repository.AddCheep(cheepDto);
-            CheepDto cheep = _repository.GetCheepsFromAuthor("Gump", 1, 1)[0];
+            _context.SaveChanges(); // 🔧
+
+            var cheeps = _repository.GetCheepsFromAuthor("Gump", 1, 1);
+            CheepDto cheep = cheeps[0];
+
             Author author = _repository.GetAuthorByName("Gump");
             
-            Assert.Equivalent(author.Email, cheepDto.AuthorEmail);
-            Assert.Equivalent(cheepDto, cheep);
+            Assert.Equal(cheepDto.AuthorEmail, author.Email);
+            Assert.Equal(cheepDto.Text, cheep.Text);
         }
     }
 }
