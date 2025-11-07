@@ -108,30 +108,23 @@ public sealed class CheepRepository : ICheepRepository
 
     public void AddCheep(CheepDto cheepdto)
     {
-        if (String.IsNullOrEmpty(cheepdto.Text))
-        {
-            throw new ArgumentException("You must write something in your cheep");
-        } if (cheepdto.Text.Length > 160)
-        {
-            throw new ArgumentException("Your cheep must not exceed 160 characters");
-        }
+        if (cheepdto is null) throw new ArgumentNullException(nameof(cheepdto));
+
+        var text = cheepdto.Text?.Trim() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(text))
+            throw new ArgumentException("You must write something in your cheep", nameof(cheepdto));
+
+        if (text.Length > 160)
+            throw new ArgumentException("Your cheep must not exceed 160 characters", nameof(cheepdto));
+
+        if (string.IsNullOrWhiteSpace(cheepdto.Author))
+            throw new ArgumentException("Author (user name) is required.", nameof(cheepdto));
+
         
-   
-        var author = _context.Authors
-            .SingleOrDefault(a => a.UserName == cheepdto.Author);
-
-        if (author == null)
-        {
-            author = new Author
-            {
-                UserName = cheepdto.Author,
-                Email = cheepdto.AuthorEmail,
-                Cheeps = new List<Cheep>()  
-            };
-
-            AddAuthor(author);
-            _context.SaveChanges();
-        }
+        var author = _context.Authors.SingleOrDefault(a => a.UserName == cheepdto.Author);
+        if (author is null)
+            throw new InvalidOperationException($"Author ' {cheepdto.Author} not found");
+                
 
         var timeStamp = StringTimeStampToDateTime(cheepdto.TimeStamp);
 
@@ -140,11 +133,9 @@ public sealed class CheepRepository : ICheepRepository
             Text = cheepdto.Text,
             TimeStamp = timeStamp,
             AuthorId = author.Id,
-            Author = author
         };
 
         _context.Cheeps.Add(cheep);
-        author.Cheeps.Add(cheep);
         _context.SaveChanges();
     }
     

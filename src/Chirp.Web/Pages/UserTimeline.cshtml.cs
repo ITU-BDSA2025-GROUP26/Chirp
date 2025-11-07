@@ -23,5 +23,28 @@ namespace Chirp.Razor.Pages
             Cheeps = _service.GetCheepsFromAuthor(author, page, pageSize);
             return Page();
         }
+        public IActionResult OnPost(string author, int page = 1)
+        {
+            if (!(User?.Identity?.IsAuthenticated ?? false))
+                return Unauthorized();
+
+            if (!string.Equals(User.Identity!.Name, author, StringComparison.OrdinalIgnoreCase))
+                return Forbid();
+
+            var trimmed = Text?.Trim() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(trimmed))
+                ModelState.AddModelError(nameof(Text), "Cheep must not be empty.");
+            else if (trimmed.Length > 160)
+                ModelState.AddModelError(nameof(Text), "Cheep must be 1–160 characters.");
+
+            if (!ModelState.IsValid)
+            {
+                Cheeps = _service.GetCheepsFromAuthor(author,page, 32);
+                return Page();
+            }
+
+            _service.AddCheep(author, trimmed);
+            return RedirectToPage(null, new { author, page });
+        }
     }
 }

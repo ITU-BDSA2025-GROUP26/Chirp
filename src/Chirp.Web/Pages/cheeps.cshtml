@@ -1,19 +1,14 @@
-﻿@page
-@model Chirp.Razor.Pages.cheeps
-
+﻿@page "/cheeps"
+@model Chirp.Razor.Pages.PublicModel
 @{
-    Layout = null;
+    ViewData["Title"] = "Chirp!";
+    Layout = "Shared/_Layout";
+
+    var pageParam = Request.Query["page"].ToString();
+    var currentPage = int.TryParse(pageParam, out var parsedPage) && parsedPage > 0
+        ? parsedPage
+        : 1;
+
+    var prevPage = currentPage > 1 ? currentPage - 1 : 1;
+    var nextPage = currentPage + 1;
 }
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-<div>
-    
-</div>
-</body>
-</html>
