@@ -17,14 +17,18 @@ namespace Chirp.Razor.Pages
             _service = service;
         }
 
-        public ActionResult OnGet(string author, [FromQuery] int page = 1)
+        public ActionResult OnGet(string author, [FromQuery] int? page = 1, int? pageNumber = null)
         {
-            int pageSize = 32;
-            Cheeps = _service.GetCheepsFromAuthor(author, page, pageSize);
+            int currentPage = page ?? pageNumber ?? 1;
+            const int pageSize = 32;
+            Cheeps = _service.GetCheepsFromAuthor(author, currentPage, pageSize);
+            ViewData["CurrentPage"] = currentPage;
+            ViewData["Author"] = author;
             return Page();
         }
-        public IActionResult OnPost(string author, int pageNumber = 1)
+        public IActionResult OnPost(string author,[FromQuery] int? page = 1, int? pageNumber = null)
         {
+            int currentPage = page ?? pageNumber ?? 1;
             if (!(User?.Identity?.IsAuthenticated ?? false))
                 return Unauthorized();
 
@@ -39,13 +43,15 @@ namespace Chirp.Razor.Pages
 
             if (!ModelState.IsValid)
             {
-                Cheeps = _service.GetCheepsFromAuthor(author, pageNumber, 32);
+                Cheeps = _service.GetCheepsFromAuthor(author, currentPage, 32);
+                ViewData["CurrentPage"] = currentPage;
+                ViewData["Author"] = author;
                 return Page();
             }
 
             _service.AddCheep(author, trimmed);
             
-            return RedirectToPage(null, new { author, pageNumber });
+            return Redirect($"/{author}?page={currentPage}");
         }
     }
 }

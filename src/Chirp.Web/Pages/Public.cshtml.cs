@@ -21,21 +21,26 @@ namespace Chirp.Razor.Pages
             _service = service;
         }
 
-        public ActionResult OnGet([FromQuery] int page = 1)
+        public ActionResult OnGet([FromQuery] int? page = 1, int? pageNumber = null)
         {
-            int pageSize = 32;
-            Cheeps = _service.GetCheeps(page, pageSize);
+            int currentPage = page ?? pageNumber ?? 1;
+            const int pageSize = 32;
+            Cheeps = _service.GetCheeps(currentPage, pageSize);
+            ViewData["CurrentPage"] = currentPage;
             return Page();
         }
 
-        public IActionResult OnPost([FromQuery] int pageNumber = 1)
+        public IActionResult OnPost([FromQuery] int? page = 1, int? pageNumber = null)
         {
+            int currentPage = page ?? pageNumber ?? 1;
+        
             // Only authenticated users may post
             if (!(User?.Identity?.IsAuthenticated ?? false))
                 return Unauthorized();
 
             // Manual validation in addition to data annotations
             var trimmed = Text?.Trim() ?? string.Empty;
+            
             if (string.IsNullOrWhiteSpace(trimmed))
                 ModelState.AddModelError(nameof(Text), "Cheep must not be empty.");
             else if (trimmed.Length > 160)
@@ -43,14 +48,15 @@ namespace Chirp.Razor.Pages
 
             if (!ModelState.IsValid)
             {
-                Cheeps = _service.GetCheeps(pageNumber, 32);
+                Cheeps = _service.GetCheeps(currentPage, 32);
+                ViewData["CurrentPage"] = currentPage;
                 return Page();
             }
 
             _service.AddCheep(User.Identity!.Name!, trimmed);
 
             // Post‑Redirect‑Get pattern prevents duplicate submissions on refresh
-            return RedirectToPage("/Public",new { pageNumber });
+            return Redirect($"?page={currentPage}");
         }
     }
 }
