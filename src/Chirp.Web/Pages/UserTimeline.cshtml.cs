@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Chirp.Infrastructure.Chirp.Service;
 using Chirp.Core;
+using Chirp.Razor.Areas.Identity.Data;
 
 namespace Chirp.Web.Pages
 {
@@ -18,7 +19,18 @@ namespace Chirp.Web.Pages
         public ActionResult OnGet(string author, [FromQuery] int page = 1)
         {
             int pageSize = 32;
-            Cheeps = _service.GetCheepsFromAuthor(author, page, pageSize);
+
+            if ()
+            {
+                Cheeps = _service.GetCheepsFromAuthor(author, page, pageSize);
+            }
+            else
+            {
+                for (String followed; )
+                {
+                    Cheeps.Add(_service.GetCheepsFromAuthor(followed, page, pagesize));
+                }
+            }
             return Page();
         }
     }
