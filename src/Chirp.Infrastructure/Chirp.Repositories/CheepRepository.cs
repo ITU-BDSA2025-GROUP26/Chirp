@@ -123,7 +123,7 @@ public sealed class CheepRepository : ICheepRepository
         var author = _context.Authors
             .SingleOrDefault(a => a.UserName == cheepdto.Author);
 
-        if (author == null)
+        /*if (author == null)
         {
             author = new Author
             {
@@ -134,12 +134,12 @@ public sealed class CheepRepository : ICheepRepository
 
             AddAuthor(author);
             _context.SaveChanges();
-        }
+        }*/
 
         cheep.AuthorId = author.Id;
-        cheep.CheepId = _context.Cheeps.Count() + 1;
         _context.Add(cheep);
         cheep.Author.Cheeps.Add(cheep);
+        _context.SaveChanges();
     }
     
     private static DateTime StringTimeStampToDateTime(string stringTimeStamp)
