@@ -108,44 +108,44 @@ public sealed class CheepRepository : ICheepRepository
 
     public void AddCheep(CheepDto cheepdto)
     {
-        if (String.IsNullOrEmpty(cheepdto.Text))
-        {
-            throw new ArgumentException("You must write something in your cheep");
-        } else if (cheepdto.Text.Length > 160)
-        {
-            throw new ArgumentException("Your cheep must not exceed 160 characters");
-        }
+        if (cheepdto is null) throw new ArgumentNullException(nameof(cheepdto));
+
+        var text = cheepdto.Text?.Trim() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(text))
+            throw new ArgumentException("You must write something in your cheep", nameof(cheepdto));
+
+        if (text.Length > 160)
+            throw new ArgumentException("Your cheep must not exceed 160 characters", nameof(cheepdto));
+
+        if (string.IsNullOrWhiteSpace(cheepdto.Author))
+            throw new ArgumentException("Author (user name) is required.", nameof(cheepdto));
+
         
-        Cheep cheep = new Cheep();
-        cheep.TimeStamp = StringTimeStampToDateTime(cheepdto.TimeStamp);
-        cheep.Text = cheepdto.Text;
+        var author = _context.Authors.SingleOrDefault(a => a.UserName == cheepdto.Author);
+        if (author is null)
+            throw new InvalidOperationException($"Author ' {cheepdto.Author} not found");
+                
 
-        var author = _context.Authors
-            .SingleOrDefault(a => a.UserName == cheepdto.Author);
+        var timeStamp = StringTimeStampToDateTime(cheepdto.TimeStamp);
 
-        /*if (author == null)
+        var cheep = new Cheep
         {
-            author = new Author
-            {
-                UserName = cheepdto.Author,
-                Email = cheepdto.AuthorEmail,
-                Cheeps = new List<Cheep>()
-            };
+            Text = cheepdto.Text,
+            TimeStamp = timeStamp,
+            AuthorId = author.Id,
+        };
 
-            AddAuthor(author);
-            _context.SaveChanges();
-        }*/
-
-        cheep.AuthorId = author.Id;
-        _context.Add(cheep);
-        cheep.Author.Cheeps.Add(cheep);
+        _context.Cheeps.Add(cheep);
         _context.SaveChanges();
     }
     
     private static DateTime StringTimeStampToDateTime(string stringTimeStamp)
     {
-        DateTime dateTime = DateTime.Parse(stringTimeStamp);
-        return dateTime;
+        if (!string.IsNullOrWhiteSpace(stringTimeStamp) && DateTime.TryParse(stringTimeStamp, out var parsed))
+        {
+            return parsed;
+        }
+        return DateTime.UtcNow;
     }
     
 }

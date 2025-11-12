@@ -1,5 +1,5 @@
 @page "/"
-@model Chirp.Web.Pages.PublicModel
+@model Chirp.Razor.Pages.PublicModel
 @{
     ViewData["Title"] = "Chirp!";
     Layout = "Shared/_Layout";
@@ -13,9 +13,22 @@
     var nextPage = currentPage + 1;
 }
 
-<div>
+
     <h2> Public Timeline </h2>
     <partial name="_LoginPartial" />
+
+    @if (User.Identity?.IsAuthenticated ?? false)
+    {
+        <div class="cheepbox">
+            <h3>What's on your mind @User.Identity!.Name?</h3>
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="text" asp-for="Text" maxlength="160" />
+                <span asp-validation-for="Text" class="text-danger"></span>
+                <button type="submit">Share</button>
+            </form>
+        </div>
+    }
     
     @if (Model.Cheeps.Any())
     {
@@ -48,4 +61,3 @@
         <a href="/?page=@nextPage" class="btn btn-primary">Next</a>
         <span style="margin-left:10px;">Page @currentPage</span>
     </div>
-</div>

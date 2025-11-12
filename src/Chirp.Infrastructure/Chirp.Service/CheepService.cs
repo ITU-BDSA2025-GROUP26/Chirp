@@ -25,6 +25,16 @@ namespace Chirp.Infrastructure.Chirp.Service
         {
             return _cheepRepository.GetCheepsFromAuthor(author, page, pageSize);
         }
+        
+        public void AddCheep(string authorUserName, string text)
+        {
+            _cheepRepository.AddCheep(new CheepDto
+            {
+                Author = authorUserName,
+                Text = text
+                // TimeStamp will be set server-side in repository
+            });
+        }
 
 
     }
