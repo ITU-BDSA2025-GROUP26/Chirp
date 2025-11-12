@@ -28,7 +28,7 @@ namespace Chirp.Razor.Pages
             return Page();
         }
 
-        public IActionResult OnPost([FromQuery] int page = 1)
+        public IActionResult OnPost([FromQuery] int pageNumber = 1)
         {
             // Only authenticated users may post
             if (!(User?.Identity?.IsAuthenticated ?? false))
@@ -43,14 +43,14 @@ namespace Chirp.Razor.Pages
 
             if (!ModelState.IsValid)
             {
-                Cheeps = _service.GetCheeps(page, 32);
+                Cheeps = _service.GetCheeps(pageNumber, 32);
                 return Page();
             }
 
             _service.AddCheep(User.Identity!.Name!, trimmed);
 
             // Post‑Redirect‑Get pattern prevents duplicate submissions on refresh
-            return RedirectToPage(new { page });
+            return RedirectToPage("/Public",new { pageNumber });
         }
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chirp.Razor.Areas.Identity.Data;
 
-public class IdentityDataContext : IdentityDbContext<ChirpUser>
+public class IdentityDataContext : IdentityDbContext<IdentityUser>
 {
     public IdentityDataContext(DbContextOptions<IdentityDataContext> options)
         : base(options)

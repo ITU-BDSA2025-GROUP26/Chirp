@@ -2,8 +2,8 @@
 @using Chirp.Razor.Areas.Identity.Data
 @using Microsoft.AspNetCore.Identity
 
-@inject SignInManager<ChirpUser> SignInManager
-@inject UserManager<ChirpUser> UserManager
+@inject SignInManager<Author> SignInManager
+@inject UserManager<Author> UserManager
 
 <div class="navigation">
         @if(SignInManager.IsSignedIn(User))

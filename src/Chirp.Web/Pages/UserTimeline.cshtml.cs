@@ -23,7 +23,7 @@ namespace Chirp.Razor.Pages
             Cheeps = _service.GetCheepsFromAuthor(author, page, pageSize);
             return Page();
         }
-        public IActionResult OnPost(string author, int page = 1)
+        public IActionResult OnPost(string author, int pageNumber = 1)
         {
             if (!(User?.Identity?.IsAuthenticated ?? false))
                 return Unauthorized();
@@ -39,12 +39,13 @@ namespace Chirp.Razor.Pages
 
             if (!ModelState.IsValid)
             {
-                Cheeps = _service.GetCheepsFromAuthor(author,page, 32);
+                Cheeps = _service.GetCheepsFromAuthor(author, pageNumber, 32);
                 return Page();
             }
 
             _service.AddCheep(author, trimmed);
-            return RedirectToPage(null, new { author, page });
+            
+            return RedirectToPage(null, new { author, pageNumber });
         }
     }
 }
