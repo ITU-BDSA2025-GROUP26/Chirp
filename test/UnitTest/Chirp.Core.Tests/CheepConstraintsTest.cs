@@ -32,7 +32,6 @@ namespace Chirp.Core.Tests
             {
                 Text = new string('a', 160),
                 Author = "Daid",
-                AuthorEmail = "daid@itu.com",
                 TimeStamp = DateTime.Now.ToString()
             };
 
@@ -47,7 +46,6 @@ namespace Chirp.Core.Tests
             {
                 Text = new string('a', 161),
                 Author = "Daid",
-                AuthorEmail = "daid@itu.com",
                 TimeStamp = DateTime.Now.ToString()
             };
 

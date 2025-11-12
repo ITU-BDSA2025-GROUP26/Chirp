@@ -34,6 +34,11 @@ public class PublicModelTests
             LastSize = pageSize;
             return NextGetCheepsFromAuthorResult ?? new List<CheepDto>();
         }
+
+        public void AddCheep(string authorUserName, string text)
+        {
+            throw new NotImplementedException();
+        }
     }
     
     [Fact]

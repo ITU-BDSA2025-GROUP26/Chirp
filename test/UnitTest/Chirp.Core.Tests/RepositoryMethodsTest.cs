@@ -33,14 +33,12 @@ namespace Chirp.Core.Tests
             {
                 Text = new string('a', 160),
                 Author = "Daid",
-                AuthorEmail = "daid@itu.com",
                 TimeStamp = System.DateTime.Now.ToString()
             };
             
             _repository.AddCheep(cheepDto);
             Author author = _repository.GetAuthorByName("Daid");
-
-            Assert.Equivalent(author.Email, cheepDto.AuthorEmail);
+            
             
         }
         
@@ -51,7 +49,6 @@ namespace Chirp.Core.Tests
             {
                 Text = new string('a', 160),
                 Author = "Daid",
-                AuthorEmail = "daid@itu.com",
                 TimeStamp = System.DateTime.Now.ToString()
             };
             
@@ -80,7 +77,6 @@ namespace Chirp.Core.Tests
             {
                 Text = new string('a', 160),
                 Author = "Buba",
-                AuthorEmail = "buba@itu.com",
                 TimeStamp = System.DateTime.Now.ToString()
             };
             
@@ -101,7 +97,6 @@ namespace Chirp.Core.Tests
             {
                 Text = new string('a', 160),
                 Author = "Gump",
-                AuthorEmail = "gump@itu.com",
                 TimeStamp = System.DateTime.Now.ToString()
             };
 
@@ -113,7 +108,6 @@ namespace Chirp.Core.Tests
 
             Author author = _repository.GetAuthorByName("Gump");
             
-            Assert.Equal(cheepDto.AuthorEmail, author.Email);
             Assert.Equal(cheepDto.Text, cheep.Text);
         }
     }
