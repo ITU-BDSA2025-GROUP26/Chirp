@@ -20,6 +20,7 @@ public sealed class CheepRepository : ICheepRepository
     public List<CheepDto> GetCheeps(int page, int pageSize)
     {
         return _context.Cheeps
+            .OrderByDescending(c => c.TimeStamp) // sort newest first
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(c => new CheepDto
@@ -30,11 +31,13 @@ public sealed class CheepRepository : ICheepRepository
             })
             .ToList();
     }
+
 
     public List<CheepDto> GetCheepsFromAuthor(string author, int page, int pageSize)
     {
         return _context.Cheeps
             .Where(c => c.Author.UserName == author)
+            .OrderByDescending(c => c.TimeStamp) // sort newest first
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(c => new CheepDto
@@ -44,8 +47,8 @@ public sealed class CheepRepository : ICheepRepository
                 TimeStamp = c.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss")
             })
             .ToList();
-
     }
+
     
     public Task<IReadOnlyList<Cheep>> GetCheepsFromPage(int page, CancellationToken ct = default)
         => GetCheepsFromPage(page, DefaultPageSize, ct);
