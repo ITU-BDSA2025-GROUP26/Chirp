@@ -20,6 +20,7 @@ public sealed class CheepRepository : ICheepRepository
     public List<CheepDto> GetCheeps(int page, int pageSize)
     {
         return _context.Cheeps
+            .OrderByDescending(c => c.TimeStamp) // sort newest first
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(c => new CheepDto
@@ -30,6 +31,7 @@ public sealed class CheepRepository : ICheepRepository
             })
             .ToList();
     }
+
 
     public List<CheepDto> GetCheepsFromAuthor(string author, int page, int pageSize)
     {
