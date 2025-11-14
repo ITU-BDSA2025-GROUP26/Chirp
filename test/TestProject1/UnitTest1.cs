@@ -40,4 +40,18 @@ public class Tests : PageTest
 
         await Expect(Page).ToHaveURLAsync(new Regex("/Account/Login"));
     }
+
+    [Test]
+    public async Task HomepageLoadsAndRegisterLinksToRegisterPage()
+    {
+        await Page.GotoAsync("http://localhost:5273/");
+
+        await Expect(Page).ToHaveTitleAsync(new Regex("Chirp!"));
+        
+        var register = Page.Locator("text=register");
+        
+        await register.ClickAsync();
+
+        await Expect(Page).ToHaveURLAsync(new Regex("/Account/Register"));
+    }
 }
