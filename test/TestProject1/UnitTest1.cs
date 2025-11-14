@@ -54,4 +54,24 @@ public class Tests : PageTest
 
         await Expect(Page).ToHaveURLAsync(new Regex("/Account/Register"));
     }
+
+    [Test]
+    public async Task UsersCanRegisterNewAccount()
+    {
+        await Page.GotoAsync("http://localhost:5273/");
+        
+        await Expect(Page).ToHaveTitleAsync(new Regex("Chirp!"));
+        
+        // Click the Register link in the navbar
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Register" }).ClickAsync();
+        
+        await Expect(Page).ToHaveURLAsync(new Regex("/Account/Register"));
+
+        await Expect(Page).ToHaveTitleAsync(new Regex("Register"));
+
+        await Page.GetByLabel("Email").FillAsync("nanna@test.com");
+        await Page.GetByLabel("Username").FillAsync("test");
+        await Page.GetByLabel("Password", new (){Exact = true}).FillAsync("I!s3456");
+        await Page.GetByLabel("Confirm Password", new (){Exact = true}).FillAsync("I!s3456");
+    }
 }
