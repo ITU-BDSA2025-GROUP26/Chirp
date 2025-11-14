@@ -4,5 +4,5 @@ namespace Chirp.Core.Models;
 public class Author: IdentityUser
 {
     public List<Cheep> Cheeps { get; set; } = new();
-    public List<Author> FollowedUsers { get; set; } = new();
+    public List<String> FollowedUsers { get; set; } = new();
 }
