@@ -39,6 +39,17 @@
                     <p>
                         <strong>
                             <a href="/@cheep.Author">@cheep.Author</a>
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                if (CurrentUser.FollowedUsers.Contains(cheep.Author))
+                                {
+                                    <a class="nav-link text-dark" asp-area="Public" asp-page="/Public">Unfollow</a>
+                                }
+                                else
+                                {
+                                    <a class="nav-link text-dark" asp-area="Public" asp-page="/Public">Follow</a>
+                                }
+                            }
                         </strong>
                         @cheep.Text
                         <small>&mdash; @cheep.TimeStamp</small>
