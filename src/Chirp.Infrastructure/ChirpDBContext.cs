@@ -8,6 +8,7 @@ public class ChirpDBContext : IdentityDbContext<Author>
 {
     public DbSet<Cheep> Cheeps { get; set; }
     public DbSet<Author> Authors { get; set; }
+    public DbSet<Follow> Follows { get; set; }
 
     public ChirpDBContext(DbContextOptions<ChirpDBContext> options)
         : base(options)
@@ -32,5 +33,18 @@ public class ChirpDBContext : IdentityDbContext<Author>
             .HasOne(c => c.Author)
             .WithMany(a => a.Cheeps)
             .HasForeignKey(c => c.AuthorId);
+        builder.Entity<Follow>()
+            .HasOne(f => f.Follower)
+            .WithMany(a => a.Following)
+            .HasForeignKey(f => f.FollowerId)
+            .OnDelete(DeleteBehavior.Restrict);
+        builder.Entity<Follow>()
+            .HasOne(f => f.Followee)
+            .WithMany(a => a.Followers)
+            .HasForeignKey(f => f.FolloweeId)
+            .OnDelete(DeleteBehavior.Restrict);
+        builder.Entity<Follow>()
+            .HasIndex(f => new { f.FollowerId, f.FolloweeId})
+            .IsUnique();
     }
 }

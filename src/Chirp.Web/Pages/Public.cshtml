@@ -1,9 +1,15 @@
 @page "/"
 @model Chirp.Razor.Pages.PublicModel
+@using Chirp.Core.Models
+
+@inject SignInManager<Author> SignInManager
+@inject UserManager<Author> UserManager
 @{
     ViewData["Title"] = "Chirp!";
     Layout = "Shared/_Layout";
-
+    
+    var CurrentUser = UserManager.GetUserAsync(HttpContext.User).Result;
+    
     var pageParam = Request.Query["page"].ToString();
     var currentPage = int.TryParse(pageParam, out var parsedPage) && parsedPage > 0
         ? parsedPage
@@ -39,6 +45,13 @@
                     <p>
                         <strong>
                             <a href="/@cheep.Author">@cheep.Author</a>
+                            @if (User.Identity?.IsAuthenticated ?? true)
+                            {
+                                if (CurrentUser.Following.Contains(cheep.Author))
+                                {
+                                    <span style="font-size:0.8em; color:green;">(Following)</span>
+                                }
+                            }
                         </strong>
                         @cheep.Text
                         <small>&mdash; @cheep.TimeStamp</small>

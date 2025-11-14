@@ -2,26 +2,47 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Chirp.Infrastructure.Chirp.Service;
 using Chirp.Core;
+using Chirp.Core.Models;
+using Chirp.Razor.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace Chirp.Razor.Pages
 {
     public class UserTimelineModel : PageModel
     {
+        private readonly UserManager<Author> _userManager;
         private readonly ICheepService _service;
+
+        public Author _currentUser;
         public List<CheepDto> Cheeps { get; set; } = new();
 
         [BindProperty]
         public string Text { get; set; }
-        public UserTimelineModel(ICheepService service)
+        public UserTimelineModel(ICheepService service,
+            UserManager<Author> userManager)
         {
             _service = service;
+            _userManager = userManager;
+            _currentUser = _userManager?.GetUserAsync(HttpContext.User).Result;
         }
 
         public ActionResult OnGet(string author, [FromQuery] int? page = 1, int? pageNumber = null)
         {
             int currentPage = page ?? pageNumber ?? 1;
             const int pageSize = 32;
-            Cheeps = _service.GetCheepsFromAuthor(author, currentPage, pageSize);
+            
+            if (_currentUser != null && _currentUser.UserName == author)
+            {
+                foreach(var followed in _currentUser.Following)
+                {
+                    Cheeps.AddRange(_service.GetCheepsFromAuthor(followed.FollowerId, currentPage, pageSize));
+                }
+            }
+            else
+            {
+                Cheeps = _service.GetCheepsFromAuthor(author, currentPage, pageSize);
+            }
+
             ViewData["CurrentPage"] = currentPage;
             ViewData["Author"] = author;
             return Page();
