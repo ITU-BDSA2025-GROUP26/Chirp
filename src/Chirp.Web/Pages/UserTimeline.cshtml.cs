@@ -32,8 +32,7 @@ namespace Chirp.Web.Pages
             {
                 foreach(var followed in _currentUser.FollowedUsers)
                 {
-                    if (followed.UserName != null)
-                        Cheeps.AddRange(_service.GetCheepsFromAuthor(followed.UserName, page, pageSize));
+                    Cheeps.AddRange(_service.GetCheepsFromAuthor(followed, page, pageSize));
                 }
             }
             else
