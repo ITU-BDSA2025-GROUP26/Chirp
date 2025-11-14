@@ -1,4 +1,6 @@
-﻿namespace TestProject1;
+﻿using Microsoft.Playwright;
+
+namespace TestProject1;
 
 [Parallelizable(ParallelScope.Self)]
 [TestFixture]
@@ -26,14 +28,16 @@ public class Tests : PageTest
     }
 
     [Test]
-    public async Task HomepageLoadsCorrectly()
+    public async Task HomepageLoadsCorrectlyAndClickingOnLogin()
     {
         await Page.GotoAsync("http://localhost:5273/");
 
         await Expect(Page).ToHaveTitleAsync(new Regex("Chirp!"));
-        
-        
 
+        var login = Page.Locator("text=login");
 
+        await login.ClickAsync();
+
+        await Expect(Page).ToHaveURLAsync(new Regex("/Account/Login"));
     }
 }
