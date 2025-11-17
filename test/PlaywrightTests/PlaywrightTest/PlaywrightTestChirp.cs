@@ -1,6 +1,6 @@
 ﻿using Microsoft.Playwright;
 
-namespace TestProject1;
+namespace PlaywrightTest;
 
 [Parallelizable(ParallelScope.Self)]
 [TestFixture]
