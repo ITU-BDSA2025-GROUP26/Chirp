@@ -23,6 +23,7 @@ namespace Chirp.Core.Tests
 
             _context = new ChirpDBContext(options);
             _repository = new CheepRepository(_context);
+            _repository.AddAuthor("Daid","daid@email.dk");
         }
 
         [Fact]
@@ -34,9 +35,9 @@ namespace Chirp.Core.Tests
                 Author = "Daid",
                 TimeStamp = DateTime.Now.ToString()
             };
-
-            var exception = Record.Exception(() => _repository.AddCheep(cheepDto));
-            Assert.Null(exception);
+            _repository.AddCheep(cheepDto);
+            var result = _repository.GetCheeps(1, 10);
+            Assert.Contains(result, c => c.Text == cheepDto.Text && c.Author == cheepDto.Author);
         }
 
         [Fact]
