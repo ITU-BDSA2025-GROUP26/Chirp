@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Builder;
-using Chirp.Web;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -9,8 +8,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
 using System.ComponentModel;
 using System.Data.Common;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
+using System;
 
-namespace Chirp.Web.Tests;
+namespace Chirp.Web.IntegrationTest;
 
 public class CustomWebApplicationFactory: WebApplicationFactory<Program>
 {
@@ -66,6 +71,34 @@ public class IdentityTest:IClassFixture<CustomWebApplicationFactory>
 
         //Assert
         Assert.True(result);
+    }
+
+    [Fact]
+    public async Task Regiser_CreatesNewUser()
+    {
+        //Arrange
+        var url ="/Account/Register";
+        var formData = new Dictionary<string, string>
+        {
+            ["Input.Email"] = "test@mail.dk",
+            ["Input.UserName"] = "usernametest",
+            ["Input.Password"] = "Test123$",
+            ["Input.ConfirmPassword"] = "Test123$"
+        };
+        using var scope = _factory.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ChirpDBContext>();
+
+        //Act
+        var response = await _client.PostAsync(url, new FormUrlEncodedContent(formData));
+        var user = dbContext.Users.FirstOrDefault(u => u.UserName == "usernametest");
+
+        var responseString = await response.Content.ReadAsStringAsync();
+        //Console.WriteLine("RESPONSE: " + responseString);
+
+        //Assert
+        Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+        Assert.NotNull(user);
+        Assert.Equal("usernametest",user.UserName);
     }
     
 }
