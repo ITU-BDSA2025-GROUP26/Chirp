@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Chirp.Infrastructure.Chirp.Service;
 using Chirp.Core;
 using System.ComponentModel.DataAnnotations;
+using Chirp.Core.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Chirp.Razor.Pages
 {
@@ -10,15 +12,21 @@ namespace Chirp.Razor.Pages
     public class PublicModel : PageModel
     {
         private readonly ICheepService _service;
+        private readonly UserManager<Author> _userManager;
+
+        private Author _currentUser;
         public List<CheepDto> Cheeps { get; set; } = new();
 
         [BindProperty]
         [Display(Name = "What's on your mind?")]
         [StringLength(160, ErrorMessage = "Cheep must be at most 160 characters.")]
         public string Text { get; set; } = string.Empty;
-        public PublicModel(ICheepService service)
+        public PublicModel(ICheepService service,
+            UserManager<Author> userManager)
         {
             _service = service;
+            _userManager = userManager;
+            _currentUser = _userManager?.GetUserAsync(HttpContext.User).Result;
         }
 
         public ActionResult OnGet([FromQuery] int? page = 1, int? pageNumber = null)
@@ -57,6 +65,17 @@ namespace Chirp.Razor.Pages
 
             // Post‑Redirect‑Get pattern prevents duplicate submissions on refresh
             return Redirect($"?page={currentPage}");
+        }
+
+        public ActionResult OnFollow(Author currentUser, String authorName)
+        {
+            _service.Follow(currentUser, authorName);
+            return OnGet();
+        }
+        public ActionResult OnUnFollow(Author currentUser, String authorName)
+        {
+            _service.Unfollow(currentUser, authorName);
+            return OnGet();
         }
     }
 }

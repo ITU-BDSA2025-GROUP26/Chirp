@@ -1,4 +1,6 @@
 using Chirp.Core;
+using Chirp.Core.Models;
+
 namespace Chirp.Infrastructure.Chirp.Service;
 
 public interface ICheepService
@@ -6,4 +8,6 @@ public interface ICheepService
     public List<CheepDto> GetCheeps(int page, int pageSize);
     public List<CheepDto> GetCheepsFromAuthor(string author, int page, int pageSize);
     void AddCheep(string authorUserName, string text);
+    public void Follow(Author follower, string followee);
+    public void Unfollow(Author follower, string followee);
 }

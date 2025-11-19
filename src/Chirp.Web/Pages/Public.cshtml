@@ -2,13 +2,12 @@
 @model Chirp.Razor.Pages.PublicModel
 @using Chirp.Core.Models
 
-@inject SignInManager<Author> SignInManager
 @inject UserManager<Author> UserManager
 @{
     ViewData["Title"] = "Chirp!";
     Layout = "Shared/_Layout";
     
-    var CurrentUser = UserManager.GetUserAsync(HttpContext.User).Result;
+    var currentUser = UserManager.GetUserAsync(HttpContext.User).Result;
     
     var pageParam = Request.Query["page"].ToString();
     var currentPage = int.TryParse(pageParam, out var parsedPage) && parsedPage > 0
@@ -47,9 +46,14 @@
                             <a href="/@cheep.Author">@cheep.Author</a>
                             @if (User.Identity?.IsAuthenticated ?? true)
                             {
-                                if (CurrentUser.Following.Contains(cheep.Author))
+                                System.Diagnostics.Debug.Assert(currentUser != null, nameof(currentUser) + " != null");
+                                if (currentUser.UserName != cheep.Author && !currentUser.Following.Any(f => f.FollowerId == cheep.Author))
                                 {
-                                    <span style="font-size:0.8em; color:green;">(Following)</span>
+                                    <button onclick="@{Model.OnFollow(currentUser,cheep.Author);};" type="submit">Follow</button>
+                                }
+                                else if (currentUser.UserName != cheep.Author && currentUser.Following.Any(f => f.FollowerId == cheep.Author))
+                                {
+                                    <button onclick="@{ Model.OnUnFollow(currentUser, cheep.Author); };" type="submit">Unfollow</button>
                                 }
                             }
                         </strong>

@@ -1,4 +1,5 @@
 using Chirp.Core;
+using Chirp.Core.Models;
 using Chirp.Infrastructure.Chirp.Repositories;
 
 namespace Chirp.Infrastructure.Chirp.Service
@@ -35,7 +36,38 @@ namespace Chirp.Infrastructure.Chirp.Service
                 // TimeStamp will be set server-side in repository
             });
         }
+        
+        public Author GetAuthorByName(string authorUserName)
+        {
+            return _cheepRepository.GetAuthorByName(authorUserName);
+        }
 
+        public void Follow(Author follower, string followee)
+        {
+            Follow follow = new Follow
+            {
+                Follower = follower,
+                FollowerId = follower.Id,
+                Followee = _cheepRepository.GetAuthorByName(followee)
+            };
+
+            follow.FolloweeId = follow.Followee.Id;
+            
+            follower.Following.Add(follow);
+            follow.Followee.Followers.Add(follow);
+        }
+
+        public void Unfollow(Author follower, string followee)
+        {
+            Follow follow = new Follow
+            {
+                Follower = follower,
+                FollowerId = follower.Id,
+                Followee = _cheepRepository.GetAuthorByName(followee)
+            };
+            follow.Followee.Followers.Remove(follow);
+            follow.Follower.Following.Remove(follow);
+        }
 
     }
 }
