@@ -62,8 +62,9 @@ public class Tests : PageTest
         
         await Expect(Page).ToHaveTitleAsync(new Regex("Chirp!"));
         
-        // Click the Register link in the navbar
-        await Page.GetByRole(AriaRole.Link, new() { Name = "Register" }).ClickAsync();
+        var register = Page.Locator("text=register");
+        
+        await register.ClickAsync();
         
         await Expect(Page).ToHaveURLAsync(new Regex("/Account/Register"));
 
@@ -73,5 +74,28 @@ public class Tests : PageTest
         await Page.GetByLabel("Username").FillAsync("test");
         await Page.GetByLabel("Password", new (){Exact = true}).FillAsync("I!s3456");
         await Page.GetByLabel("Confirm Password", new (){Exact = true}).FillAsync("I!s3456");
+    }
+
+    [Test]
+    public async Task UserCanLoginAndSeeDashboard()
+    {
+        await Page.GotoAsync("http://localhost:5273/");
+        
+        await Expect(Page).ToHaveTitleAsync(new Regex("Chirp!"));
+        
+        var login = Page.Locator("text=login");
+
+        await login.ClickAsync();
+
+        await Expect(Page).ToHaveURLAsync(new Regex("/Account/Login"));
+        
+        await Page.GetByLabel("Username").FillAsync("HelgeCPH");
+        await Page.GetByLabel("Password", new (){Exact = true}).FillAsync("LetM31n!");
+        
+        var loginButton = Page.Locator("id=login-submit");
+        
+        await loginButton.ClickAsync();
+        
+        await Expect(Page).ToHaveURLAsync(new Regex("/"));
     }
 }
