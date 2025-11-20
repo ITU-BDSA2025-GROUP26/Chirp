@@ -33,6 +33,10 @@ builder.Services
         options.ClientSecret = builder.Configuration["authentication_github_clientSecret"];
         options.CallbackPath = "/signin-github";
     });
+builder.Services.AddHsts(options =>
+{
+    options.MaxAge = TimeSpan.FromDays(60);
+});
 var app = builder.Build();
 
 // Create a disposable service scope
@@ -63,7 +67,6 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-//app.UseSession();
 
 app.MapRazorPages();
 
