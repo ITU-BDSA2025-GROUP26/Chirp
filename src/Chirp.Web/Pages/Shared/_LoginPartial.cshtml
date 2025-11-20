@@ -10,7 +10,7 @@
         {
             <div>   
                 <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a> |
-                <a href="/@User.Identity.Name">My Timeline</a> |
+                <a href="/user/@User.Identity.Name">My Timeline</a> |
                 <a href="/">Public Timeline</a> |
                 <a href="/AboutMe">About me</a> |
                 <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Logout">Logout [@(User.Identity.Name)]</a>

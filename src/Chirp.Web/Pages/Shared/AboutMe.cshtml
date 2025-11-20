@@ -1,0 +1,41 @@
+﻿@page "/AboutMe"
+@model Chirp.Razor.Pages.AboutMeModel
+@{
+    ViewData["Title"] = "About Me";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (Model.CurrentUser != null)
+{
+    <h3>Profile Info</h3>
+    <ul>
+        <li>Username: @Model.CurrentUser.UserName</li>
+        <li>Email: @Model.CurrentUser.Email</li>
+    </ul>
+
+    <h3>My Cheeps</h3>
+    @if (Model.Cheeps.Any())
+    {
+        <ul class="cheeps">
+            @foreach (var cheep in Model.Cheeps)
+            {
+                <li>
+                    <p>
+                        <strong>@cheep.Author</strong>
+                        @cheep.Text
+                        <small>&mdash; @cheep.TimeStamp</small>
+                    </p>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <em>You haven't posted any cheeps yet.</em>
+    }
+}
+else
+{
+    <p>You must be logged in to view this page.</p>
+}
