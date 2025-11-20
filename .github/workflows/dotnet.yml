@@ -23,7 +23,7 @@ jobs:
         run: dotnet restore Chirp.Razor.sln
       
       - name: Install Playwright
-        run: dotnet add package Microsoft.Playwright --version 1.37.0 --project test/IntegrationTest/PlaywrightTests/PlaywrightTest/PlaywrightTest.csproj
+        run: dotnet add package Microsoft.Playwright --version 1.37.0 --project test\PlaywrightTests\PlaywrightTest\PlaywrightTest.csproj
     
       - name: Install Playwright browsers
         run: | 
