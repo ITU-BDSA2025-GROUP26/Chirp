@@ -30,9 +30,6 @@ jobs:
 
       - name: Install Playwright browsers
         run: playwright install --with-deps
-
-      - name: Run dotnet background
-        run: dotnet run --project src/Chirp.Web &
-
+        
       - name: Run all tests
         run: dotnet test Chirp.Razor.sln --configuration Release --no-restore --verbosity normal
