@@ -25,5 +25,8 @@ jobs:
       - name: Build solution
         run: dotnet build Chirp.Razor.sln --configuration Release --no-restore
 
+      - name: Install Playwright
+        run: pwsh bin/Debug/netX/playwright.ps1 install --with-deps
+
       - name: Run all tests
         run: dotnet test Chirp.Razor.sln --configuration Release --no-restore --verbosity normal
