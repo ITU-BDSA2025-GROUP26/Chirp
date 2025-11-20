@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using Chirp.Core;
 using Chirp.Infrastructure.Chirp.Service;
-using Chirp.Razor.Pages;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using Chirp.Web.Pages;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Routing;
 
 namespace Chirp.Web.Tests;
 
@@ -48,6 +52,8 @@ public class PublicModelTests
             LastAddCheepText = text;
         }
     }
+    
+    
 
     private static PublicModel CreateModelWithUser(StubCheepService stub, bool authenticated,
         string? userName = "alice")
@@ -72,12 +78,23 @@ public class PublicModelTests
         {
             User = principal
         };
+        
+        var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
+        
+        var modelState = new ModelStateDictionary();
 
-        model.PageContext = new PageContext
+        var viewData = new ViewDataDictionary(
+            new EmptyModelMetadataProvider(),
+            modelState
+        );
+
+        var pageContext = new PageContext(actionContext)
         {
-            HttpContext = httpContext
+            ViewData = viewData
         };
 
+        model.PageContext = pageContext;
+        
         return model;
     }
 
@@ -93,7 +110,9 @@ public class PublicModelTests
             new CheepDto { Author = "bob",   Text = "yo", TimeStamp = DateTime.UtcNow.ToString("O") },
         };
         stub.NextGetCheepsResult = expected;
-        var model = new PublicModel(stub);
+        var model = CreateModelWithUser(stub, authenticated: false, userName: null);
+
+        
 
         // Act
         var result = model.OnGet();
@@ -115,7 +134,9 @@ public class PublicModelTests
     {
         // Arrange
         var stub = new StubCheepService();
-        var model = new PublicModel(stub);
+        var model = CreateModelWithUser(stub, authenticated: false, userName: null);
+
+        
 
         // Act
         var result = model.OnGet(page);
@@ -133,7 +154,8 @@ public class PublicModelTests
     {
         // Arrange
         var stub = new StubCheepService();
-        var model = new PublicModel(stub);
+        var model = CreateModelWithUser(stub, authenticated: false, userName: null);
+
 
         // Act
         var result = model.OnGet(page: null, pageNumber: 5);

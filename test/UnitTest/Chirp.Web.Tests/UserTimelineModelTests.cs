@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Xunit;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Routing;
 
 namespace Chirp.Web.Tests;
 
@@ -60,16 +62,27 @@ public class UserTimelineModelTests
 
         var principal = new ClaimsPrincipal(identity);
 
-        var httpContext = new DefaultHttpContext
+        var httpContext = new DefaultHttpContext()
         {
             User = principal
         };
+        
+        var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
+        
+        var modelState = new ModelStateDictionary();
 
-        model.PageContext = new PageContext
+        var viewData = new ViewDataDictionary(
+            new EmptyModelMetadataProvider(),
+            modelState
+        );
+
+        var pageContext = new PageContext(actionContext)
         {
-            HttpContext = httpContext
+            ViewData = viewData
         };
 
+        model.PageContext = pageContext;
+        
         return model;
     }
 
@@ -88,7 +101,7 @@ public class UserTimelineModelTests
             new CheepDto { Author = author, Text = "first", TimeStamp = DateTime.UtcNow.ToString("O") }
         };
         stub.NextGetCheepsFromAuthorResult = expected;
-        var model = new UserTimelineModel(stub);
+        var model = CreateModelWithUser(stub, authenticated: false, userName: null);
 
         // Act
         var result = model.OnGet(author);
@@ -110,7 +123,8 @@ public class UserTimelineModelTests
     {
         // Arrange
         var stub = new StubCheepService();
-        var model = new UserTimelineModel(stub);
+        var model = CreateModelWithUser(stub, authenticated: false, userName: null);
+
 
         // Act
         var result = model.OnGet(author, page);
@@ -131,7 +145,8 @@ public class UserTimelineModelTests
         // Arrange
         var author = "daisy";
         var stub = new StubCheepService();
-        var model = new UserTimelineModel(stub);
+        var model = CreateModelWithUser(stub, authenticated: false, userName: null);
+
 
         // Act
         var result = model.OnGet(author, page: null, pageNumber: 5);
@@ -151,7 +166,8 @@ public class UserTimelineModelTests
     {
         // Arrange
         var stub = new StubCheepService();
-        var model = new UserTimelineModel(stub);
+        var model = CreateModelWithUser(stub, authenticated: false, userName: null);
+
 
         // Act
         var result = model.OnGet(string.Empty);
