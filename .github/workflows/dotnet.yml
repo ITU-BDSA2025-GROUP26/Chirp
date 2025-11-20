@@ -25,7 +25,7 @@ jobs:
       - name: Install Playwright browsers
         run: | 
           dotnet tool install --global Microsoft.Playwright.CLI
-          pwsh -Command "playwright install --with-deps"
+          playwright install --with-deps
 
       - name: Build solution
         run: dotnet build Chirp.Razor.sln --configuration Release --no-restore
