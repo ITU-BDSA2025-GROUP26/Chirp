@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
+//using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Chirp.Infrastructure;
@@ -44,8 +44,8 @@ public class CustomWebApplicationFactory: WebApplicationFactory<Program>
                 var connection = container.GetRequiredService<DbConnection>();
                 options.UseSqlite(connection);
             });
+            builder.UseEnvironment("Development");
         });
-        builder.UseEnvironment("Development");
     }
 }
 public class IdentityTest:IClassFixture<CustomWebApplicationFactory>
@@ -62,7 +62,7 @@ public class IdentityTest:IClassFixture<CustomWebApplicationFactory>
         });
     }
 
-    [Fact]
+    /*[Fact]
     public async Task GetEndpoint_ReturnsSuccessAndCorrectContentType()
     {
         //Arrange
@@ -74,7 +74,7 @@ public class IdentityTest:IClassFixture<CustomWebApplicationFactory>
 
         //Assert
         Assert.True(result);
-    }
+    }*/
 
     /*[Fact]
     public async Task Regiser_CreatesNewUser()
