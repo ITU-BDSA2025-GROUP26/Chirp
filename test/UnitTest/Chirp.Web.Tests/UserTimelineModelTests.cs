@@ -1,12 +1,14 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using Chirp.Core;
 using Chirp.Infrastructure.Chirp.Service;
-using Chirp.Razor.Pages;
+using Chirp.Web.Pages;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Xunit;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Routing;
