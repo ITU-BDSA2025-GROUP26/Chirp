@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using Chirp.Core;
 using Chirp.Infrastructure.Chirp.Service;
-using Chirp.Razor.Pages;
+using Chirp.Web.Pages;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Xunit;
 
 namespace Chirp.Web.Tests;
