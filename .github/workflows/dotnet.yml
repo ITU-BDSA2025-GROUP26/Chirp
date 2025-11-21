@@ -41,15 +41,15 @@ jobs:
       - name: Wait for Chirp.Web to start
         run: |
           for i in {1..30}; do
-            if curl -sSf http://localhost:5273/ > /dev/null; then
-              echo "Chirp.Web is up"
+            if curl -s http://localhost:5273/ > /dev/null; then
+              echo "Chirp.Web is responding"
               exit 0
             fi
             echo "Waiting for Chirp.Web..."
             sleep 2
           done
-          echo "Chirp.Web failed to start in time"
-          exit 1
-          
+            echo "Chirp.Web failed to start in time"
+            exit 1
+
       - name: Run all tests
         run: dotnet test Chirp.Razor.sln --configuration Release --no-restore --verbosity normal
