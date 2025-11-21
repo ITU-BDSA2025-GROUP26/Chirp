@@ -47,7 +47,7 @@
                             @if (User.Identity?.IsAuthenticated ?? true)
                             {
                                 System.Diagnostics.Debug.Assert(currentUser != null, nameof(currentUser) + " != null");
-                                if (currentUser.UserName != cheep.Author && !currentUser.Following.Any(f => f.FollowerId == cheep.Author))
+                                if (currentUser.UserName != cheep.Author && currentUser.Following.All(f => f.FollowerId != cheep.Author))
                                 {
                                     <button onclick="@{Model.OnFollow(currentUser,cheep.Author);};" type="submit">Follow</button>
                                 }

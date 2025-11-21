@@ -1,8 +1,14 @@
 @page "/{author}"
+@using Chirp.Core.Models
 @model Chirp.Razor.Pages.UserTimelineModel
+
+@inject UserManager<Author> UserManager
 @{
     ViewData["Title"] = "Chirp!";
     Layout = "Shared/_Layout";
+    
+    var currentUser = UserManager.GetUserAsync(HttpContext.User).Result;
+    
     var routeName = RouteData.Values["author"] as string;
 
 
@@ -40,6 +46,18 @@
             <li>
                 <p>
                     <strong><a href="/@cheep.Author">@cheep.Author</a></strong>
+                    @if (User.Identity?.IsAuthenticated ?? true)
+                    {
+                        System.Diagnostics.Debug.Assert(currentUser != null, nameof(currentUser) + " != null");
+                        if (currentUser.UserName != cheep.Author && currentUser.Following.All(f => f.FollowerId != cheep.Author))
+                        {
+                            <button onclick="@{Model.OnFollow(currentUser,cheep.Author);};" type="submit">Follow</button>
+                        }
+                        else if (currentUser.UserName != cheep.Author && currentUser.Following.Any(f => f.FollowerId == cheep.Author))
+                        {
+                            <button onclick="@{ Model.OnUnFollow(currentUser, cheep.Author); };" type="submit">Unfollow</button>
+                        }
+                    }
                     @cheep.Text
                     <small>&mdash; @cheep.TimeStamp</small>
                 </p>

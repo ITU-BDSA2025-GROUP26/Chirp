@@ -74,5 +74,16 @@ namespace Chirp.Razor.Pages
             
             return Redirect($"/{author}?page={currentPage}");
         }
+        
+        public ActionResult OnFollow(Author currentUser, String authorName, [FromQuery] int? page = 1, int? pageNumber = null)
+        {
+            _service.Follow(currentUser, authorName);
+            return OnGet(authorName, page, pageNumber);
+        }
+        public ActionResult OnUnFollow(Author currentUser, String authorName, [FromQuery] int? page = 1, int? pageNumber = null)
+        {
+            _service.Unfollow(currentUser, authorName);
+            return OnGet(authorName, page, pageNumber);
+        }
     }
 }
