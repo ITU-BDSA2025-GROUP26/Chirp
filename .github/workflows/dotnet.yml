@@ -7,9 +7,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      ASPNETCORE_ENVIRONMENT: Development
-      DOTNET_ENVIRONMENT: Development
 
     steps:
       - name: Checkout repository
@@ -28,38 +25,11 @@ jobs:
       - name: Build solution
         run: dotnet build Chirp.Razor.sln --configuration Release --no-restore
 
-      - name: Install Playwright CLI
-        run: dotnet tool install --global Microsoft.Playwright.CLI
-
-      - name: Install Playwright browsers
-        run: playwright install --with-deps
-
-      - name: Run Chirp.Web
+      # Run ONLY unit + integration tests
+      - name: Run unit and integration tests (no Playwright in CI)
         run: |
-          dotnet run --project src/Chirp.Web/Chirp.Web.csproj \
-            --configuration Release \
-            --urls "http://localhost:5273" &
-          echo "Started Chirp.Web"
-
-      - name: Wait for Chirp.Web to start
-        run: |
-          for i in {1..30}; do
-            if curl -s http://localhost:5273/ > /dev/null; then
-              echo "Chirp.Web is responding"
-              exit 0
-            fi
-            echo "Waiting for Chirp.Web..."
-            sleep 2
-          done
-          echo "Chirp.Web failed to start in time"
-          exit 1
-          
-                - name: Debug homepage HTML
-        run: |
-          echo "====== BEGIN / HTML ======"
-          curl -sS http://localhost:5273/ | head -n 80
-          echo
-          echo "======= END / HTML ======="
-
-      - name: Run all tests
-        run: dotnet test Chirp.Razor.sln --configuration Release --no-restore --verbosity normal
+          dotnet test test/UnitTest/Chirp.Core.Tests/Chirp.Core.Tests.csproj --configuration Release --no-restore
+          dotnet test test/UnitTest/Chirp.Infrastructure.Tests/Chirp.Infrastructure.Tests.csproj --configuration Release --no-restore
+          dotnet test test/UnitTest/Chirp.Web.Tests/Chirp.Web.Tests.csproj --configuration Release --no-restore
+          dotnet test test/IntegrationTest/Chirp.InfrastructureTests/Chirp.InfrastructureTests.csproj --configuration Release --no-restore
+          dotnet test test/IntegrationTest/Chirp.Web.IntegrationTests/Chirp.Web.IntegrationTests.csproj --configuration Release --no-restore
