@@ -30,6 +30,14 @@ jobs:
 
       - name: Install Playwright browsers
         run: playwright install --with-deps
-        
+
+      # NEW: start the web app
+      - name: Run Chirp.Web
+        run: |
+          dotnet run --project src/Chirp.Web/Chirp.Web.csproj \
+            --configuration Release \
+            --urls "http://localhost:5273" &
+          echo "Started Chirp.Web"
+
       - name: Run all tests
         run: dotnet test Chirp.Razor.sln --configuration Release --no-restore --verbosity normal
