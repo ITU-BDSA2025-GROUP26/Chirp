@@ -7,6 +7,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      ASPNETCORE_ENVIRONMENT: Development
+      DOTNET_ENVIRONMENT: Development
 
     steps:
       - name: Checkout repository
@@ -48,8 +51,8 @@ jobs:
             echo "Waiting for Chirp.Web..."
             sleep 2
           done
-            echo "Chirp.Web failed to start in time"
-            exit 1
+          echo "Chirp.Web failed to start in time"
+          exit 1
 
       - name: Run all tests
         run: dotnet test Chirp.Razor.sln --configuration Release --no-restore --verbosity normal
