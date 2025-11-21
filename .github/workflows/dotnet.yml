@@ -53,6 +53,13 @@ jobs:
           done
           echo "Chirp.Web failed to start in time"
           exit 1
+          
+                - name: Debug homepage HTML
+        run: |
+          echo "====== BEGIN / HTML ======"
+          curl -sS http://localhost:5273/ | head -n 80
+          echo
+          echo "======= END / HTML ======="
 
       - name: Run all tests
         run: dotnet test Chirp.Razor.sln --configuration Release --no-restore --verbosity normal
