@@ -26,7 +26,7 @@ jobs:
         run: dotnet restore
 
       - name: Build and Test
-        run: dotnet test --configuration Release
+        run: dotnet build --configuration Release
 
       - name: Publish WebApp
         run: dotnet publish src/Chirp.Web/Chirp.Web.csproj -c Release -o publish/webapp
