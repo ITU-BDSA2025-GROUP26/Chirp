@@ -26,8 +26,16 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build and Test
+      - name: Build via .NET
         run: dotnet build --configuration Release
+        
+      - name: Test via .NET
+        run: |
+          dotnet test test/UnitTest/Chirp.Core.Tests/Chirp.Core.Tests.csproj --configuration Release --no-restore
+          dotnet test test/UnitTest/Chirp.Infrastructure.Tests/Chirp.Infrastructure.Tests.csproj --configuration Release --no-restore
+          dotnet test test/UnitTest/Chirp.Web.Tests/Chirp.Web.Tests.csproj --configuration Release --no-restore
+          dotnet test test/IntegrationTest/Chirp.InfrastructureTests/Chirp.InfrastructureTests.csproj --configuration Release --no-restore
+          dotnet test test/IntegrationTest/Chirp.Web.IntegrationTests/Chirp.Web.IntegrationTests.csproj --configuration Release --no-restore
 
       - name: Publish WebApp
         run: dotnet publish src/Chirp.Web/Chirp.Web.csproj -c Release -o publish/webapp
