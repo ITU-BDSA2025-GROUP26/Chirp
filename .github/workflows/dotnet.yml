@@ -25,5 +25,11 @@ jobs:
       - name: Build solution
         run: dotnet build Chirp.Razor.sln --configuration Release --no-restore
 
-      - name: Run all tests
-        run: dotnet test Chirp.Razor.sln --configuration Release --no-restore --verbosity normal
+      # Run ONLY unit + integration tests
+      - name: Run unit and integration tests (no Playwright in CI)
+        run: |
+          dotnet test test/UnitTest/Chirp.Core.Tests/Chirp.Core.Tests.csproj --configuration Release --no-restore
+          dotnet test test/UnitTest/Chirp.Infrastructure.Tests/Chirp.Infrastructure.Tests.csproj --configuration Release --no-restore
+          dotnet test test/UnitTest/Chirp.Web.Tests/Chirp.Web.Tests.csproj --configuration Release --no-restore
+          dotnet test test/IntegrationTest/Chirp.InfrastructureTests/Chirp.InfrastructureTests.csproj --configuration Release --no-restore
+          dotnet test test/IntegrationTest/Chirp.Web.IntegrationTests/Chirp.Web.IntegrationTests.csproj --configuration Release --no-restore

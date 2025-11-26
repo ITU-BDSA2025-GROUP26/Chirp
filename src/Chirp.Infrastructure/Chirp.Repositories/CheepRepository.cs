@@ -102,11 +102,13 @@ public sealed class CheepRepository : ICheepRepository
         author.UserName = authorName;
         author.Email = email;
         _context.Authors.Add(author);
+        _context.SaveChanges();
     }
 
     public void AddAuthor(Author author)
     {
         _context.Authors.Add(author);
+        _context.SaveChanges();
     }
 
     public void AddCheep(CheepDto cheepdto)

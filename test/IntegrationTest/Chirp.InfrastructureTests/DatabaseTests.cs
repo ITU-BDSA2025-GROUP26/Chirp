@@ -4,6 +4,7 @@ using Chirp.Infrastructure;
 using Chirp.Core.Models;
 using Chirp.Infrastructure.Chirp.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Chirp.Core;
 namespace Chirp.InfrastructureTests;
 
 public class DatabaseTests : IDisposable
@@ -78,5 +79,45 @@ public class DatabaseTests : IDisposable
 
         // Assert
         Assert.Equal("Bob", author.UserName);
+    }
+
+    [Fact]
+    public void CheepRepository_Can_AddAuthor()
+    {
+        //Arrange
+        using var context = CreateContext();
+        var cheepRepository = new CheepRepository(context);
+        var name = "John";
+        var email = "john@email.dk";
+
+        //Act
+        cheepRepository.AddAuthor(name, email);
+        var author = cheepRepository.GetAuthorByName(name);
+
+        //Assert
+        Assert.Equal(email, author.Email);
+        Assert.Equal(name, author.UserName);
+    }
+
+    [Fact]
+    public void CheepRepository_Can_AddCheep()
+    {
+        //Arrange
+        using var context = CreateContext();
+        var cheepRepository = new CheepRepository(context);
+        var cheepDto = new CheepDto
+        {
+            Text = "New Cheep",
+            Author = "Bob",
+            TimeStamp = DateTime.UtcNow.ToString()
+        };
+
+        //Act
+        cheepRepository.AddCheep(cheepDto);
+        var cheeps = cheepRepository.GetCheeps(1, 10);
+
+        //Assert
+        Assert.Contains(cheeps, c=> c.Text == "New Cheep" && c.Author == "Bob");
+        Assert.Equal(3, cheeps.Count);
     }
 }

@@ -4,7 +4,7 @@ using Chirp.Infrastructure.Chirp.Service;
 using Chirp.Core;
 using System.ComponentModel.DataAnnotations;
 
-namespace Chirp.Razor.Pages
+namespace Chirp.Web.Pages
 {
 
     public class PublicModel : PageModel
@@ -18,11 +18,14 @@ namespace Chirp.Razor.Pages
         public string Text { get; set; } = string.Empty;
         public PublicModel(ICheepService service)
         {
-            _service = service;
+            _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         public ActionResult OnGet([FromQuery] int? page = 1, int? pageNumber = null)
         {
+            if (_service is null)
+                throw new InvalidOperationException("PublicModel: _service is null in OnGet (unit test");
+            
             int currentPage = page ?? pageNumber ?? 1;
             const int pageSize = 32;
             Cheeps = _service.GetCheeps(currentPage, pageSize);
