@@ -100,5 +100,6 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'bdsagroup262025chirpremotedb'
-          slot-name: 'Production'
-          package: ./.net-app
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_08C4F9B8641F4547A08E0DFC635181A1 }}
+          #slot-name: 'Production'
+          package: .
