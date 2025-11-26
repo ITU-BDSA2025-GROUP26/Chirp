@@ -4,10 +4,11 @@ on:
   push:
     branches: [ main ]
     tags:
-      - "v*"   # Kører kun på tags som v1.0.0
-    pull_request:
-      branches: [ main ]
+      - "v*"    # Kører kun på tags som v1.0.0
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
+
 
 jobs:
   release:
