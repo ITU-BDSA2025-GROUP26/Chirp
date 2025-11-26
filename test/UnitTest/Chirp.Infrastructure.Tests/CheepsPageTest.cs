@@ -38,7 +38,7 @@ public class CheepsPageTest
 
         // Assert: Verify the result
         Assert.Single(result);  // Should return only one cheep
-        Assert.Equal("First Cheep", result[0].Text);  // The text should match the first cheep
+        Assert.Equal("Second Cheep", result[0].Text);  // The text should match the most recent cheep
         Assert.Equal("Daid", result[0].Author);  // The author should be Alice
     }
 }

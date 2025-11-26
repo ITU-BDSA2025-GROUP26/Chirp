@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Chirp.Infrastructure.Chirp.Service;
 using Chirp.Core;
 
-namespace Chirp.Razor.Pages
+namespace Chirp.Web.Pages
 {
     public class UserTimelineModel : PageModel
     {
@@ -11,17 +11,22 @@ namespace Chirp.Razor.Pages
         public List<CheepDto> Cheeps { get; set; } = new();
 
         [BindProperty]
-        public string Text { get; set; }
+        public string Text { get; set; } = string.Empty;
         public UserTimelineModel(ICheepService service)
         {
-            _service = service;
+            _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         public ActionResult OnGet(string author, [FromQuery] int? page = 1, int? pageNumber = null)
         {
+            if (_service is null)
+                throw new InvalidOperationException("PublicModel: _service is null in OnGet (unit test");
+            
+            var safeAuthor = author ?? string.Empty;
+            
             int currentPage = page ?? pageNumber ?? 1;
             const int pageSize = 32;
-            Cheeps = _service.GetCheepsFromAuthor(author, currentPage, pageSize);
+            Cheeps = _service.GetCheepsFromAuthor(safeAuthor, currentPage, pageSize);
             ViewData["CurrentPage"] = currentPage;
             ViewData["Author"] = author;
             return Page();
