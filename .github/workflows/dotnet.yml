@@ -24,6 +24,12 @@ jobs:
 
       - name: Build solution
         run: dotnet build Chirp.Razor.sln --configuration Release --no-restore
+        
+      - name: Install Playwright CLI
+        run: dotnet tool install --global Microsoft.Playwright.CLI
+
+      - name: Install Playwright browsers
+        run: playwright install --with-deps
 
       # Run ONLY unit + integration tests
       - name: Run unit and integration tests (no Playwright in CI)
