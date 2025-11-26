@@ -36,7 +36,10 @@
     }
     
     <div style="margin-top:15px;">
-        <button class="btn-forget-me">Forget Me</button>
+        <form asp-area="Identity" asp-page="/Account/DeletePersonalData" method="post" onsubmit="return confirm('Are you sure you want to delete your personal data? This cannot be undone.');">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn-forget-me">Forget Me</button>
+        </form>
     </div>
 
     <style>
@@ -53,7 +56,7 @@
     .btn-forget-me:hover {
         background-color: #c82333;
     }
-</style>
+    </style>
 }
 else
 {
