@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Chirp.Infrastructure.Chirp.Service;
 using Chirp.Core;
 using System.ComponentModel.DataAnnotations;
+using Chirp.Core.Models;
 
 namespace Chirp.Web.Pages
 {
@@ -11,6 +12,8 @@ namespace Chirp.Web.Pages
     {
         private readonly ICheepService _service;
         public List<CheepDto> Cheeps { get; set; } = new();
+        
+        public List<Author> Following { get; set; } = new();
 
         [BindProperty]
         [Display(Name = "What's on your mind?")]
@@ -29,6 +32,13 @@ namespace Chirp.Web.Pages
             int currentPage = page ?? pageNumber ?? 1;
             const int pageSize = 32;
             Cheeps = _service.GetCheeps(currentPage, pageSize);
+
+            if (User?.Identity?.IsAuthenticated ?? false)
+            {
+                var userName = User.Identity!.Name!;
+                Following = _service.GetFollowing(userName).Result;
+            }
+            
             ViewData["CurrentPage"] = currentPage;
             return Page();
         }
@@ -52,6 +62,13 @@ namespace Chirp.Web.Pages
             if (!ModelState.IsValid)
             {
                 Cheeps = _service.GetCheeps(currentPage, 32);
+                
+                if (User?.Identity?.IsAuthenticated ?? false)
+                {
+                    var userName = User.Identity!.Name!;
+                    Following = _service.GetFollowing(userName).Result;
+                }
+                
                 ViewData["CurrentPage"] = currentPage;
                 return Page();
             }
@@ -59,6 +76,30 @@ namespace Chirp.Web.Pages
             _service.AddCheep(User.Identity!.Name!, trimmed);
 
             // Post‑Redirect‑Get pattern prevents duplicate submissions on refresh
+            return Redirect($"?page={currentPage}");
+        }
+        
+        public IActionResult OnPostFollow(string authorToFollow, [FromQuery] int? page = 1, int? pageNumber = null)
+        {
+            if (!(User?.Identity?.IsAuthenticated ?? false))
+                return Unauthorized();
+
+            var follower = User.Identity!.Name!;
+            _service.Follow(follower, authorToFollow).Wait();
+
+            int currentPage = page ?? pageNumber ?? 1;
+            return Redirect($"?page={currentPage}");
+        }
+        
+        public IActionResult OnPostUnfollow(string authorToUnfollow, [FromQuery] int? page = 1, int? pageNumber = null)
+        {
+            if (!(User?.Identity?.IsAuthenticated ?? false))
+                return Unauthorized();
+
+            var follower = User.Identity!.Name!;
+            _service.Unfollow(follower, authorToUnfollow).Wait();
+
+            int currentPage = page ?? pageNumber ?? 1;
             return Redirect($"?page={currentPage}");
         }
     }

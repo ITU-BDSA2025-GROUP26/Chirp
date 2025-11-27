@@ -1,4 +1,5 @@
 using Chirp.Core;
+using Chirp.Core.Models;
 using Chirp.Infrastructure.Chirp.Repositories;
 
 namespace Chirp.Infrastructure.Chirp.Service
