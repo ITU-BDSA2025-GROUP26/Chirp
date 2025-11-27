@@ -1,0 +1,20 @@
+@page
+@model Chirp.Razor.Areas.Identity.Pages.Account.DeletePersonalDataModel
+@{
+    ViewData["Title"] = "Delete Personal Data";
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<div class="alert alert-warning" role="alert">
+    <p>
+        <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
+    </p>
+</div>
+
+<div>
+    <form method="post" onsubmit="return confirm('Are you sure you want to delete your personal data? This cannot be undone.');">
+        @Html.AntiForgeryToken()
+        <button class="w-100 btn btn-lg btn-danger" type="submit">Delete data and close my account</button>
+    </form>
+</div>
