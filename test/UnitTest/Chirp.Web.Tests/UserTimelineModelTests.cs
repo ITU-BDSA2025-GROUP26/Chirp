@@ -309,8 +309,10 @@ public class UserTimelineModelTests
         var result = model.OnPost(author, page: 4);
 
         // Assert
-        var redirect = Assert.IsType<RedirectResult>(result);
-        Assert.Equal($"/{author}?page=4", redirect.Url);
+        var redirect = Assert.IsType<RedirectToPageResult>(result);
+        Assert.Equal("/UserTimeline", redirect.PageName);
+        Assert.Equal(author, redirect.RouteValues["author"]?.ToString());
+        Assert.Equal("4", redirect.RouteValues["page"]?.ToString());
 
         Assert.Equal(author, stub.LastAddCheepAuthor);
         Assert.Equal("hello world", stub.LastAddCheepText); // trimmed
@@ -334,8 +336,11 @@ public class UserTimelineModelTests
         var result = model.OnPost(author, page: null, pageNumber: 7);
 
         // Assert
-        var redirect = Assert.IsType<RedirectResult>(result);
-        Assert.Equal($"/{author}?page=7", redirect.Url);
+        var redirect = Assert.IsType<RedirectToPageResult>(result);
+        Assert.Equal("/UserTimeline", redirect.PageName);
+        Assert.Equal(author, redirect.RouteValues["author"]?.ToString());
+        Assert.Equal("7", redirect.RouteValues["page"]?.ToString());
+
         Assert.Equal(author, stub.LastAddCheepAuthor);
         Assert.Equal("test cheep", stub.LastAddCheepText);
     }
