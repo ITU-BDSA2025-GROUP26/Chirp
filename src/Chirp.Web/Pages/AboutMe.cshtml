@@ -1,0 +1,48 @@
+﻿@page "/AboutMe"
+@model Chirp.Razor.Pages.AboutMeModel
+@{
+    ViewData["Title"] = "About Me";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (Model.CurrentUser != null)
+{
+    <h3>Profile Info</h3>
+    <ul>
+        <li>Username: @Model.CurrentUser.UserName</li>
+        <li>Email: @Model.CurrentUser.Email</li>
+    </ul>
+
+    <h3>My Cheeps</h3>
+    @if (Model.Cheeps.Any())
+    {
+        <ul class="cheeps">
+            @foreach (var cheep in Model.Cheeps)
+            {
+                <li>
+                    <p>
+                        <strong>@cheep.Author</strong>
+                        @cheep.Text
+                        <small>&mdash; @cheep.TimeStamp</small>
+                    </p>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <em>You haven't posted any cheeps yet.</em>
+    }
+    
+    <div style="margin-top:15px;">
+        <form asp-area="Identity" asp-page="/Account/DeletePersonalData" method="post" onsubmit="return confirm('Are you sure you want to delete your personal data? This cannot be undone.');">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn-forget-me">Forget Me</button>
+        </form>
+    </div>
+}
+else
+{
+    <p>You must be logged in to view this page.</p>
+}

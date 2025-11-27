@@ -287,3 +287,21 @@ ul.nav li a {
 ul.nav li a:hover {
     background-color: #8b4949;
 }
+
+.btn-forget-me {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.btn-forget-me:hover {
+    background-color: #c82333;
+}
+
+.aboutme-actions {
+    margin-top: 15px;
+}

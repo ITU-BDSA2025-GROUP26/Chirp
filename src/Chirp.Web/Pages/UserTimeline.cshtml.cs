@@ -56,7 +56,7 @@ namespace Chirp.Web.Pages
 
             _service.AddCheep(author, trimmed);
             
-            return Redirect($"/{author}?page={currentPage}");
+            return RedirectToPage("/UserTimeline", new { author = author, page = currentPage });
         }
     }
 }
