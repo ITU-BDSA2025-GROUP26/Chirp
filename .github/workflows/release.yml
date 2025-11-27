@@ -27,7 +27,7 @@ jobs:
         run: dotnet restore
 
       - name: Build via .NET
-        run: dotnet build --configuration Release
+        run: dotnet build src/Chirp.Web --configuration Release
         
       - name: Test via .NET
         run: |
@@ -38,13 +38,13 @@ jobs:
           dotnet test test/IntegrationTest/Chirp.Web.IntegrationTests/Chirp.Web.IntegrationTests.csproj --configuration Release --no-restore
 
       - name: Publish WebApp
-        run: dotnet publish src/Chirp.Web/Chirp.Web.csproj -c Release -o publish/webapp
+        run: dotnet publish src/Chirp.Web/Chirp.Web.csproj -c Release -o ${{env.DOTNET_ROOT}}/webapp
 
       - name: Upload WebApp artifact
         uses: actions/upload-artifact@v4
         with:
           name: net-app
-          path: publish/webapp
+          path: ${{env.DOTNET_ROOT}}/webapp
 
       - name: Publish executables
         run: |
@@ -86,8 +86,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: net-app
-          path: publish/webapp
+          name: .net-app
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -103,4 +102,4 @@ jobs:
           app-name: 'bdsagroup262025chirpremotedb'
           #publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_08C4F9B8641F4547A08E0DFC635181A1 }}
           slot-name: 'Production'
-          package: publish/webapp
+          package: .
