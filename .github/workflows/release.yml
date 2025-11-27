@@ -86,7 +86,8 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: .net-app
+          name: net-app
+          path: ./webapp
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -102,4 +103,4 @@ jobs:
           app-name: 'bdsagroup262025chirpremotedb'
           #publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_08C4F9B8641F4547A08E0DFC635181A1 }}
           slot-name: 'Production'
-          package: .
+          package: ./webapp
