@@ -37,6 +37,16 @@ namespace Chirp.Infrastructure.Chirp.Service
             });
         }
 
+        public Task Follow(string followerUserName, string followeeUserName) =>
+            _cheepRepository.Follow(followerUserName, followeeUserName);
 
+        public Task Unfollow(string followerUserName, string followeeUserName) =>
+            _cheepRepository.Unfollow(followerUserName, followeeUserName);
+
+        public Task<List<Author>> GetFollowing(string userNameOrEmail) =>
+            _cheepRepository.GetFollowing(userNameOrEmail);
+        
+        public Task<List<Author>> GetFollowers(string userNameOrEmail) =>
+            _cheepRepository.GetFollowers(userNameOrEmail);
     }
 }
