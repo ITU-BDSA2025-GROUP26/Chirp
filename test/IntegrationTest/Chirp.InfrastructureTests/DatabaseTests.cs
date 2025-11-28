@@ -42,7 +42,7 @@ public class DatabaseTests : IDisposable
         // Arrange
         using var context = CreateContext();
         var cheepRepository = new CheepRepository(context);
-
+  
         // Act
         var list = cheepRepository.GetCheeps(1, 10);
 
@@ -57,10 +57,10 @@ public class DatabaseTests : IDisposable
     {
         // Arrange
         using var context = CreateContext();
-        var cheepRepository = new CheepRepository(context);
+        var authorRepository = new AuthorRepository(context);
 
         // Act
-        var author = cheepRepository.GetAuthorByName("Bob");
+        var author = authorRepository.GetAuthorByName("Bob");
 
         // Assert
         Assert.Equal("Bob", author.UserName);
@@ -72,10 +72,10 @@ public class DatabaseTests : IDisposable
         
         // Arrange
         using var context = CreateContext();
-        var cheepRepository = new CheepRepository(context);
+        var authorRepository = new AuthorRepository(context);
 
         // Act
-        var author = cheepRepository.GetAuthorByEmail("bob@email.dk");
+        var author = authorRepository.GetAuthorByEmail("bob@email.dk");
 
         // Assert
         Assert.Equal("Bob", author.UserName);
@@ -86,13 +86,13 @@ public class DatabaseTests : IDisposable
     {
         //Arrange
         using var context = CreateContext();
-        var cheepRepository = new CheepRepository(context);
+        var authorRepository = new AuthorRepository(context);
         var name = "John";
         var email = "john@email.dk";
 
         //Act
-        cheepRepository.AddAuthor(name, email);
-        var author = cheepRepository.GetAuthorByName(name);
+        authorRepository.AddAuthor(name, email);
+        var author = authorRepository.GetAuthorByName(name);
 
         //Assert
         Assert.Equal(email, author.Email);
