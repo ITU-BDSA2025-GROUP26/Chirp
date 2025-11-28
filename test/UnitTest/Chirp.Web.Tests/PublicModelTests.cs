@@ -55,22 +55,22 @@ public class PublicModelTests
 
         public Task Follow(string followerUserName, string followeeUserName)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public Task Unfollow(string followerUserName, string followeeUserName)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public Task<List<Author>> GetFollowing(string userNameOrEmail)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(new List<Author>());
         }
 
         public Task<List<Author>> GetFollowers(string userNameOrEmail)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(new List<Author>());
         }
     }
     
