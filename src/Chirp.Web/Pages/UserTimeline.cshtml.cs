@@ -119,5 +119,18 @@ namespace Chirp.Web.Pages
             int currentPage = page ?? pageNumber ?? 1;
             return RedirectToPage("/UserTimeline", new { author = author, page = currentPage });
         }
+        
+        // NEW: like handler
+        public IActionResult OnPostLike(int cheepId, [FromQuery] int? page = 1, int? pageNumber = null)
+        {
+            if (!(User?.Identity?.IsAuthenticated ?? false))
+                return Unauthorized();
+
+            int currentPage = page ?? pageNumber ?? 1;
+
+            _service.LikeCheep(cheepId);
+
+            return Redirect($"?page={currentPage}");
+        }
     }
 }
