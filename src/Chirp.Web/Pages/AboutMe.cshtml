@@ -9,9 +9,11 @@
 @if (Model.CurrentUser != null)
 {
     <h3>Profile Info</h3>
-    <ul>
-        <li>Username: @Model.CurrentUser.UserName</li>
-        <li>Email: @Model.CurrentUser.Email</li>
+    <ul class="cheeps">
+        <p>
+            <li>Username: @Model.CurrentUser.UserName</li>
+            <li>Email: @Model.CurrentUser.Email</li>
+        </p>
     </ul>
 
     <h3>My Cheeps</h3>
@@ -21,11 +23,11 @@
             @foreach (var cheep in Model.Cheeps)
             {
                 <li>
-                    <p>
+                    <div>
                         <strong>@cheep.Author</strong>
                         @cheep.Text
                         <small>&mdash; @cheep.TimeStamp</small>
-                    </p>
+                    </div>
                 </li>
             }
         </ul>
@@ -33,6 +35,55 @@
     else
     {
         <em>You haven't posted any cheeps yet.</em>
+    }
+    <h3>Following</h3>
+    @if (Model.Following.Any())
+    {
+        <ul class="cheeps">
+            @foreach (var author in Model.Following)
+            {
+                <li>
+                    <div class="cheep-header">
+                        <span class="cheep-text">
+                            <a asp-page="/UserTimeline" asp-route-author="@author.UserName">
+                                @author.UserName
+                            </a>
+                        </span>
+                        
+                            <form method="post" asp-page-handler="Unfollow" style="display:inline;">
+                                <input type="hidden" name="authorToUnfollow" value="@author"/>
+                                <input type="hidden" name="author" value="@Model"/>
+                                <button type="submit">Unfollow</button>
+                            </form>
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <em>You are not following anyone yet.</em>
+    }
+
+    <h3>Followers</h3>
+    @if (Model.Followers.Any())
+    {
+        <ul class="cheeps">
+            @foreach (var author in Model.Followers)
+            {
+                <li>
+                    <div>
+                        <a asp-page="/UserTimeline" asp-route-author="@author.UserName">
+                            @author.UserName
+                        </a>
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <em>No one is following you yet.</em>
     }
     
     <div style="margin-top:15px;">

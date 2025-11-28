@@ -38,12 +38,14 @@
         @foreach (var cheep in Model.Cheeps)
         {
             <li>
-                <p>
-                    <strong>
-                        <a asp-page="/UserTimeline" asp-route-author="@cheep.Author">@cheep.Author</a>
-                    </strong>
-                    @cheep.Text
-                    <small>&mdash; @cheep.TimeStamp</small>
+                <div class="cheep-header">
+                    <span class="cheep-text">
+                        <strong>
+                            <a asp-page="/UserTimeline" asp-route-author="@cheep.Author">@cheep.Author</a>
+                        </strong>
+                        @cheep.Text
+                        <small>&mdash; @cheep.TimeStamp</small>
+                    </span>
                     @* FOLLOW/UNFOLLOW BLOCK *@
                     @if (User.Identity?.IsAuthenticated ?? false)
                     {
@@ -70,7 +72,7 @@
                             }
                         }
                     }
-                </p>
+                </div>
             </li>
         }
     </ul>
