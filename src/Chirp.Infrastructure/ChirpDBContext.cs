@@ -32,5 +32,21 @@ public class ChirpDBContext : IdentityDbContext<Author>
             .HasOne(c => c.Author)
             .WithMany(a => a.Cheeps)
             .HasForeignKey(c => c.AuthorId);
+        builder.Entity<Author>()
+            .HasMany(a => a.Following)
+            .WithMany(a => a.Followers)
+            .UsingEntity<Dictionary<string, object>>(
+                "AuthorFollow",
+                j => j
+                    .HasOne<Author>()
+                    .WithMany()
+                    .HasForeignKey("FolloweeId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j
+                    .HasOne<Author>()
+                    .WithMany()
+                    .HasForeignKey("FollowerId")
+                    .OnDelete(DeleteBehavior.Cascade)
+            );
     }
 }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Chirp.Infrastructure.Chirp.Service;
 using Chirp.Core;
+using Chirp.Core.Models;
 
 namespace Chirp.Web.Pages
 {
@@ -9,6 +10,8 @@ namespace Chirp.Web.Pages
     {
         private readonly ICheepService _service;
         public List<CheepDto> Cheeps { get; set; } = new();
+
+        public List<Author> Following { get; set; } = new();
 
         [BindProperty]
         public string Text { get; set; } = string.Empty;
@@ -26,7 +29,39 @@ namespace Chirp.Web.Pages
             
             int currentPage = page ?? pageNumber ?? 1;
             const int pageSize = 32;
-            Cheeps = _service.GetCheepsFromAuthor(safeAuthor, currentPage, pageSize);
+            var loggedInUser = User?.Identity?.Name;
+
+            // If viewing own timeline while logged in: show self + followees
+            if (!string.IsNullOrEmpty(loggedInUser) &&
+                string.Equals(loggedInUser, safeAuthor, StringComparison.OrdinalIgnoreCase))
+            {
+                var allCheeps = new List<CheepDto>();
+
+                // own cheeps
+                allCheeps.AddRange(_service.GetCheepsFromAuthor(safeAuthor, currentPage, pageSize));
+
+                // followees
+                var followees = _service.GetFollowing(safeAuthor).Result;
+                foreach (var f in followees)
+                {
+                    allCheeps.AddRange(_service.GetCheepsFromAuthor(f.UserName, currentPage, pageSize));
+                }
+
+                // sort by timestamp descending (assuming parsable format)
+                Cheeps = allCheeps
+                    .OrderByDescending(c => DateTime.Parse(c.TimeStamp))
+                    .ToList();
+
+                Following = followees;
+            }
+            else
+            {
+                // Viewing someone else's timeline: only that author's cheeps
+                Cheeps = _service.GetCheepsFromAuthor(safeAuthor, currentPage, pageSize);
+
+                if (!string.IsNullOrEmpty(loggedInUser))
+                    Following = _service.GetFollowing(loggedInUser).Result;
+            }
             ViewData["CurrentPage"] = currentPage;
             ViewData["Author"] = author;
             return Page();
@@ -56,6 +91,30 @@ namespace Chirp.Web.Pages
 
             _service.AddCheep(author, trimmed);
             
+            return RedirectToPage("/UserTimeline", new { author = author, page = currentPage });
+        }
+        
+        public IActionResult OnPostFollow(string authorToFollow, string author, [FromQuery] int? page = 1, int? pageNumber = null)
+        {
+            if (!(User?.Identity?.IsAuthenticated ?? false))
+                return Unauthorized();
+
+            var follower = User.Identity!.Name!;
+            _service.Follow(follower, authorToFollow).Wait();
+
+            int currentPage = page ?? pageNumber ?? 1;
+            return RedirectToPage("/UserTimeline", new { author = author, page = currentPage });
+        }
+        
+        public IActionResult OnPostUnfollow(string authorToUnfollow, string author, [FromQuery] int? page = 1, int? pageNumber = null)
+        {
+            if (!(User?.Identity?.IsAuthenticated ?? false))
+                return Unauthorized();
+
+            var follower = User.Identity!.Name!;
+            _service.Unfollow(follower, authorToUnfollow).Wait();
+
+            int currentPage = page ?? pageNumber ?? 1;
             return RedirectToPage("/UserTimeline", new { author = author, page = currentPage });
         }
     }

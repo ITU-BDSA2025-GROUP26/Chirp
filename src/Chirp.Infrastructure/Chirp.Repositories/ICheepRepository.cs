@@ -13,4 +13,10 @@ public interface ICheepRepository
     public Author GetAuthorByEmail(string email);
     public void AddAuthor(string authorName, string email);
     public void AddCheep(CheepDto cheepdto);
+    
+    Task Unfollow(string followerUserName, string followeeUserName);
+    public Task Follow(string followerUserName, string followeeUserName);
+
+    Task<List<Author>> GetFollowing(string userNameOrEmail);
+    Task<List<Author>> GetFollowers(string userNameOrEmail);
 }

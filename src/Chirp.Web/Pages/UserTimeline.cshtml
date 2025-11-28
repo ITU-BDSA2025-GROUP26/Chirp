@@ -44,6 +44,32 @@
                     </strong>
                     @cheep.Text
                     <small>&mdash; @cheep.TimeStamp</small>
+                    @* FOLLOW/UNFOLLOW BLOCK *@
+                    @if (User.Identity?.IsAuthenticated ?? false)
+                    {
+                        if (!string.Equals(User.Identity!.Name, cheep.Author, StringComparison.OrdinalIgnoreCase))
+                        {
+                            var isFollowing = Model.Following.Any(a => a.UserName == cheep.Author);
+                            if (!isFollowing)
+                            {
+                                <form method="post" asp-page-handler="Follow" style="display:inline;">
+                                    <input type="hidden" name="authorToFollow" value="@cheep.Author" />
+                                    <input type="hidden" name="author" value="@routeName" />
+                                    <input type="hidden" name="page" value="@currentPage" />
+                                    <button type="submit">Follow</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form method="post" asp-page-handler="Unfollow" style="display:inline;">
+                                    <input type="hidden" name="authorToUnfollow" value="@cheep.Author" />
+                                    <input type="hidden" name="author" value="@routeName" />
+                                    <input type="hidden" name="page" value="@currentPage" />
+                                    <button type="submit">Unfollow</button>
+                                </form>
+                            }
+                        }
+                    }
                 </p>
             </li>
         }
