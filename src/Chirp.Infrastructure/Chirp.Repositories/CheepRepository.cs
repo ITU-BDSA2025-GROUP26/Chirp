@@ -21,19 +21,21 @@ public sealed class CheepRepository : ICheepRepository
 
     public List<CheepDto> GetCheeps(int page, int pageSize)
     {
-        var copenhagen = TimeZoneInfo.FindSystemTimeZoneById("Europe/Copenhagen");
-        
-        return _context.Cheeps
+     var cheeps = _context.Cheeps
+            .Include(c => c.Author) // ensure Author is loaded
             .OrderByDescending(c => c.TimeStamp) // sort newest first
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
+            .ToList();
+
+        return cheeps
             .Select(c => new CheepDto
             {
-                Text = c.Text,
-                Author = c.Author!.UserName,
+                Text = c.Text ?? string.Empty,
+                Author = c.Author!.UserName ?? "(unknown)",
                 TimeStamp = TimeZoneInfo.ConvertTimeFromUtc(
                     DateTime.SpecifyKind(c.TimeStamp, DateTimeKind.Utc),
-                    copenhagen
+                    CopenhagenZone
                 ).ToString("yyyy-MM-dd HH:mm:ss")
             })
             .ToList();
@@ -41,15 +43,19 @@ public sealed class CheepRepository : ICheepRepository
 
     public List<CheepDto> GetCheepsFromAuthor(string author, int page, int pageSize)
     {
-        return _context.Cheeps
-            .Where(c => c.Author.UserName == author)
-            .OrderByDescending(c => c.TimeStamp) // sort newest first
+        var cheeps = _context.Cheeps
+            .Include(c => c.Author) // ensure Author is loaded
+            .Where(c => c.Author != null && c.Author.UserName == author)
+            .OrderByDescending(c => c.TimeStamp)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
+            .ToList();
+
+        return cheeps
             .Select(c => new CheepDto
             {
-                Text = c.Text,
-                Author = c.Author!.UserName,
+                Text = c.Text ?? string.Empty,
+                Author = c.Author!.UserName ?? "(unknown)",
                 TimeStamp = TimeZoneInfo.ConvertTimeFromUtc(
                     DateTime.SpecifyKind(c.TimeStamp, DateTimeKind.Utc),
                     CopenhagenZone
