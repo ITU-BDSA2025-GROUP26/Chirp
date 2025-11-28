@@ -70,6 +70,15 @@
                                     </form>
                                 }
                             }
+                            
+                            <!-- LIKE BUTTON -->
+                            <form method="post" asp-page-handler="Like" style="display:inline; margin-left:4px;">
+                                <input type="hidden" name="cheepId" value="@cheep.CheepId" />
+                                <input type="hidden" name="page" value="@currentPage" />
+                                <button type="submit">
+                                    ❤️ @cheep.Likes
+                                </button>
+                            </form>
                         }
                     </div>
                 </li>
