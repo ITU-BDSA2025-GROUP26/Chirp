@@ -51,30 +51,62 @@ public class UserTimelineModelTests
             LastAddCheepAuthor = authorUserName;
             LastAddCheepText = text;
         }
-
+    }
+    
+    private sealed class StubAuthorService : IAuthorService
+    {
         public Task Follow(string followerUserName, string followeeUserName)
         {
-            throw new NotImplementedException();
+            LastFollowFollower = followerUserName;
+            LastFollowFollowee = followeeUserName;
+            return Task.CompletedTask;
         }
 
         public Task Unfollow(string followerUserName, string followeeUserName)
         {
-            throw new NotImplementedException();
+            LastUnfollowFollower = followerUserName;
+            LastUnfollowFollowee = followeeUserName;
+            return Task.CompletedTask;
         }
+
         public Task<List<Author>> GetFollowers(string userNameOrEmail)
         {
-            throw new NotImplementedException();
+            LastGetFollowersUser = userNameOrEmail;
+            return Task.FromResult(NextGetFollowersResult ?? new List<Author>());
         }
 
-        public Task<List<Author>> GetFollowing(string followerUserName)
+        public Task<List<Author>> GetFollowing(string userNameOrEmail)
         {
-            throw new NotImplementedException();
+            LastGetFollowingUser = userNameOrEmail;
+            return Task.FromResult(NextGetFollowingResult ?? new List<Author>());
         }
+
+        public Author GetAuthorByName(string authorName)
+            => throw new NotImplementedException();
+
+        public Author GetAuthorByEmail(string email)
+            => throw new NotImplementedException();
+
+        public void AddAuthor(string authorName, string email)
+            => throw new NotImplementedException();
+
+        // Tracking fields so future tests can assert follow/unfollow behavior if needed
+        public string? LastFollowFollower { get; private set; }
+        public string? LastFollowFollowee { get; private set; }
+
+        public string? LastUnfollowFollower { get; private set; }
+        public string? LastUnfollowFollowee { get; private set; }
+
+        public string? LastGetFollowersUser { get; private set; }
+        public string? LastGetFollowingUser { get; private set; }
+
+        public List<Author>? NextGetFollowersResult { get; set; }
+        public List<Author>? NextGetFollowingResult { get; set; }
     }
 
-    private static UserTimelineModel CreateModelWithUser(StubCheepService stub, bool authenticated, string? userName)
+    private static UserTimelineModel CreateModelWithUser(StubCheepService cheepStub,StubAuthorService authorStub, bool authenticated, string? userName)
     {
-        var model = new UserTimelineModel(stub);
+        var model = new UserTimelineModel(cheepStub, authorStub);
 
         var identity = authenticated
             ? new ClaimsIdentity(
@@ -117,13 +149,14 @@ public class UserTimelineModelTests
     {
         // Arrange
         var author = "alice";
-        var stub = new StubCheepService();
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
         var expected = new List<CheepDto>
         {
             new CheepDto { Author = author, Text = "first", TimeStamp = DateTime.UtcNow.ToString("O") }
         };
-        stub.NextGetCheepsFromAuthorResult = expected;
-        var model = CreateModelWithUser(stub, authenticated: false, userName: null);
+        cheepStub.NextGetCheepsFromAuthorResult = expected;
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: false, userName: null);
 
         // Act
         var result = model.OnGet(author);
@@ -131,9 +164,9 @@ public class UserTimelineModelTests
         // Assert
         Assert.IsType<PageResult>(result);
         Assert.Same(expected, model.Cheeps);
-        Assert.Equal(author, stub.LastAuthor);
-        Assert.Equal(1, stub.LastPage);
-        Assert.Equal(32, stub.LastSize);
+        Assert.Equal(author, cheepStub.LastAuthor);
+        Assert.Equal(1, cheepStub.LastPage);
+        Assert.Equal(32, cheepStub.LastSize);
         Assert.Equal(1, model.ViewData["CurrentPage"]);
         Assert.Equal(author, model.ViewData["Author"]);
     }
@@ -144,8 +177,9 @@ public class UserTimelineModelTests
     public void OnGet_CustomPage_UsesAuthorAndPage_ReturnsEmptyIfNoData_SetsViewData(string author, int page)
     {
         // Arrange
-        var stub = new StubCheepService();
-        var model = CreateModelWithUser(stub, authenticated: false, userName: null);
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: false, userName: null);
 
 
         // Act
@@ -154,9 +188,9 @@ public class UserTimelineModelTests
         // Assert
         Assert.IsType<PageResult>(result);
         Assert.Empty(model.Cheeps);
-        Assert.Equal(author, stub.LastAuthor);
-        Assert.Equal(page, stub.LastPage);
-        Assert.Equal(32, stub.LastSize);
+        Assert.Equal(author, cheepStub.LastAuthor);
+        Assert.Equal(page, cheepStub.LastPage);
+        Assert.Equal(32, cheepStub.LastSize);
         Assert.Equal(page, model.ViewData["CurrentPage"]);
         Assert.Equal(author, model.ViewData["Author"]);
     }
@@ -166,8 +200,9 @@ public class UserTimelineModelTests
     {
         // Arrange
         var author = "daisy";
-        var stub = new StubCheepService();
-        var model = CreateModelWithUser(stub, authenticated: false, userName: null);
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: false, userName: null);
 
 
         // Act
@@ -176,9 +211,9 @@ public class UserTimelineModelTests
         // Assert
         Assert.IsType<PageResult>(result);
         Assert.Empty(model.Cheeps);
-        Assert.Equal(author, stub.LastAuthor);
-        Assert.Equal(5, stub.LastPage);
-        Assert.Equal(32, stub.LastSize);
+        Assert.Equal(author, cheepStub.LastAuthor);
+        Assert.Equal(5, cheepStub.LastPage);
+        Assert.Equal(32, cheepStub.LastSize);
         Assert.Equal(5, model.ViewData["CurrentPage"]);
         Assert.Equal(author, model.ViewData["Author"]);
     }
@@ -187,8 +222,9 @@ public class UserTimelineModelTests
     public void OnGet_EmptyAuthor_CallsService_WithEmptyString()
     {
         // Arrange
-        var stub = new StubCheepService();
-        var model = CreateModelWithUser(stub, authenticated: false, userName: null);
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: false, userName: null);
 
 
         // Act
@@ -197,9 +233,9 @@ public class UserTimelineModelTests
         // Assert
         Assert.IsType<PageResult>(result);
         Assert.Empty(model.Cheeps);
-        Assert.Equal(string.Empty, stub.LastAuthor);
-        Assert.Equal(1, stub.LastPage);
-        Assert.Equal(32, stub.LastSize);
+        Assert.Equal(string.Empty, cheepStub.LastAuthor);
+        Assert.Equal(1, cheepStub.LastPage);
+        Assert.Equal(32, cheepStub.LastSize);
         Assert.Equal(1, model.ViewData["CurrentPage"]);
         Assert.Equal(string.Empty, model.ViewData["Author"]);
     }
@@ -213,8 +249,9 @@ public class UserTimelineModelTests
     {
         // Arrange
         var author = "alice";
-        var stub = new StubCheepService();
-        var model = CreateModelWithUser(stub, authenticated: false, userName: null);
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: false, userName: null);
         model.Text = "hello there";
 
         // Act
@@ -222,8 +259,8 @@ public class UserTimelineModelTests
 
         // Assert
         Assert.IsType<UnauthorizedResult>(result);
-        Assert.Null(stub.LastAddCheepAuthor);
-        Assert.Null(stub.LastAddCheepText);
+        Assert.Null(cheepStub.LastAddCheepAuthor);
+        Assert.Null(cheepStub.LastAddCheepText);
     }
 
     [Fact]
@@ -231,8 +268,9 @@ public class UserTimelineModelTests
     {
         // Arrange
         var author = "alice";
-        var stub = new StubCheepService();
-        var model = CreateModelWithUser(stub, authenticated: true, userName: "bob");
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: true, userName: "bob");
         model.Text = "hello there";
 
         // Act
@@ -240,8 +278,8 @@ public class UserTimelineModelTests
 
         // Assert
         Assert.IsType<ForbidResult>(result);
-        Assert.Null(stub.LastAddCheepAuthor);
-        Assert.Null(stub.LastAddCheepText);
+        Assert.Null(cheepStub.LastAddCheepAuthor);
+        Assert.Null(cheepStub.LastAddCheepText);
     }
 
     [Theory]
@@ -252,14 +290,15 @@ public class UserTimelineModelTests
     {
         // Arrange
         var author = "alice";
-        var stub = new StubCheepService();
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
         var expected = new List<CheepDto>
         {
             new CheepDto { Author = author, Text = "existing", TimeStamp = DateTime.UtcNow.ToString("O") }
         };
-        stub.NextGetCheepsFromAuthorResult = expected;
+        cheepStub.NextGetCheepsFromAuthorResult = expected;
 
-        var model = CreateModelWithUser(stub, authenticated: true, userName: author);
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: true, userName: author);
         model.Text = text ?? string.Empty;
 
         // Act
@@ -271,14 +310,14 @@ public class UserTimelineModelTests
         Assert.True(model.ModelState.ContainsKey(nameof(UserTimelineModel.Text)));
 
         Assert.Same(expected, model.Cheeps);
-        Assert.Equal(author, stub.LastAuthor);
-        Assert.Equal(3, stub.LastPage);
-        Assert.Equal(32, stub.LastSize);
+        Assert.Equal(author, cheepStub.LastAuthor);
+        Assert.Equal(3, cheepStub.LastPage);
+        Assert.Equal(32, cheepStub.LastSize);
         Assert.Equal(3, model.ViewData["CurrentPage"]);
         Assert.Equal(author, model.ViewData["Author"]);
 
-        Assert.Null(stub.LastAddCheepAuthor);
-        Assert.Null(stub.LastAddCheepText);
+        Assert.Null(cheepStub.LastAddCheepAuthor);
+        Assert.Null(cheepStub.LastAddCheepText);
     }
 
     [Fact]
@@ -286,14 +325,15 @@ public class UserTimelineModelTests
     {
         // Arrange
         var author = "alice";
-        var stub = new StubCheepService();
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
         var expected = new List<CheepDto>
         {
             new CheepDto { Author = author, Text = "existing", TimeStamp = DateTime.UtcNow.ToString("O") }
         };
-        stub.NextGetCheepsFromAuthorResult = expected;
+        cheepStub.NextGetCheepsFromAuthorResult = expected;
 
-        var model = CreateModelWithUser(stub, authenticated: true, userName: author);
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: true, userName: author);
         model.Text = new string('x', 161);
 
         // Act
@@ -305,14 +345,14 @@ public class UserTimelineModelTests
         Assert.True(model.ModelState.ContainsKey(nameof(UserTimelineModel.Text)));
 
         Assert.Same(expected, model.Cheeps);
-        Assert.Equal(author, stub.LastAuthor);
-        Assert.Equal(2, stub.LastPage);
-        Assert.Equal(32, stub.LastSize);
+        Assert.Equal(author, cheepStub.LastAuthor);
+        Assert.Equal(2, cheepStub.LastPage);
+        Assert.Equal(32, cheepStub.LastSize);
         Assert.Equal(2, model.ViewData["CurrentPage"]);
         Assert.Equal(author, model.ViewData["Author"]);
 
-        Assert.Null(stub.LastAddCheepAuthor);
-        Assert.Null(stub.LastAddCheepText);
+        Assert.Null(cheepStub.LastAddCheepAuthor);
+        Assert.Null(cheepStub.LastAddCheepText);
     }
 
     [Fact]
@@ -320,8 +360,9 @@ public class UserTimelineModelTests
     {
         // Arrange
         var author = "alice";
-        var stub = new StubCheepService();
-        var model = CreateModelWithUser(stub, authenticated: true, userName: author);
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: true, userName: author);
 
         model.Text = "  hello world  ";
 
@@ -334,12 +375,12 @@ public class UserTimelineModelTests
         Assert.Equal(author, redirect.RouteValues["author"]?.ToString());
         Assert.Equal("4", redirect.RouteValues["page"]?.ToString());
 
-        Assert.Equal(author, stub.LastAddCheepAuthor);
-        Assert.Equal("hello world", stub.LastAddCheepText); // trimmed
+        Assert.Equal(author, cheepStub.LastAddCheepAuthor);
+        Assert.Equal("hello world", cheepStub.LastAddCheepText); // trimmed
 
         // PRG pattern: OnPost does not reload cheeps when successful
-        Assert.Null(stub.LastPage);
-        Assert.Null(stub.LastSize);
+        Assert.Null(cheepStub.LastPage);
+        Assert.Null(cheepStub.LastSize);
     }
 
     [Fact]
@@ -347,8 +388,9 @@ public class UserTimelineModelTests
     {
         // Arrange
         var author = "alice";
-        var stub = new StubCheepService();
-        var model = CreateModelWithUser(stub, authenticated: true, userName: author);
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: true, userName: author);
 
         model.Text = "test cheep";
 
@@ -361,7 +403,7 @@ public class UserTimelineModelTests
         Assert.Equal(author, redirect.RouteValues["author"]?.ToString());
         Assert.Equal("7", redirect.RouteValues["page"]?.ToString());
 
-        Assert.Equal(author, stub.LastAddCheepAuthor);
-        Assert.Equal("test cheep", stub.LastAddCheepText);
+        Assert.Equal(author, cheepStub.LastAddCheepAuthor);
+        Assert.Equal("test cheep", cheepStub.LastAddCheepText);
     }
 }
