@@ -25,9 +25,11 @@ public sealed class CheepRepository : ICheepRepository
             .Take(pageSize)
             .Select(c => new CheepDto
             {
+                CheepId = c.CheepId,
                 Text = c.Text,
                 Author = c.Author.UserName,
-                TimeStamp = c.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss")
+                TimeStamp = c.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"),
+                Likes = c.Likes
             })
             .ToList();
     }
@@ -42,9 +44,11 @@ public sealed class CheepRepository : ICheepRepository
             .Take(pageSize)
             .Select(c => new CheepDto
             {
+                CheepId = c.CheepId,
                 Text = c.Text,
                 Author = c.Author.UserName,
-                TimeStamp = c.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss")
+                TimeStamp = c.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"),
+                Likes = c.Likes
             })
             .ToList();
     }
@@ -124,11 +128,16 @@ public sealed class CheepRepository : ICheepRepository
         }
         return DateTime.UtcNow;
     }
-   
-    
-    
 
-    
-    
-  
+    public void LikeCheep(int cheepId)
+    {
+        var cheep = _context.Cheeps.SingleOrDefault(c => c.CheepId == cheepId);
+        if (cheep is null)
+        {
+            return; 
+        }
+
+        cheep.Likes++;
+        _context.SaveChanges();
+    }
 }
