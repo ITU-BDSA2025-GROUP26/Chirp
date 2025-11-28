@@ -135,7 +135,7 @@ div.page ul.cheeps li {
   border-radius: 2px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
-  min-height: 48px;
+  min-height: auto;
 }
 
 div.page ul.cheeps p {
@@ -150,6 +150,17 @@ div.page ul.cheeps li img {
 div.page ul.cheeps li small {
   font-size: 0.9em;
   color: #888;
+}
+
+div.page ul.cheeps li .cheep-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* or flex-start + gap if you want them closer */
+}
+
+/* Let text take the remaining space */
+div.page ul.cheeps li .cheep-text {
+    flex: 1 1 auto;
 }
 
 div.page div.cheepbox {

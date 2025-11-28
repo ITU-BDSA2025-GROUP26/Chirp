@@ -5,6 +5,7 @@ using Chirp.Infrastructure.Chirp.Service;
 using Chirp.Core;
 using Chirp.Core.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Chirp.Razor.Pages
 {
@@ -21,6 +22,9 @@ namespace Chirp.Razor.Pages
 
         public Author CurrentUser { get; set; }
         public List<CheepDto> Cheeps { get; set; } = new();
+        
+        public List<Author> Following { get; set; } = new();
+        public List<Author> Followers { get; set; } = new();
 
         public async Task OnGetAsync(int? page = 1)
         {
@@ -41,8 +45,21 @@ namespace Chirp.Razor.Pages
 
                     Cheeps = _service.GetCheepsFromAuthor(CurrentUser.UserName, currentPage, pageSize);
                     ViewData["CurrentPage"] = currentPage;
+                    
+                    Following = CurrentUser.Following.ToList();
+                    Followers = CurrentUser.Followers.ToList();
                 }
             }
         }
+         public async Task<IActionResult> OnPostUnfollow(string authorToUnfollow, string author)
+                {
+                    if (!(User?.Identity?.IsAuthenticated ?? false))
+                        return Unauthorized();
+        
+                    var follower = User.Identity!.Name!;
+                    await _service.Unfollow(follower, authorToUnfollow);
+                    
+                    return RedirectToPage("/AboutMe", new { author = author });
+                }
     }
 }
