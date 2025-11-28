@@ -11,6 +11,7 @@ namespace Chirp.Web.Pages
     public class PublicModel : PageModel
     {
         private readonly ICheepService _service;
+        private readonly IAuthorService _authorService;
         public List<CheepDto> Cheeps { get; set; } = new();
         
         public List<Author> Following { get; set; } = new();
@@ -19,9 +20,10 @@ namespace Chirp.Web.Pages
         [Display(Name = "What's on your mind?")]
         [StringLength(160, ErrorMessage = "Cheep must be at most 160 characters.")]
         public string Text { get; set; } = string.Empty;
-        public PublicModel(ICheepService service)
+        public PublicModel(ICheepService service, IAuthorService authorService)
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
+            _authorService = authorService ?? throw new ArgumentNullException(nameof(authorService));
         }
 
         public ActionResult OnGet([FromQuery] int? page = 1, int? pageNumber = null)
@@ -31,12 +33,13 @@ namespace Chirp.Web.Pages
             
             int currentPage = page ?? pageNumber ?? 1;
             const int pageSize = 32;
+            
             Cheeps = _service.GetCheeps(currentPage, pageSize);
 
             if (User?.Identity?.IsAuthenticated ?? false)
             {
                 var userName = User.Identity!.Name!;
-                Following = _service.GetFollowing(userName).Result;
+                Following = _authorService.GetFollowing(userName).Result;
             }
             
             ViewData["CurrentPage"] = currentPage;
@@ -66,7 +69,7 @@ namespace Chirp.Web.Pages
                 if (User?.Identity?.IsAuthenticated ?? false)
                 {
                     var userName = User.Identity!.Name!;
-                    Following = _service.GetFollowing(userName).Result;
+                    Following = _authorService.GetFollowing(userName).Result;
                 }
                 
                 ViewData["CurrentPage"] = currentPage;
@@ -85,7 +88,7 @@ namespace Chirp.Web.Pages
                 return Unauthorized();
 
             var follower = User.Identity!.Name!;
-            _service.Follow(follower, authorToFollow).Wait();
+            _authorService.Follow(follower, authorToFollow).Wait();
 
             int currentPage = page ?? pageNumber ?? 1;
             return Redirect($"?page={currentPage}");
@@ -97,7 +100,7 @@ namespace Chirp.Web.Pages
                 return Unauthorized();
 
             var follower = User.Identity!.Name!;
-            _service.Unfollow(follower, authorToUnfollow).Wait();
+            _authorService.Unfollow(follower, authorToUnfollow).Wait();
 
             int currentPage = page ?? pageNumber ?? 1;
             return Redirect($"?page={currentPage}");
