@@ -11,6 +11,8 @@ public sealed class CheepRepository : ICheepRepository
 {
     private readonly ChirpDBContext _context;
     private const int DefaultPageSize = 32;
+    private static readonly TimeZoneInfo CopenhagenZone =
+        TimeZoneInfo.FindSystemTimeZoneById("Europe/Copenhagen");
 
     public CheepRepository(ChirpDBContext context)
     {
@@ -19,6 +21,8 @@ public sealed class CheepRepository : ICheepRepository
 
     public List<CheepDto> GetCheeps(int page, int pageSize)
     {
+        var copenhagen = TimeZoneInfo.FindSystemTimeZoneById("Europe/Copenhagen");
+        
         return _context.Cheeps
             .OrderByDescending(c => c.TimeStamp) // sort newest first
             .Skip((page - 1) * pageSize)
@@ -26,12 +30,14 @@ public sealed class CheepRepository : ICheepRepository
             .Select(c => new CheepDto
             {
                 Text = c.Text,
-                Author = c.Author.UserName,
-                TimeStamp = c.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss")
+                Author = c.Author!.UserName,
+                TimeStamp = TimeZoneInfo.ConvertTimeFromUtc(
+                    DateTime.SpecifyKind(c.TimeStamp, DateTimeKind.Utc),
+                    copenhagen
+                ).ToString("yyyy-MM-dd HH:mm:ss")
             })
             .ToList();
     }
-
 
     public List<CheepDto> GetCheepsFromAuthor(string author, int page, int pageSize)
     {
@@ -43,8 +49,11 @@ public sealed class CheepRepository : ICheepRepository
             .Select(c => new CheepDto
             {
                 Text = c.Text,
-                Author = c.Author.UserName,
-                TimeStamp = c.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss")
+                Author = c.Author!.UserName,
+                TimeStamp = TimeZoneInfo.ConvertTimeFromUtc(
+                    DateTime.SpecifyKind(c.TimeStamp, DateTimeKind.Utc),
+                    CopenhagenZone
+                ).ToString("yyyy-MM-dd HH:mm:ss")
             })
             .ToList();
     }
@@ -76,7 +85,7 @@ public sealed class CheepRepository : ICheepRepository
         if (pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size must be >= 1.");
 
         return await _context.Cheeps
-            .Where(c => c.Author.UserName == authorName)
+            .Where(c => c.Author!.UserName == authorName)
             .OrderByDescending(c => c.TimeStamp)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
@@ -102,33 +111,15 @@ public sealed class CheepRepository : ICheepRepository
         if (author is null)
             throw new InvalidOperationException($"Author ' {cheepdto.Author} not found");
                 
-
-        var timeStamp = StringTimeStampToDateTime(cheepdto.TimeStamp);
-
+    
         var cheep = new Cheep
         {
-            Text = cheepdto.Text,
-            TimeStamp = timeStamp,
+            Text = text,
+            TimeStamp = DateTime.UtcNow,
             AuthorId = author.Id,
         };
 
         _context.Cheeps.Add(cheep);
         _context.SaveChanges();
     }
-    
-    private static DateTime StringTimeStampToDateTime(string stringTimeStamp)
-    {
-        if (!string.IsNullOrWhiteSpace(stringTimeStamp) && DateTime.TryParse(stringTimeStamp, out var parsed))
-        {
-            return parsed;
-        }
-        return DateTime.UtcNow;
-    }
-   
-    
-    
-
-    
-    
-  
 }
