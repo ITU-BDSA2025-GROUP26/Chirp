@@ -13,11 +13,13 @@ namespace Chirp.Razor.Pages
     {
         private readonly UserManager<Author> _userManager;
         private readonly ICheepService _service;
+        private readonly IAuthorService _authorService;
 
-        public AboutMeModel(UserManager<Author> userManager, ICheepService service)
+        public AboutMeModel(UserManager<Author> userManager, ICheepService service, IAuthorService authorService)
         {
             _userManager = userManager;
             _service = service;
+            _authorService = authorService;
         }
 
         public Author CurrentUser { get; set; }
@@ -57,7 +59,7 @@ namespace Chirp.Razor.Pages
                         return Unauthorized();
         
                     var follower = User.Identity!.Name!;
-                    await _service.Unfollow(follower, authorToUnfollow);
+                    await _authorService.Unfollow(follower, authorToUnfollow);
                     
                     return RedirectToPage("/AboutMe", new { author = author });
                 }

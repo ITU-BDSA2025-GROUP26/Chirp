@@ -9,15 +9,17 @@ namespace Chirp.Web.Pages
     public class UserTimelineModel : PageModel
     {
         private readonly ICheepService _service;
+        private readonly IAuthorService _authorService;
         public List<CheepDto> Cheeps { get; set; } = new();
 
         public List<Author> Following { get; set; } = new();
 
         [BindProperty]
         public string Text { get; set; } = string.Empty;
-        public UserTimelineModel(ICheepService service)
+        public UserTimelineModel(ICheepService service, IAuthorService authorService)
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
+            _authorService = authorService ?? throw new ArgumentNullException(nameof(authorService));
         }
 
         public ActionResult OnGet(string author, [FromQuery] int? page = 1, int? pageNumber = null)
@@ -41,7 +43,7 @@ namespace Chirp.Web.Pages
                 allCheeps.AddRange(_service.GetCheepsFromAuthor(safeAuthor, currentPage, pageSize));
 
                 // followees
-                var followees = _service.GetFollowing(safeAuthor).Result;
+                var followees = _authorService.GetFollowing(safeAuthor).Result;
                 foreach (var f in followees)
                 {
                     allCheeps.AddRange(_service.GetCheepsFromAuthor(f.UserName, currentPage, pageSize));
@@ -60,7 +62,7 @@ namespace Chirp.Web.Pages
                 Cheeps = _service.GetCheepsFromAuthor(safeAuthor, currentPage, pageSize);
 
                 if (!string.IsNullOrEmpty(loggedInUser))
-                    Following = _service.GetFollowing(loggedInUser).Result;
+                    Following = _authorService.GetFollowing(loggedInUser).Result;
             }
             ViewData["CurrentPage"] = currentPage;
             ViewData["Author"] = author;
@@ -100,7 +102,7 @@ namespace Chirp.Web.Pages
                 return Unauthorized();
 
             var follower = User.Identity!.Name!;
-            _service.Follow(follower, authorToFollow).Wait();
+            _authorService.Follow(follower, authorToFollow).Wait();
 
             int currentPage = page ?? pageNumber ?? 1;
             return RedirectToPage("/UserTimeline", new { author = author, page = currentPage });
@@ -112,7 +114,7 @@ namespace Chirp.Web.Pages
                 return Unauthorized();
 
             var follower = User.Identity!.Name!;
-            _service.Unfollow(follower, authorToUnfollow).Wait();
+            _authorService.Unfollow(follower, authorToUnfollow).Wait();
 
             int currentPage = page ?? pageNumber ?? 1;
             return RedirectToPage("/UserTimeline", new { author = author, page = currentPage });

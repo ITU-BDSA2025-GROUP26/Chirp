@@ -8,15 +8,6 @@ public interface ICheepRepository
     public List<CheepDto> GetCheepsFromAuthor(string author, int page, int pageSize);
     Task<IReadOnlyList<Cheep>> GetCheepsFromPage(int page,int pageSize, CancellationToken ct = default);
     Task<IReadOnlyList<Cheep>> GetCheepsFromAuthorAndPage(string authorName, int page, int pageSize, CancellationToken ct = default);
-
-    public Author GetAuthorByName(string authorName);
-    public Author GetAuthorByEmail(string email);
-    public void AddAuthor(string authorName, string email);
-    public void AddCheep(CheepDto cheepdto);
     
-    Task Unfollow(string followerUserName, string followeeUserName);
-    public Task Follow(string followerUserName, string followeeUserName);
-
-    Task<List<Author>> GetFollowing(string userNameOrEmail);
-    Task<List<Author>> GetFollowers(string userNameOrEmail);
+    public void AddCheep(CheepDto cheepdto);
 }
