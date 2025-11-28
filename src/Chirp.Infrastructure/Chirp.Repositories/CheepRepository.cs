@@ -83,34 +83,6 @@ public sealed class CheepRepository : ICheepRepository
             .AsNoTracking()
             .ToListAsync(ct);
     }
-
-    public Author GetAuthorByName(string authorName)
-    {
-        return _context.Authors
-            .Single(a => a.UserName == authorName);
-    }
-
-    public Author GetAuthorByEmail(string email)
-    {
-        return _context.Authors
-            .Single(a => a.Email == email);
-    }
-
-    public void AddAuthor(string authorName, string email)
-    {
-        Author author = new Author();
-        author.UserName = authorName;
-        author.Email = email;
-        _context.Authors.Add(author);
-        _context.SaveChanges();
-    }
-
-    public void AddAuthor(Author author)
-    {
-        _context.Authors.Add(author);
-        _context.SaveChanges();
-    }
-
     public void AddCheep(CheepDto cheepdto)
     {
         if (cheepdto is null) throw new ArgumentNullException(nameof(cheepdto));
@@ -152,67 +124,11 @@ public sealed class CheepRepository : ICheepRepository
         }
         return DateTime.UtcNow;
     }
-    public async Task Follow(string followerUserName, string followeeUserName)
-    {
-        if (string.IsNullOrWhiteSpace(followerUserName) ||
-            string.IsNullOrWhiteSpace(followeeUserName))
-            throw new ArgumentException("Usernames required.");   
-        
-        var follower = await _context.Authors
-            .Include(a => a.Following)
-            .FirstOrDefaultAsync(a => a.UserName == followerUserName);
+   
+    
+    
 
-        var followee = await _context.Authors
-            .FirstOrDefaultAsync(a => a.UserName == followeeUserName);
-
-        if (follower == null || followee == null)
-            throw new InvalidOperationException("Author not found.");
-
-        if (follower.Id == followee.Id)
-            return; // can't follow yourself
-
-        if (!follower.Following.Any(a => a.Id == followee.Id))
-        {
-            follower.Following.Add(followee);
-            await _context.SaveChangesAsync();
-        }
-    }
-    public async Task Unfollow(string followerUserName, string followeeUserName)
-    {
-        var follower = await _context.Authors
-            .Include(a => a.Following)
-            .FirstOrDefaultAsync(a => a.UserName == followerUserName);
-        
-        var followee = await _context.Authors
-            .FirstOrDefaultAsync(a => a.UserName == followeeUserName);
-        
-        if (follower == null || followee == null)
-            throw new InvalidOperationException("Author not found.");
-        
-        if (follower.Following.Remove(followee))
-            await _context.SaveChangesAsync();
-    }
-    public async Task<List<Author>> GetFollowing(string userNameOrEmail)
-    {
-        if (string.IsNullOrWhiteSpace(userNameOrEmail)) return [];
-        
-        var author = await _context.Authors
-            .Include(a => a.Following)
-            .FirstOrDefaultAsync(a => a.UserName == userNameOrEmail || a.Email == userNameOrEmail);
-
-        return author?.Following.ToList() ?? [];
-    }
-
-    public async Task<List<Author>> GetFollowers(string userNameOrEmail)
-    {
-        if (string.IsNullOrWhiteSpace(userNameOrEmail)) return [];
-
-        var author = await _context.Authors
-            .Include(a => a.Followers)
-            .FirstOrDefaultAsync(a => a.UserName == userNameOrEmail || a.Email == userNameOrEmail);
-
-        return author?.Followers.ToList() ?? [];
-    }
+    
     
   
 }
