@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using Chirp.Core;
+using Chirp.Core.Models;
 using Chirp.Infrastructure.Chirp.Service;
 using Chirp.Web.Pages;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -50,6 +51,26 @@ public class PublicModelTests
         {
             LastAddCheepAuthor = authorUserName;
             LastAddCheepText = text;
+        }
+
+        public Task Follow(string followerUserName, string followeeUserName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Unfollow(string followerUserName, string followeeUserName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Author>> GetFollowing(string userNameOrEmail)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Author>> GetFollowers(string userNameOrEmail)
+        {
+            throw new NotImplementedException();
         }
     }
     

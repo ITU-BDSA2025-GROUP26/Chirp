@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Xunit;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Routing;
+using Chirp.Core.Models; 
 
 namespace Chirp.Web.Tests;
 
@@ -49,6 +50,25 @@ public class UserTimelineModelTests
         {
             LastAddCheepAuthor = authorUserName;
             LastAddCheepText = text;
+        }
+
+        public Task Follow(string followerUserName, string followeeUserName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Unfollow(string followerUserName, string followeeUserName)
+        {
+            throw new NotImplementedException();
+        }
+        public Task<List<Author>> GetFollowers(string userNameOrEmail)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Author>> GetFollowing(string followerUserName)
+        {
+            throw new NotImplementedException();
         }
     }
 
