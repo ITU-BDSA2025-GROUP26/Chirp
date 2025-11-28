@@ -4,6 +4,7 @@ using Chirp.Razor.Areas.Identity.Data;
 using Chirp.Infrastructure.Chirp.Service;
 using Chirp.Core;
 using Chirp.Core.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chirp.Razor.Pages
 {
@@ -23,15 +24,24 @@ namespace Chirp.Razor.Pages
 
         public async Task OnGetAsync(int? page = 1)
         {
-            CurrentUser = await _userManager.GetUserAsync(User);
+            
+            var user = await _userManager.GetUserAsync(User);
 
-            if (CurrentUser != null)
+            if (user != null)
             {
-                const int pageSize = 32;
-                int currentPage = page ?? 1;
+                CurrentUser = await _userManager.Users
+                    .Include(a => a.Following)
+                    .Include(a => a.Followers)
+                    .FirstOrDefaultAsync(u => u.Id == user.Id);
 
-                Cheeps = _service.GetCheepsFromAuthor(CurrentUser.UserName, currentPage, pageSize);
-                ViewData["CurrentPage"] = currentPage;
+                if (CurrentUser != null)
+                {
+                    const int pageSize = 32;
+                    int currentPage = page ?? 1;
+
+                    Cheeps = _service.GetCheepsFromAuthor(CurrentUser.UserName, currentPage, pageSize);
+                    ViewData["CurrentPage"] = currentPage;
+                }
             }
         }
     }
