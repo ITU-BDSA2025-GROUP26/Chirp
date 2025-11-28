@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿/*﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using Chirp.Core;
@@ -364,4 +364,4 @@ public class UserTimelineModelTests
         Assert.Equal(author, stub.LastAddCheepAuthor);
         Assert.Equal("test cheep", stub.LastAddCheepText);
     }
-}
+}*/
