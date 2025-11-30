@@ -22,6 +22,8 @@ public class UserTimelineModelTests
     {
         public List<CheepDto>? NextGetCheepsResult { get; set; }
         public List<CheepDto>? NextGetCheepsFromAuthorResult { get; set; }
+        
+        public Func<string, int, int, List<CheepDto>>? GetCheepsFromAuthorHandler { get; set; }
 
         public int? LastPage { get; private set; }
         public int? LastSize { get; private set; }
@@ -40,6 +42,9 @@ public class UserTimelineModelTests
             LastAuthor = author;
             LastPage = page;
             LastSize = pageSize;
+            if (GetCheepsFromAuthorHandler != null)
+                return GetCheepsFromAuthorHandler(author, page, pageSize);
+
             return NextGetCheepsFromAuthorResult ?? new List<CheepDto>();
         }
 
@@ -239,6 +244,54 @@ public class UserTimelineModelTests
         Assert.Equal(1, model.ViewData["CurrentPage"]);
         Assert.Equal(string.Empty, model.ViewData["Author"]);
     }
+    
+    [Fact]
+    public void OnGet_ViewingOwnTimeline_LoadsOwnAndFolloweesCheeps_AndSetsFollowing()
+    {
+        // Arrange
+        var author = "alice";
+
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+
+        var ownCheeps = new List<CheepDto>
+        {
+            new CheepDto { Author = author, Text = "own-1", TimeStamp = DateTime.UtcNow.ToString("O") }
+        };
+        var bobCheeps = new List<CheepDto>
+        {
+            new CheepDto { Author = "bob", Text = "bob-1", TimeStamp = DateTime.UtcNow.AddMinutes(-1).ToString("O") }
+        };
+
+        authorStub.NextGetFollowingResult = new List<Author>
+        {
+            new Author { UserName = "bob" }
+        };
+
+        cheepStub.GetCheepsFromAuthorHandler = (a, p, s) =>
+        {
+            if (a == author) return ownCheeps;
+            if (a == "bob") return bobCheeps;
+            return new List<CheepDto>();
+        };
+
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: true, userName: author);
+
+        // Act
+        var result = model.OnGet(author, page: 1);
+
+        // Assert
+        Assert.IsType<PageResult>(result);
+
+        // Cheeps should contain both own and bob's cheeps
+        Assert.Equal(2, model.Cheeps.Count);
+        Assert.Contains(model.Cheeps, c => c.Author == author && c.Text == "own-1");
+        Assert.Contains(model.Cheeps, c => c.Author == "bob" && c.Text == "bob-1");
+
+        // Following should contain bob
+        Assert.Single(model.Following);
+        Assert.Equal("bob", model.Following[0].UserName);
+    }
 
     // -----------------------
     // OnPost tests
@@ -406,4 +459,82 @@ public class UserTimelineModelTests
         Assert.Equal(author, cheepStub.LastAddCheepAuthor);
         Assert.Equal("test cheep", cheepStub.LastAddCheepText);
     }
+    
+    [Fact]
+    public void OnPostFollow_UnauthenticatedUser_ReturnsUnauthorized()
+    {
+        // Arrange
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: false, userName: null);
+
+        // Act
+        var result = model.OnPostFollow(authorToFollow: "bob", author: "alice", page: 2);
+
+        // Assert
+        Assert.IsType<UnauthorizedResult>(result);
+        Assert.Null(authorStub.LastFollowFollower);
+        Assert.Null(authorStub.LastFollowFollowee);
+    }
+
+    [Fact]
+    public void OnPostFollow_AuthenticatedUser_CallsAuthorServiceAndRedirects()
+    {
+        // Arrange
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: true, userName: "alice");
+
+        // Act
+        var result = model.OnPostFollow(authorToFollow: "bob", author: "alice", page: 3);
+
+        // Assert
+        var redirect = Assert.IsType<RedirectToPageResult>(result);
+        Assert.Equal("/UserTimeline", redirect.PageName);
+        Assert.Equal("alice", redirect.RouteValues["author"]?.ToString());
+        Assert.Equal("3", redirect.RouteValues["page"]?.ToString());
+
+        Assert.Equal("alice", authorStub.LastFollowFollower);
+        Assert.Equal("bob", authorStub.LastFollowFollowee);
+    }
+
+    [Fact]
+    public void OnPostUnfollow_UnauthenticatedUser_ReturnsUnauthorized()
+    {
+        // Arrange
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: false, userName: null);
+
+        // Act
+        var result = model.OnPostUnfollow(authorToUnfollow: "bob", author: "alice", page: 2);
+
+        // Assert
+        Assert.IsType<UnauthorizedResult>(result);
+        Assert.Null(authorStub.LastUnfollowFollower);
+        Assert.Null(authorStub.LastUnfollowFollowee);
+    }
+
+    [Fact]
+    public void OnPostUnfollow_AuthenticatedUser_CallsAuthorServiceAndRedirects()
+    {
+        // Arrange
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: true, userName: "alice");
+
+        // Act
+        var result = model.OnPostUnfollow(authorToUnfollow: "bob", author: "alice", page: 4);
+
+        // Assert
+        var redirect = Assert.IsType<RedirectToPageResult>(result);
+        Assert.Equal("/UserTimeline", redirect.PageName);
+        Assert.Equal("alice", redirect.RouteValues["author"]?.ToString());
+        Assert.Equal("4", redirect.RouteValues["page"]?.ToString());
+
+        Assert.Equal("alice", authorStub.LastUnfollowFollower);
+        Assert.Equal("bob", authorStub.LastUnfollowFollowee);
+    }
+    
+    
 }
