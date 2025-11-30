@@ -19,6 +19,43 @@ namespace Chirp.Web.Tests;
 
 public class PublicModelTests
 { 
+    private sealed class StubAuthorService: IAuthorService
+    {
+        public Author GetAuthorByName(string authorName)
+        {
+            return new Author();
+        }
+
+        public Author GetAuthorByEmail(string email)
+        {
+            return new Author();
+        }
+
+        public void AddAuthor(string authorName, string email)
+        {
+            //do nothing
+        }
+
+        public Task Follow(string followerUserName, string followeeUserName)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task Unfollow(string followerUserName, string followeeUserName)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task<List<Author>> GetFollowing(string userNameOrEmail)
+        {
+            return Task.FromResult(new List<Author>());
+        }
+
+        public Task<List<Author>> GetFollowers(string userNameOrEmail)
+        {
+            return Task.FromResult(new List<Author>());
+        }
+    }
     private sealed class StubCheepService : ICheepService
     {
         public List<CheepDto>? NextGetCheepsResult { get; set; }
@@ -76,10 +113,10 @@ public class PublicModelTests
     
     
 
-    private static PublicModel CreateModelWithUser(StubCheepService stub, bool authenticated,
+    private static PublicModel CreateModelWithUser(StubCheepService stub, StubAuthorService authorStub, bool authenticated,
         string? userName = "alice")
     {
-        var model = new PublicModel(stub);
+        var model = new PublicModel(stub,authorStub);
 
         var identity = new ClaimsIdentity();
         if (authenticated)
@@ -125,13 +162,14 @@ public class PublicModelTests
     {
         // Arrange
         var stub = new StubCheepService();
+        var authorStub = new StubAuthorService();
         var expected = new List<CheepDto>
         {
             new CheepDto { Author = "alice", Text = "hi", TimeStamp = DateTime.UtcNow.ToString("O") },
             new CheepDto { Author = "bob",   Text = "yo", TimeStamp = DateTime.UtcNow.ToString("O") },
         };
         stub.NextGetCheepsResult = expected;
-        var model = CreateModelWithUser(stub, authenticated: false, userName: null);
+        var model = CreateModelWithUser(stub, authorStub, false, userName: null);
 
         
 
@@ -154,8 +192,9 @@ public class PublicModelTests
     public void OnGet_CustomPage_UsesProvidedPage_AndReturnsEmptyIfNoData(int page)
     {
         // Arrange
-        var stub = new StubCheepService();
-        var model = CreateModelWithUser(stub, authenticated: false, userName: null);
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: false, userName: null);
 
         
 
@@ -165,8 +204,8 @@ public class PublicModelTests
         // Assert
         Assert.IsType<PageResult>(result);
         Assert.Empty(model.Cheeps);
-        Assert.Equal(page, stub.LastPage);
-        Assert.Equal(32, stub.LastSize);
+        Assert.Equal(page, cheepStub.LastPage);
+        Assert.Equal(32, cheepStub.LastSize);
         Assert.Equal(page, model.ViewData["CurrentPage"]);
     }
     
@@ -174,8 +213,9 @@ public class PublicModelTests
     public void OnGet_PageNumber_Fallback_IsUsed_WhenPageIsNull()
     {
         // Arrange
-        var stub = new StubCheepService();
-        var model = CreateModelWithUser(stub, authenticated: false, userName: null);
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: false, userName: null);
 
 
         // Act
@@ -183,8 +223,8 @@ public class PublicModelTests
 
         // Assert
         Assert.IsType<PageResult>(result);
-        Assert.Equal(5, stub.LastPage);
-        Assert.Equal(32, stub.LastSize);
+        Assert.Equal(5, cheepStub.LastPage);
+        Assert.Equal(32, cheepStub.LastSize);
         Assert.Equal(5, model.ViewData["CurrentPage"]);
     }
 
@@ -192,8 +232,9 @@ public class PublicModelTests
     public void OnPost_UnauthenticatedUser_ReturnsUnauthorized_AndDoesNotCallService()
     {
         // Arrange
-        var stub = new StubCheepService();
-        var model = CreateModelWithUser(stub, authenticated: false);
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: false);
         model.Text = "hello world";
 
         // Act
@@ -201,8 +242,8 @@ public class PublicModelTests
 
         // Assert
         var unauthorized = Assert.IsType<UnauthorizedResult>(result);
-        Assert.Null(stub.LastAddCheepAuthor);
-        Assert.Null(stub.LastAddCheepText);
+        Assert.Null(cheepStub.LastAddCheepAuthor);
+        Assert.Null(cheepStub.LastAddCheepText);
     }
 
     [Theory]
@@ -212,14 +253,15 @@ public class PublicModelTests
     public void OnPost_Invalid_EmptyOrWhitespaceText_ReRendersPage_WithModelError_AndReloadsCheeps(string? text)
     {
         // Arrange
-        var stub = new StubCheepService();
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
         var expected = new List<CheepDto>
         {
             new CheepDto { Author = "bob", Text = "existing", TimeStamp = DateTime.UtcNow.ToString("O") }
         };
-        stub.NextGetCheepsResult = expected;
+        cheepStub.NextGetCheepsResult = expected;
 
-        var model = CreateModelWithUser(stub, authenticated: true, userName: "alice");
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: true, userName: "alice");
         model.Text = text ?? string.Empty;
 
         // Act
@@ -230,25 +272,26 @@ public class PublicModelTests
         Assert.False(model.ModelState.IsValid);
         Assert.True(model.ModelState.ContainsKey(nameof(PublicModel.Text)));
         Assert.Same(expected, model.Cheeps);
-        Assert.Equal(3, stub.LastPage);
-        Assert.Equal(32, stub.LastSize);
+        Assert.Equal(3, cheepStub.LastPage);
+        Assert.Equal(32, cheepStub.LastSize);
         Assert.Equal(3, model.ViewData["CurrentPage"]);
-        Assert.Null(stub.LastAddCheepAuthor);
-        Assert.Null(stub.LastAddCheepText);
+        Assert.Null(cheepStub.LastAddCheepAuthor);
+        Assert.Null(cheepStub.LastAddCheepText);
     }
 
     [Fact]
     public void OnPost_TextLongerThan160Characters_AddsModelError_AndReloadsCheeps()
     {
         // Arrange
-        var stub = new StubCheepService();
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
         var expected = new List<CheepDto>
         {
             new CheepDto { Author = "bob", Text = "existing", TimeStamp = DateTime.UtcNow.ToString("O") }
         };
-        stub.NextGetCheepsResult = expected;
+        cheepStub.NextGetCheepsResult = expected;
 
-        var model = CreateModelWithUser(stub, authenticated: true, userName: "alice");
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: true, userName: "alice");
         model.Text = new string('x', 161); // over limit
 
         // Act
@@ -259,19 +302,20 @@ public class PublicModelTests
         Assert.False(model.ModelState.IsValid);
         Assert.True(model.ModelState.ContainsKey(nameof(PublicModel.Text)));
         Assert.Same(expected, model.Cheeps);
-        Assert.Equal(2, stub.LastPage);
-        Assert.Equal(32, stub.LastSize);
+        Assert.Equal(2, cheepStub.LastPage);
+        Assert.Equal(32, cheepStub.LastSize);
         Assert.Equal(2, model.ViewData["CurrentPage"]);
-        Assert.Null(stub.LastAddCheepAuthor);
-        Assert.Null(stub.LastAddCheepText);
+        Assert.Null(cheepStub.LastAddCheepAuthor);
+        Assert.Null(cheepStub.LastAddCheepText);
     }
 
     [Fact]
     public void OnPost_ValidCheep_TrimsText_CallsService_AndRedirectsToSamePage()
     {
         // Arrange
-        var stub = new StubCheepService();
-        var model = CreateModelWithUser(stub, authenticated: true, userName: "alice");
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: true, userName: "alice");
 
         model.Text = "  hello world  ";
 
@@ -282,21 +326,22 @@ public class PublicModelTests
         var redirect = Assert.IsType<RedirectResult>(result);
         Assert.Equal("?page=4", redirect.Url);
 
-        Assert.Equal("alice", stub.LastAddCheepAuthor);
-        Assert.Equal("hello world", stub.LastAddCheepText); // trimmed
+        Assert.Equal("alice", cheepStub.LastAddCheepAuthor);
+        Assert.Equal("hello world", cheepStub.LastAddCheepText); // trimmed
 
         // On successful post, GetCheeps is not called in OnPost (PRG pattern),
         // so LastPage/LastSize should still be null.
-        Assert.Null(stub.LastPage);
-        Assert.Null(stub.LastSize);
+        Assert.Null(cheepStub.LastPage);
+        Assert.Null(cheepStub.LastSize);
     }
 
     [Fact]
     public void OnPost_UsesPageNumberWhenPageIsNull()
     {
         // Arrange
-        var stub = new StubCheepService();
-        var model = CreateModelWithUser(stub, authenticated: true, userName: "alice");
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: true, userName: "alice");
 
         model.Text = "test cheep";
 
@@ -306,7 +351,7 @@ public class PublicModelTests
         // Assert
         var redirect = Assert.IsType<RedirectResult>(result);
         Assert.Equal("?page=7", redirect.Url);
-        Assert.Equal("alice", stub.LastAddCheepAuthor);
-        Assert.Equal("test cheep", stub.LastAddCheepText);
+        Assert.Equal("alice", cheepStub.LastAddCheepAuthor);
+        Assert.Equal("test cheep", cheepStub.LastAddCheepText);
     }
 }

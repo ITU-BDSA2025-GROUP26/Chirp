@@ -12,7 +12,8 @@ namespace Chirp.Core.Tests
 {
     public class CheepConstraintsTest
     {
-        private readonly CheepRepository _repository;
+        private readonly CheepRepository _cheepRepository;
+        private readonly AuthorRepository _authorRepository;
         private readonly ChirpDBContext _context;
 
         public CheepConstraintsTest()
@@ -22,8 +23,9 @@ namespace Chirp.Core.Tests
                 .Options;
 
             _context = new ChirpDBContext(options);
-            _repository = new CheepRepository(_context);
-            _repository.AddAuthor("Daid","daid@email.dk");
+            _authorRepository = new AuthorRepository(_context);
+            _cheepRepository = new CheepRepository(_context);
+            _authorRepository.AddAuthor("Daid","daid@email.dk");
         }
 
         [Fact]
@@ -35,8 +37,8 @@ namespace Chirp.Core.Tests
                 Author = "Daid",
                 TimeStamp = DateTime.Now.ToString()
             };
-            _repository.AddCheep(cheepDto);
-            var result = _repository.GetCheeps(1, 10);
+            _cheepRepository.AddCheep(cheepDto);
+            var result = _cheepRepository.GetCheeps(1, 10);
             Assert.Contains(result, c => c.Text == cheepDto.Text && c.Author == cheepDto.Author);
         }
 
@@ -50,7 +52,7 @@ namespace Chirp.Core.Tests
                 TimeStamp = DateTime.Now.ToString()
             };
 
-            Assert.Throws<ArgumentException>(() => _repository.AddCheep(cheepDto));
+            Assert.Throws<ArgumentException>(() => _cheepRepository.AddCheep(cheepDto));
         }
     }
 }
