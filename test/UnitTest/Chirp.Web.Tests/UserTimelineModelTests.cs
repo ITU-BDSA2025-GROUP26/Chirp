@@ -425,6 +425,7 @@ public class UserTimelineModelTests
         // Assert
         var redirect = Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("/UserTimeline", redirect.PageName);
+        Assert.NotNull(redirect.RouteValues);
         Assert.Equal(author, redirect.RouteValues["author"]?.ToString());
         Assert.Equal("4", redirect.RouteValues["page"]?.ToString());
 
@@ -453,6 +454,7 @@ public class UserTimelineModelTests
         // Assert
         var redirect = Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("/UserTimeline", redirect.PageName);
+        Assert.NotNull(redirect.RouteValues);
         Assert.Equal(author, redirect.RouteValues["author"]?.ToString());
         Assert.Equal("7", redirect.RouteValues["page"]?.ToString());
 
@@ -491,6 +493,7 @@ public class UserTimelineModelTests
         // Assert
         var redirect = Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("/UserTimeline", redirect.PageName);
+        Assert.NotNull(redirect.RouteValues);
         Assert.Equal("alice", redirect.RouteValues["author"]?.ToString());
         Assert.Equal("3", redirect.RouteValues["page"]?.ToString());
 
@@ -529,6 +532,7 @@ public class UserTimelineModelTests
         // Assert
         var redirect = Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("/UserTimeline", redirect.PageName);
+        Assert.NotNull(redirect.RouteValues);
         Assert.Equal("alice", redirect.RouteValues["author"]?.ToString());
         Assert.Equal("4", redirect.RouteValues["page"]?.ToString());
 
