@@ -10,4 +10,8 @@ public interface ICheepRepository
     Task<IReadOnlyList<Cheep>> GetCheepsFromAuthorAndPage(string authorName, int page, int pageSize, CancellationToken ct = default);
     
     public void AddCheep(CheepDto cheepdto);
+
+    //void LikeCheep(int cheepId);
+    
+    void LikeCheep(string authorUserName, int cheepId);
 }

@@ -36,5 +36,17 @@ namespace Chirp.Infrastructure.Chirp.Service
                 // TimeStamp will be set server-side in repository
             });
         }
+        
+        /*public void LikeCheep(int cheepId)          // NEW
+        {
+            _cheepRepository.LikeCheep(cheepId);
+        }*/
+        
+        public void LikeCheep(string authorUserName, int cheepId)
+        {
+            _cheepRepository.LikeCheep(authorUserName, cheepId);
+        }
+
     }
+    
 }

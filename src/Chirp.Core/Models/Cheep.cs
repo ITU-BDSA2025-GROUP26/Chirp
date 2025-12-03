@@ -10,4 +10,6 @@ public class Cheep
     public DateTime TimeStamp { get; set; }
     public string AuthorId { get; set; } = string.Empty;
     public Author Author { get; set; } = null!;
+    
+    public int Likes { get; set; } = 0;
 }

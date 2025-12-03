@@ -31,12 +31,14 @@ public sealed class CheepRepository : ICheepRepository
         return cheeps
             .Select(c => new CheepDto
             {
+                CheepId = c.CheepId,
                 Text = c.Text ?? string.Empty,
                 Author = c.Author!.UserName ?? "(unknown)",
                 TimeStamp = TimeZoneInfo.ConvertTimeFromUtc(
                     DateTime.SpecifyKind(c.TimeStamp, DateTimeKind.Utc),
                     CopenhagenZone
-                ).ToString("yyyy-MM-dd HH:mm:ss")
+                ).ToString("yyyy-MM-dd HH:mm:ss"),
+                Likes = c.Likes
             })
             .ToList();
     }
@@ -54,12 +56,14 @@ public sealed class CheepRepository : ICheepRepository
         return cheeps
             .Select(c => new CheepDto
             {
+                CheepId = c.CheepId,
                 Text = c.Text ?? string.Empty,
                 Author = c.Author!.UserName ?? "(unknown)",
                 TimeStamp = TimeZoneInfo.ConvertTimeFromUtc(
                     DateTime.SpecifyKind(c.TimeStamp, DateTimeKind.Utc),
                     CopenhagenZone
-                ).ToString("yyyy-MM-dd HH:mm:ss")
+                ).ToString("yyyy-MM-dd HH:mm:ss"),
+                Likes = c.Likes
             })
             .ToList();
     }
@@ -126,6 +130,43 @@ public sealed class CheepRepository : ICheepRepository
         };
 
         _context.Cheeps.Add(cheep);
+        _context.SaveChanges();
+    }
+    
+    public void LikeCheep(string authorUserName, int cheepId)
+    {
+        if (string.IsNullOrWhiteSpace(authorUserName))
+            throw new ArgumentException("Author user name is required.", nameof(authorUserName));
+
+        var author = _context.Authors.SingleOrDefault(a => a.UserName == authorUserName)
+                     ?? throw new InvalidOperationException($"Author '{authorUserName}' not found.");
+
+        var cheep = _context.Cheeps.SingleOrDefault(c => c.CheepId == cheepId)
+                    ?? throw new InvalidOperationException($"Cheep with id {cheepId} not found.");
+
+        var existingLike = _context.CheepLikes
+            .SingleOrDefault(cl => cl.CheepId == cheepId && cl.AuthorId == author.Id);
+
+        if (existingLike is null)
+        {
+            // User has NOT liked this cheep yet -> add like
+            var like = new CheepLike
+            {
+                CheepId = cheepId,
+                AuthorId = author.Id
+            };
+
+            _context.CheepLikes.Add(like);
+            cheep.Likes++; // increase visible counter
+        }
+        else
+        {
+            // User already liked -> unlike
+            _context.CheepLikes.Remove(existingLike);
+            if (cheep.Likes > 0)
+                cheep.Likes--; // defensive
+        }
+
         _context.SaveChanges();
     }
 }

@@ -53,6 +53,11 @@ public class PublicModelTests
             LastAddCheepAuthor = authorUserName;
             LastAddCheepText = text;
         }
+        
+        public void LikeCheep(string authorUserName, int cheepId)
+        {
+            // Do something
+        }
     }
     private sealed class StubAuthorService : IAuthorService
     {
