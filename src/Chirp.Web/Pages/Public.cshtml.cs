@@ -113,7 +113,8 @@ namespace Chirp.Web.Pages
 
             int currentPage = page ?? pageNumber ?? 1;
 
-            _service.LikeCheep(cheepId);
+            var userName = User.Identity!.Name!;
+            _service.LikeCheep(userName, cheepId);
 
             return Redirect($"?page={currentPage}");
         }

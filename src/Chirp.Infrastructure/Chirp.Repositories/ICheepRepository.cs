@@ -11,5 +11,7 @@ public interface ICheepRepository
     
     public void AddCheep(CheepDto cheepdto);
 
-    void LikeCheep(int cheepId);
+    //void LikeCheep(int cheepId);
+    
+    void LikeCheep(string authorUserName, int cheepId);
 }

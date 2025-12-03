@@ -121,16 +121,17 @@ namespace Chirp.Web.Pages
         }
         
         // NEW: like handler
-        public IActionResult OnPostLike(int cheepId, [FromQuery] int? page = 1, int? pageNumber = null)
+        public IActionResult OnPostLike(int cheepId, string author, [FromQuery] int? page = 1, int? pageNumber = null)
         {
             if (!(User?.Identity?.IsAuthenticated ?? false))
                 return Unauthorized();
 
             int currentPage = page ?? pageNumber ?? 1;
 
-            _service.LikeCheep(cheepId);
+            var userName = User.Identity!.Name!;
+            _service.LikeCheep(userName, cheepId);
 
-            return Redirect($"?page={currentPage}");
+            return RedirectToPage("/UserTimeline", new { author = author, page = currentPage });
         }
     }
 }

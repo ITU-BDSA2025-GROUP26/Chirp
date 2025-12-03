@@ -129,7 +129,7 @@ public sealed class CheepRepository : ICheepRepository
         return DateTime.UtcNow;
     }
 
-    public void LikeCheep(int cheepId)
+    /*public void LikeCheep(int cheepId)
     {
         var cheep = _context.Cheeps.SingleOrDefault(c => c.CheepId == cheepId);
         if (cheep is null)
@@ -138,6 +138,43 @@ public sealed class CheepRepository : ICheepRepository
         }
 
         cheep.Likes++;
+        _context.SaveChanges();
+    }*/
+    
+    public void LikeCheep(string authorUserName, int cheepId)
+    {
+        if (string.IsNullOrWhiteSpace(authorUserName))
+            throw new ArgumentException("Author user name is required.", nameof(authorUserName));
+
+        var author = _context.Authors.SingleOrDefault(a => a.UserName == authorUserName)
+                     ?? throw new InvalidOperationException($"Author '{authorUserName}' not found.");
+
+        var cheep = _context.Cheeps.SingleOrDefault(c => c.CheepId == cheepId)
+                    ?? throw new InvalidOperationException($"Cheep with id {cheepId} not found.");
+
+        var existingLike = _context.CheepLikes
+            .SingleOrDefault(cl => cl.CheepId == cheepId && cl.AuthorId == author.Id);
+
+        if (existingLike is null)
+        {
+            // User has NOT liked this cheep yet -> add like
+            var like = new CheepLike
+            {
+                CheepId = cheepId,
+                AuthorId = author.Id
+            };
+
+            _context.CheepLikes.Add(like);
+            cheep.Likes++; // increase visible counter
+        }
+        else
+        {
+            // User already liked -> unlike
+            _context.CheepLikes.Remove(existingLike);
+            if (cheep.Likes > 0)
+                cheep.Likes--; // defensive
+        }
+
         _context.SaveChanges();
     }
 }
