@@ -46,7 +46,10 @@ namespace Chirp.Web.Pages
                 var followees = _authorService.GetFollowing(safeAuthor).Result;
                 foreach (var f in followees)
                 {
-                    allCheeps.AddRange(_service.GetCheepsFromAuthor(f.UserName, currentPage, pageSize));
+                    if (!string.IsNullOrEmpty(f.UserName))
+                    {
+                        allCheeps.AddRange(_service.GetCheepsFromAuthor(f.UserName, currentPage, pageSize));
+                    }
                 }
 
                 // sort by timestamp descending (assuming parsable format)

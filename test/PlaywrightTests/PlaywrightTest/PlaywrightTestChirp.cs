@@ -11,26 +11,6 @@ namespace PlaywrightTest;
 [TestFixture]
 public class Tests : PageTest
 {
-    /*private WebApplicationFactory<Program> _factory;
-
-    [SetUp]
-    public void Setup()
-    {
-        _factory = new WebApplicationFactory<Program>();
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        _factory.Dispose();
-    }
-
-    private string GetBaseURL()
-    {
-        var client = _factory.CreateClient();
-        return client.BaseAddress.ToString();
-    }*/
-
     [Test]
     public async Task HomepageHasPlaywrightInTitleAndGetStartedLinkLinkingtoTheIntroPage()
     {
@@ -55,8 +35,7 @@ public class Tests : PageTest
     [Test]
     public async Task HomepageLoadsCorrectlyAndClickingOnLogin()
     {
-        //var baseURL = GetBaseURL();
-        await Page.GotoAsync("http://localhost:5273/");
+        await Page.GotoAsync("https://localhost:7102/");
 
         await Expect(Page).ToHaveTitleAsync(new Regex("Chirp!"));
 
@@ -70,8 +49,7 @@ public class Tests : PageTest
     [Test]
     public async Task HomepageLoadsAndRegisterLinksToRegisterPage()
     {
-        //var baseURL = GetBaseURL();
-        await Page.GotoAsync("http://localhost:5273/");
+        await Page.GotoAsync("https://localhost:7102/");
 
         await Expect(Page).ToHaveTitleAsync(new Regex("Chirp!"));
         
@@ -85,8 +63,7 @@ public class Tests : PageTest
     [Test]
     public async Task UsersCanRegisterNewAccount()
     {
-        //var baseURL = GetBaseURL();
-        await Page.GotoAsync("http://localhost:5273/");
+        await Page.GotoAsync("https://localhost:7102/");
         
         await Expect(Page).ToHaveTitleAsync(new Regex("Chirp!"));
         
@@ -107,8 +84,7 @@ public class Tests : PageTest
     [Test]
     public async Task UserCanLoginAndSeeDashboard()
     {
-        //var baseURL = GetBaseURL();
-        await Page.GotoAsync("http://localhost:5273/");
+        await Page.GotoAsync("https://localhost:7102/");
         
         await Expect(Page).ToHaveTitleAsync(new Regex("Chirp!"));
         
