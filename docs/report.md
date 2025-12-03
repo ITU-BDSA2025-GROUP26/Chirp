@@ -52,23 +52,49 @@ Briefly describe which tasks are still unresolved, i.e., which features are miss
 Briefly describe and illustrate the flow of activities that happen from the new creation of an issue (task description), over development, etc. until a feature is finally merged into the `main` branch of your repository.
 
 ### How to make _Chirp!_ work locally
+In order to run our project locally follow these steps:
+1. Firstly install the .NET SDK-version `.NET 8.0`.
+2. Clone our Git repository with: \
+`git clone https://github.com/ITU-BDSA2025-GROUP26/Chirp.git` \
+The folder should now contain (among other things): 
+    1. `src` 
+    2. `test`
+    3. `Chirp.Razor.sln`. 
+3. To run the project `cd` into `src/Chirp.Web` and from here run: `dotnet run`.
 
-There has to be some documentation on how to come from cloning your project to a running system.
-That is, Adrian or Helge have to know precisely what to do in which order.
-Likely, it is best to describe how we clone your project, which commands we have to execute, and what we are supposed to see then.
+After the last step there should be the following two links: 
+1. Now listening on: https://localhost:7102
+2. Now listening on: http://localhost:5273 
+
+Pressing either of the links will redirect to the homepage of our application and use HTTPS. To close the application press Ctrl + C in the terminal window.
 
 ### How to run test suite locally
+In our Chirp-project we have two test suites: Playwright for end-to-end tests and XUnit tests for unit- and integrationtests. For both Playwright and XUnit tests, we have created a test-folder under `Chirp/test`. \
+\
+To run the XUnit test, the user needs `.NET 8.0`. Afterwards the user will need to change the directory to the folder containing a `.csproj` file, and then run `dotnet test`. \
+For example to run the integration tests regarding our infrastructure, the user will need to cd into `Chirp/test/IntegrationTest/Chirp.InfrastructureTests` and then run `dotnet test`. \
+Beware that some folders are nested folders to keep a more clean folder-hierarchy, for example the `UnitTest` folder have multiple folders respectively to core, infrastructure and web. \
+To run all the tests in the project you can run `dotnet test` under the root-folder `Chirp`. This includes Playwright tests which will give errors, if the program is not runnning in another terminal window. \
+\
+To run the end-to-end tests the user will firstly need to have playwright installed:
+1. cd into `test/PlaywrightTests/PlaywrightTest`
+2. Run `dotnet add package Microsoft.Playwright.NUnit --version 1.43.0`
+3. Build the project with `dotnet build`
+4. Finally run `dotnet playwright install`
 
-List all necessary steps that Adrian or Helge have to perform to execute your test suites.
-Here, you can assume that we already cloned your repository in the step above.
+To run the Playwright tests it is a requirement that the project is running in its own terminal, so the user will have to run project with `dotnet run` in `src/Chirp.Web`. Afterwards in a new terminal the user needs to cd into `test/PlaywrightTests/PlaywrightTest` and then run `dotnet test`.
 
-Briefly describe what kinds of tests you have in your test suites and what they are testing.
+**Test suite** \
+Describing which types of tests we have and what they are testing
+
 
 ## Ethics
 
 ### License
 
-State which software license you chose for your application.
+We have chosen the MIT License for Chirp. MIT license is a short and direct license, that gives us alot of freedom with the project. \
+When we needed to chose a license for our project, we were quite in doubt about which license to chose. Therefore we went to 'choosealicense.com and  after some consideration we chose the MIT license. We also confirmed that the dependencies in our .csproj file were compatible with the MIT license.\
+The MIT license-file can be found under 'Chirp/LICENSE'.
 
 ### LLMs, ChatGPT, CoPilot, and others
 
@@ -76,4 +102,30 @@ State which LLM(s) were used during development of your project.
 In case you were not using any, just state so.
 In case you were using an LLM to support your development, briefly describe when and how it was applied.
 Reflect in writing to which degree the responses of the LLM were helpful.
-Discuss briefly if application of LLMs sped up your development or if the contrary was the case.
+Discuss briefly if application of LLMs sped up your development or if the contrary was the case.\
+Some of 
+
+LLMs used:
+ChatGPT
+CoPilot
+Claude
+
+Used for:
+CLI commands.
+HTML code.
+Workflows.
+
+- [ ] "Design and architecture"
+    - [ ] "Domain model"
+    - [ ] "Architecture — In the small"
+    - [ ] "Architecture of deployed application"
+    - [ ] "User activities"
+    - [ ] "Sequence of functionality/calls through Chirp!"
+- [ ] "Process"
+    - [ ] "Build, test, release, and deployment"
+    - [ ] "Team work"
+    - [x] "How to make Chirp! work locally"
+    - [ ] "How to run test suite locally"
+- [ ] "Ethics"
+    - [x] "License"
+    - [ ] "LLMs, ChatGPT, CoPilot, and others"
