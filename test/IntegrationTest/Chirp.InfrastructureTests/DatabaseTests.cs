@@ -53,7 +53,7 @@ public class DatabaseTests : IDisposable
     }
 
     [Fact]
-    public void CheepRepository_Can_GetAuthorByName()
+    public void AuthorRepository_Can_GetAuthorByName()
     {
         // Arrange
         using var context = CreateContext();
@@ -67,7 +67,7 @@ public class DatabaseTests : IDisposable
     }
 
     [Fact]
-    public void CheepRepository_Can_GetAuthorByEmail()
+    public void AuthorRepository_Can_GetAuthorByEmail()
     {
         
         // Arrange
@@ -82,7 +82,7 @@ public class DatabaseTests : IDisposable
     }
 
     [Fact]
-    public void CheepRepository_Can_AddAuthor()
+    public void AuthorRepository_Can_AddAuthor()
     {
         //Arrange
         using var context = CreateContext();
