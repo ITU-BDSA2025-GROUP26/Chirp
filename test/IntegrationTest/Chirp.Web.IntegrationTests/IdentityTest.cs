@@ -17,7 +17,7 @@ using System;
 using Microsoft.AspNetCore.Identity;
 using Chirp.Core.Models;
 
-namespace Chirp.Web.IntegrationTest;
+namespace Chirp.Web.IntegrationTests;
 
 public class CustomWebApplicationFactory: WebApplicationFactory<Program>
 {
