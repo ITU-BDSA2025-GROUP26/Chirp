@@ -1,4 +1,4 @@
-﻿/*using Xunit;
+﻿using Xunit;
 using Microsoft.Data.Sqlite;
 using Chirp.Infrastructure;
 using Chirp.Core.Models;
@@ -120,4 +120,4 @@ public class DatabaseTests : IDisposable
         Assert.Contains(cheeps, c=> c.Text == "New Cheep" && c.Author == "Bob");
         Assert.Equal(3, cheeps.Count);
     }
-}*/
+}
