@@ -2,7 +2,7 @@ namespace Chirp.Core;
 
 public class CheepDto
 {
-    public int CheepId { get; set; 
+    public int CheepId { get; set; }
     public string Text { get; set; } = string.Empty;
     public string? Author { get; set; } = string.Empty;
     public string TimeStamp { get; set; } = string.Empty;
