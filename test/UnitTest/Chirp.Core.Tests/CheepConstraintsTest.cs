@@ -31,20 +31,26 @@ namespace Chirp.Core.Tests
         [Fact]
         public void Cheep_160_Characters()
         {
+            //Arrange
             var cheepDto = new CheepDto
             {
                 Text = new string('a', 160),
                 Author = "Daid",
                 TimeStamp = DateTime.Now.ToString()
             };
+
+            //Act
             _cheepRepository.AddCheep(cheepDto);
             var result = _cheepRepository.GetCheeps(1, 10);
+
+            //Assert
             Assert.Contains(result, c => c.Text == cheepDto.Text && c.Author == cheepDto.Author);
         }
 
         [Fact]
         public void Cheep_161_Characters()
         {
+            //Arrange
             var cheepDto = new CheepDto
             {
                 Text = new string('a', 161),
@@ -52,6 +58,7 @@ namespace Chirp.Core.Tests
                 TimeStamp = DateTime.Now.ToString()
             };
 
+            //Act & Assert
             Assert.Throws<ArgumentException>(() => _cheepRepository.AddCheep(cheepDto));
         }
     }

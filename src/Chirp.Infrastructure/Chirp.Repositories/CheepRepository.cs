@@ -78,7 +78,7 @@ public sealed class CheepRepository : ICheepRepository
         if (pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size must be >= 1.");
 
         return await _context.Cheeps
-            .OrderByDescending(c => c.TimeStamp) // or c.Timestamp
+            .OrderByDescending(c => c.TimeStamp) 
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .AsNoTracking()
@@ -164,7 +164,7 @@ public sealed class CheepRepository : ICheepRepository
             // User already liked -> unlike
             _context.CheepLikes.Remove(existingLike);
             if (cheep.Likes > 0)
-                cheep.Likes--; // defensive
+                cheep.Likes--;
         }
 
         _context.SaveChanges();

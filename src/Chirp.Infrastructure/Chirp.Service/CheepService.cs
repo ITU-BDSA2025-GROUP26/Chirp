@@ -37,11 +37,6 @@ namespace Chirp.Infrastructure.Chirp.Service
             });
         }
         
-        /*public void LikeCheep(int cheepId)          // NEW
-        {
-            _cheepRepository.LikeCheep(cheepId);
-        }*/
-        
         public void LikeCheep(string authorUserName, int cheepId)
         {
             _cheepRepository.LikeCheep(authorUserName, cheepId);

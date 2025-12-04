@@ -9,8 +9,6 @@ public class ChirpDBContext : IdentityDbContext<Author>
 {
     public DbSet<Cheep> Cheeps { get; set; } = null!;
     public DbSet<Author> Authors { get; set; } = null!;
-
-    // NEW: table for per-user likes
     public DbSet<CheepLike> CheepLikes { get; set; } = null!;
 
     public ChirpDBContext(DbContextOptions<ChirpDBContext> options)
@@ -22,7 +20,6 @@ public class ChirpDBContext : IdentityDbContext<Author>
     {
         base.OnModelCreating(builder);
 
-        // --- Author configuration ---
         builder.Entity<Author>()
             .HasIndex(a => a.UserName)
             .IsUnique();
@@ -41,7 +38,6 @@ public class ChirpDBContext : IdentityDbContext<Author>
             .WithMany(a => a.Cheeps)
             .HasForeignKey(c => c.AuthorId);
 
-        // Many-to-many: following / followers
         builder.Entity<Author>()
             .HasMany(a => a.Following)
             .WithMany(a => a.Followers)
@@ -59,19 +55,18 @@ public class ChirpDBContext : IdentityDbContext<Author>
                     .OnDelete(DeleteBehavior.Cascade)
             );
 
-        // --- NEW: CheepLike configuration (one like per (Cheep, Author)) ---
         builder.Entity<CheepLike>()
             .HasKey(cl => new { cl.CheepId, cl.AuthorId });
 
         builder.Entity<CheepLike>()
             .HasOne(cl => cl.Cheep)
-            .WithMany()                 // no navigation collection on Cheep
+            .WithMany()
             .HasForeignKey(cl => cl.CheepId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<CheepLike>()
             .HasOne(cl => cl.Author)
-            .WithMany()                 // no navigation collection on Author
+            .WithMany()
             .HasForeignKey(cl => cl.AuthorId)
             .OnDelete(DeleteBehavior.Cascade);
     }

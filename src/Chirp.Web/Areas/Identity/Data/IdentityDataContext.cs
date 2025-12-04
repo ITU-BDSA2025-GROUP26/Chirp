@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Chirp.Razor.Areas.Identity.Data;
+namespace Chirp.Web.Areas.Identity.Data;
 
 public class IdentityDataContext : IdentityDbContext<IdentityUser>
 {

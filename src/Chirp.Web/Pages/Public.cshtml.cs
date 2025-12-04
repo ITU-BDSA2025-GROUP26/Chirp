@@ -50,7 +50,6 @@ namespace Chirp.Web.Pages
         {
             int currentPage = page ?? pageNumber ?? 1;
         
-            // Only authenticated users may post
             if (!(User?.Identity?.IsAuthenticated ?? false))
                 return Unauthorized();
 
