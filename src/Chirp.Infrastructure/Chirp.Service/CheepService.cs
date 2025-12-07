@@ -6,8 +6,6 @@ namespace Chirp.Infrastructure.Chirp.Service
 {
     public class CheepService : ICheepService
     {
-        private static readonly List<CheepDto> _cheeps = new();
-
         private readonly ICheepRepository _cheepRepository;
         
 
