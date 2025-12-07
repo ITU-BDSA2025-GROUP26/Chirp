@@ -31,7 +31,6 @@ namespace Chirp.Infrastructure.Chirp.Service
             {
                 Author = authorUserName,
                 Text = text
-                // TimeStamp will be set server-side in repository
             });
         }
         

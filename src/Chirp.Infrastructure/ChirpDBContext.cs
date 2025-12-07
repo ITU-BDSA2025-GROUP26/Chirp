@@ -16,6 +16,10 @@ public class ChirpDBContext : IdentityDbContext<Author>
     {
     }
 
+    /// <summary>
+    /// Configure the model relationships and constraints
+    /// </summary>
+    /// <param name="builder"></param>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
