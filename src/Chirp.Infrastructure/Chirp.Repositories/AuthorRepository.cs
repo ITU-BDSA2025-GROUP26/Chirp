@@ -43,6 +43,13 @@ public sealed class AuthorRepository : IAuthorRepository
         _context.SaveChanges();
     }
 
+    /// <summary>
+    /// Method for one author to follow another author
+    /// Checks for self-follow and prevents it and prevents duplicate follows
+    /// </summary>
+    /// <param name="followerUserName"></param>
+    /// <param name="followeeUserName"></param>
+    /// <returns></returns>
     public async Task Follow(string followerUserName, string followeeUserName)
     {
         if (string.Equals(followerUserName, followeeUserName, StringComparison.OrdinalIgnoreCase))
@@ -67,6 +74,13 @@ public sealed class AuthorRepository : IAuthorRepository
         }
     }
 
+    /// <summary>
+    /// Method for one author to unfollow another author
+    /// Prevents unfollowing of null authors and only allows unfollowing if currently following
+    /// </summary>
+    /// <param name="followerUserName"></param>
+    /// <param name="followeeUserName"></param>
+    /// <returns></returns>
     public async Task Unfollow(string followerUserName, string followeeUserName)
     {
         var follower = await _context.Authors
