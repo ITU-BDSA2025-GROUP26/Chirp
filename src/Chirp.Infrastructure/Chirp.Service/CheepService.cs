@@ -6,8 +6,6 @@ namespace Chirp.Infrastructure.Chirp.Service
 {
     public class CheepService : ICheepService
     {
-        private static readonly List<CheepDto> _cheeps = new();
-
         private readonly ICheepRepository _cheepRepository;
         
 
@@ -33,14 +31,8 @@ namespace Chirp.Infrastructure.Chirp.Service
             {
                 Author = authorUserName,
                 Text = text
-                // TimeStamp will be set server-side in repository
             });
         }
-        
-        /*public void LikeCheep(int cheepId)          // NEW
-        {
-            _cheepRepository.LikeCheep(cheepId);
-        }*/
         
         public void LikeCheep(string authorUserName, int cheepId)
         {

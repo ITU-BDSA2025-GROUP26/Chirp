@@ -149,7 +149,6 @@ public class PublicModelTests
     // OnGet tests
     // -----------------------
 
-
     [Fact]
     public void OnGet_DefaultPage_FetchesPage1_Size32_SetsCheeps_AndReturnsPage()
     {
@@ -163,8 +162,6 @@ public class PublicModelTests
         };
         stub.NextGetCheepsResult = expected;
         var model = CreateModelWithUser(stub, authorStub, false, userName: null);
-
-        
 
         // Act
         var result = model.OnGet();
@@ -189,8 +186,6 @@ public class PublicModelTests
         var authorStub = new StubAuthorService();
         var model = CreateModelWithUser(cheepStub, authorStub, authenticated: false, userName: null);
 
-        
-
         // Act
         var result = model.OnGet(page);
 
@@ -209,7 +204,6 @@ public class PublicModelTests
         var cheepStub = new StubCheepService();
         var authorStub = new StubAuthorService();
         var model = CreateModelWithUser(cheepStub, authorStub, authenticated: false, userName: null);
-
 
         // Act
         var result = model.OnGet(page: null, pageNumber: 5);
@@ -349,7 +343,7 @@ public class PublicModelTests
         Assert.Equal("?page=4", redirect.Url);
 
         Assert.Equal("alice", cheepStub.LastAddCheepAuthor);
-        Assert.Equal("hello world", cheepStub.LastAddCheepText); // trimmed
+        Assert.Equal("hello world", cheepStub.LastAddCheepText);
 
         // On successful post, GetCheeps is not called in OnPost (PRG pattern),
         // so LastPage/LastSize should still be null.
@@ -397,7 +391,7 @@ public class PublicModelTests
         authorStub.NextGetFollowingResult = following;
 
         var model = CreateModelWithUser(cheepStub, authorStub, authenticated: true, userName: "alice");
-        model.Text = ""; // invalid
+        model.Text = "";
 
         // Act
         var result = model.OnPost(page: 3);

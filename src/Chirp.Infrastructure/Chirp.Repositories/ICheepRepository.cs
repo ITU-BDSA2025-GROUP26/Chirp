@@ -6,12 +6,9 @@ public interface ICheepRepository
 {
     public List<CheepDto> GetCheeps(int page, int pageSize);
     public List<CheepDto> GetCheepsFromAuthor(string author, int page, int pageSize);
-    Task<IReadOnlyList<Cheep>> GetCheepsFromPage(int page,int pageSize, CancellationToken ct = default);
-    Task<IReadOnlyList<Cheep>> GetCheepsFromAuthorAndPage(string authorName, int page, int pageSize, CancellationToken ct = default);
+    public Task<IReadOnlyList<Cheep>> GetCheepsFromPage(int page,int pageSize, CancellationToken ct = default);
+    public Task<IReadOnlyList<Cheep>> GetCheepsFromAuthorAndPage(string authorName, int page, int pageSize, CancellationToken ct = default);
     
     public void AddCheep(CheepDto cheepdto);
-
-    //void LikeCheep(int cheepId);
-    
-    void LikeCheep(string authorUserName, int cheepId);
+    public void LikeCheep(string authorUserName, int cheepId);
 }

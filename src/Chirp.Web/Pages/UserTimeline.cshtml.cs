@@ -52,7 +52,6 @@ namespace Chirp.Web.Pages
                     }
                 }
 
-                // sort by timestamp descending (assuming parsable format)
                 Cheeps = allCheeps
                     .OrderByDescending(c => DateTime.Parse(c.TimeStamp))
                     .ToList();
@@ -122,8 +121,6 @@ namespace Chirp.Web.Pages
             int currentPage = page ?? pageNumber ?? 1;
             return RedirectToPage("/UserTimeline", new { author = author, page = currentPage });
         }
-        
-        // NEW: like handler
         public IActionResult OnPostLike(int cheepId, string author, [FromQuery] int? page = 1, int? pageNumber = null)
         {
             if (!(User?.Identity?.IsAuthenticated ?? false))

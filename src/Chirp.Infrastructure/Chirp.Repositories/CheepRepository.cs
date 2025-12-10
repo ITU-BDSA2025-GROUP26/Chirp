@@ -19,11 +19,18 @@ public sealed class CheepRepository : ICheepRepository
         _context = context;
     }
 
+    /// <summary>
+    /// Get cheeps with pagination and sorts newest cheeps first
+    /// Ensures Author is loaded
+    /// </summary>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <returns></returns>
     public List<CheepDto> GetCheeps(int page, int pageSize)
     {
      var cheeps = _context.Cheeps
-            .Include(c => c.Author) // ensure Author is loaded
-            .OrderByDescending(c => c.TimeStamp) // sort newest first
+            .Include(c => c.Author)
+            .OrderByDescending(c => c.TimeStamp)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
@@ -43,10 +50,18 @@ public sealed class CheepRepository : ICheepRepository
             .ToList();
     }
 
+    /// <summary>
+    /// Get cheeps from a specific author with pagination and sorts newest cheeps first
+    /// Ensures Author is loaded
+    /// </summary>
+    /// <param name="author"></param>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <returns></returns>
     public List<CheepDto> GetCheepsFromAuthor(string author, int page, int pageSize)
     {
         var cheeps = _context.Cheeps
-            .Include(c => c.Author) // ensure Author is loaded
+            .Include(c => c.Author)
             .Where(c => c.Author != null && c.Author.UserName == author)
             .OrderByDescending(c => c.TimeStamp)
             .Skip((page - 1) * pageSize)
@@ -68,26 +83,37 @@ public sealed class CheepRepository : ICheepRepository
             .ToList();
     }
 
-    
-    public Task<IReadOnlyList<Cheep>> GetCheepsFromPage(int page, CancellationToken ct = default)
-        => GetCheepsFromPage(page, DefaultPageSize, ct);
-
+    /// <summary>
+    /// Get cheeps with pagination and sorts newest cheeps first
+    /// </summary>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public async Task<IReadOnlyList<Cheep>> GetCheepsFromPage(int page, int pageSize, CancellationToken ct = default)
     {
         if (page < 1) throw new ArgumentOutOfRangeException(nameof(page), "Page must be >= 1.");
         if (pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size must be >= 1.");
 
         return await _context.Cheeps
-            .OrderByDescending(c => c.TimeStamp) // or c.Timestamp
+            .OrderByDescending(c => c.TimeStamp) 
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .AsNoTracking()
             .ToListAsync(ct);
     }
-    
-    public Task<IReadOnlyList<Cheep>> GetCheepsFromAuthorAndPage(string authorName, int page, CancellationToken ct = default)
-        => GetCheepsFromAuthorAndPage(authorName, page, DefaultPageSize, ct);
 
+    /// <summary>
+    /// Get cheeps from a specific author with pagination and sorts newest cheeps first
+    /// </summary>
+    /// <param name="authorName"></param>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public async Task<IReadOnlyList<Cheep>> GetCheepsFromAuthorAndPage(string authorName, int page, int pageSize, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(authorName)) throw new ArgumentException("Author name is required.", nameof(authorName));
@@ -102,6 +128,14 @@ public sealed class CheepRepository : ICheepRepository
             .AsNoTracking()
             .ToListAsync(ct);
     }
+
+    /// <summary>
+    /// Adds a new cheep and checks for empty strings and max length, also checks that author exists
+    /// </summary>
+    /// <param name="cheepdto"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="InvalidOperationException"></exception>
     public void AddCheep(CheepDto cheepdto)
     {
         if (cheepdto is null) throw new ArgumentNullException(nameof(cheepdto));
@@ -133,6 +167,14 @@ public sealed class CheepRepository : ICheepRepository
         _context.SaveChanges();
     }
     
+    /// <summary>
+    /// Like or unlike a cheep by a specific author
+    /// Prevents multiple likes and unlikes by the same author on the same cheep
+    /// </summary>
+    /// <param name="authorUserName"></param>
+    /// <param name="cheepId"></param>
+    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="InvalidOperationException"></exception>
     public void LikeCheep(string authorUserName, int cheepId)
     {
         if (string.IsNullOrWhiteSpace(authorUserName))
@@ -149,7 +191,6 @@ public sealed class CheepRepository : ICheepRepository
 
         if (existingLike is null)
         {
-            // User has NOT liked this cheep yet -> add like
             var like = new CheepLike
             {
                 CheepId = cheepId,
@@ -157,14 +198,13 @@ public sealed class CheepRepository : ICheepRepository
             };
 
             _context.CheepLikes.Add(like);
-            cheep.Likes++; // increase visible counter
+            cheep.Likes++;
         }
         else
         {
-            // User already liked -> unlike
             _context.CheepLikes.Remove(existingLike);
             if (cheep.Likes > 0)
-                cheep.Likes--; // defensive
+                cheep.Likes--;
         }
 
         _context.SaveChanges();

@@ -100,7 +100,6 @@ public class UserTimelineModelTests
         public void AddAuthor(string authorName, string email)
             => throw new NotImplementedException();
 
-        // Tracking fields so future tests can assert follow/unfollow behavior if needed
         public string? LastFollowFollower { get; private set; }
         public string? LastFollowFollowee { get; private set; }
 
@@ -122,7 +121,7 @@ public class UserTimelineModelTests
             ? new ClaimsIdentity(
                 new[] { new Claim(ClaimTypes.Name, userName ?? string.Empty) },
                 "TestAuthType")
-            : new ClaimsIdentity(); // unauthenticated
+            : new ClaimsIdentity();
 
         var principal = new ClaimsPrincipal(identity);
 
@@ -287,13 +286,9 @@ public class UserTimelineModelTests
 
         // Assert
         Assert.IsType<PageResult>(result);
-
-        // Cheeps should contain both own and bob's cheeps
         Assert.Equal(2, model.Cheeps.Count);
         Assert.Contains(model.Cheeps, c => c.Author == author && c.Text == "own-1");
         Assert.Contains(model.Cheeps, c => c.Author == "bob" && c.Text == "bob-1");
-
-        // Following should contain bob
         Assert.Single(model.Following);
         Assert.Equal("bob", model.Following[0].UserName);
     }
@@ -366,14 +361,12 @@ public class UserTimelineModelTests
         var pageResult = Assert.IsType<PageResult>(result);
         Assert.False(model.ModelState.IsValid);
         Assert.True(model.ModelState.ContainsKey(nameof(UserTimelineModel.Text)));
-
         Assert.Same(expected, model.Cheeps);
         Assert.Equal(author, cheepStub.LastAuthor);
         Assert.Equal(3, cheepStub.LastPage);
         Assert.Equal(32, cheepStub.LastSize);
         Assert.Equal(3, model.ViewData["CurrentPage"]);
         Assert.Equal(author, model.ViewData["Author"]);
-
         Assert.Null(cheepStub.LastAddCheepAuthor);
         Assert.Null(cheepStub.LastAddCheepText);
     }
@@ -435,7 +428,7 @@ public class UserTimelineModelTests
         Assert.Equal("4", redirect.RouteValues["page"]?.ToString());
 
         Assert.Equal(author, cheepStub.LastAddCheepAuthor);
-        Assert.Equal("hello world", cheepStub.LastAddCheepText); // trimmed
+        Assert.Equal("hello world", cheepStub.LastAddCheepText);
 
         // PRG pattern: OnPost does not reload cheeps when successful
         Assert.Null(cheepStub.LastPage);
@@ -462,7 +455,6 @@ public class UserTimelineModelTests
         Assert.NotNull(redirect.RouteValues);
         Assert.Equal(author, redirect.RouteValues["author"]?.ToString());
         Assert.Equal("7", redirect.RouteValues["page"]?.ToString());
-
         Assert.Equal(author, cheepStub.LastAddCheepAuthor);
         Assert.Equal("test cheep", cheepStub.LastAddCheepText);
     }
@@ -501,7 +493,6 @@ public class UserTimelineModelTests
         Assert.NotNull(redirect.RouteValues);
         Assert.Equal("alice", redirect.RouteValues["author"]?.ToString());
         Assert.Equal("3", redirect.RouteValues["page"]?.ToString());
-
         Assert.Equal("alice", authorStub.LastFollowFollower);
         Assert.Equal("bob", authorStub.LastFollowFollowee);
     }
@@ -540,10 +531,7 @@ public class UserTimelineModelTests
         Assert.NotNull(redirect.RouteValues);
         Assert.Equal("alice", redirect.RouteValues["author"]?.ToString());
         Assert.Equal("4", redirect.RouteValues["page"]?.ToString());
-
         Assert.Equal("alice", authorStub.LastUnfollowFollower);
         Assert.Equal("bob", authorStub.LastUnfollowFollowee);
     }
-    
-    
 }

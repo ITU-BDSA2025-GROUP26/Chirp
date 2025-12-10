@@ -21,7 +21,7 @@ public class CheepsPageTest
     [Fact]
     public void GetCheeps_ReturnsPagedCheeps_Correctly()
     {
-        // Arrange: In-memory database and repository setup
+        // Arrange
         var context = GetInMemoryDbContext();
         var author = new Author { UserName = "Daid", Email = "daid@itu.com" };
         context.Authors.Add(author);
@@ -33,12 +33,12 @@ public class CheepsPageTest
 
         var repo = new CheepRepository(context);
 
-        // Act: Call GetCheeps method
+        // Act
         var result = repo.GetCheeps(1, 1); 
 
-        // Assert: Verify the result
-        Assert.Single(result);  // Should return only one cheep
-        Assert.Equal("Second Cheep", result[0].Text);  // The text should match the most recent cheep
-        Assert.Equal("Daid", result[0].Author);  // The author should be Alice
+        // Assert
+        Assert.Single(result);
+        Assert.Equal("Second Cheep", result[0].Text);
+        Assert.Equal("Daid", result[0].Author); 
     }
 }
