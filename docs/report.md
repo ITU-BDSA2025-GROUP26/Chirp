@@ -35,12 +35,12 @@ The model shows the progression of a user from viewing the public timeline as a 
 
 **Create new Cheep** \
 This illustration shows a client's journey from the public timeline as a non-authenticated user to an authenticated user which can post Cheeps. A user can also post Cheeps from the user timeline page but is not shown in the diagram.\
-![Create new Cheep](/diagrams/png/User%20activites%20-%20Make%20cheep.png)
+![Create new Cheep](/diagrams/png/User%20activities%20-%20Make%20cheep.png)
 
 **About Me and Delete Me** \
 The flow starts by displaying the `public timeline`. The user navigates to the `login page`  and logs in, after which the `public timeline` is shown again, now with authenticated functionality enabled. From there, the user can navigate to the `About Me` page, where their `username`, `email`, `cheeps` and `follower/following` counts are displayed. \
 From the `About Me` page, the user can choose to use the `Forget Me` functionality. This action triggers a confirmation alert to prevent accidental deletion. Once the deletion is confirmed, the user account is removed and the application returns to displaying the `public timeline` in a non-authenticated state. \
-![About Me and Delete Me](/diagrams/png/User%20activites%20-%20About%20Me%20and%20Delete.png)
+![About Me and Delete Me](/diagrams/png/User%20activities%20-%20About%20Me%20and%20Delete.png)
 
 ### Sequence of functionality/calls trough _Chirp!_
 
