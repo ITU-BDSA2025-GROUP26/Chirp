@@ -31,16 +31,16 @@ Our Chirp application is a client-server application, meaning clients send HTTP 
 ### User activities
 **Register and Login** \
 The model shows the progression of a user from viewing the public timeline as a non-authenticated user to gaining access to other features such as follow, unfollow and like. The diagram shows the two different paths for either registration and login before being granted access to features. \
-![Register and Login](diagrams/png/User%20activites%20-%20Register%20and%20Login.png)
+![Register and Login](diagrams/png/user-activites-register-and-login.png)
 
 **Create new Cheep** \
 This illustration shows a client's journey from the public timeline as a non-authenticated user to an authenticated user which can post Cheeps. A user can also post Cheeps from the user timeline page but is not shown in the diagram.\
-![Create new Cheep](/diagrams/png/User%20activities%20-%20Make%20cheep.png)
+![Create new Cheep](diagrams/png/about-me-and-delete-me.png)
 
 **About Me and Delete Me** \
 The flow starts by displaying the `public timeline`. The user navigates to the `login page`  and logs in, after which the `public timeline` is shown again, now with authenticated functionality enabled. From there, the user can navigate to the `About Me` page, where their `username`, `email`, `cheeps` and `follower/following` counts are displayed. \
 From the `About Me` page, the user can choose to use the `Forget Me` functionality. This action triggers a confirmation alert to prevent accidental deletion. Once the deletion is confirmed, the user account is removed and the application returns to displaying the `public timeline` in a non-authenticated state. \
-![About Me and Delete Me](/diagrams/png/User%20activities%20-%20About%20Me%20and%20Delete.png)
+![About Me and Delete Me](diagrams/png/AboutMeandDeleteMe)
 
 ### Sequence of functionality/calls trough _Chirp!_
 
@@ -53,14 +53,14 @@ Some HTTP calls and responses, some calls and responses in C# and likely some mo
 (Note the previous sentence is vague on purpose. I want that you create a complete illustration.)
 
 The illustration shows HTTP calls from a client to the web server for both authenticated and non-authenticated users. \
-![Sequence Diagram](/diagrams/png/SequenceDiagram.png)
+![Sequence Diagram](diagrams/png/SequenceDiagram.png)
 
 ## Process
 
 ### Build, test, release, and deployment
 As seen in the illustration, the workflows are triggered on push and pull requests. It starts with the first workflow, `dotnet.yml`, which goes basic steps such as restoring dependencies, building the project, installing Playwright and finishes with running unit - and integration tests. The tests need to pass in order to achieve a successful workflow run. \
 If the workflows are triggered on the `main` branch, GitHub Action runner will continue to `release.yml`. This workflow repeats restoring dependencies and building the solution. Afterwards it will prepare for deployment by publishing and uploading the web app. If the push is tagged, the workflow will also create a release. `release.yml` finishes by deploying the web app to Azure's App Service.\
-![Workflows](/diagrams/png/Workflows.png) \
+![Workflows](diagrams/png/Workflows.png) \
 Our worflows ensure that no matter the branch, the code is always at least restored, built and tested when pushing to GitHub. Furthermore, we have configured our `release.yml` to only run on our `main` branch, meaning only production ready code was deployed to our Azure site. 
 
 **Issues with workflows** \
@@ -70,12 +70,12 @@ Lastly, we encountered an issue with our `release.yml` workflow when we created 
 ### Team work
 **Handling of mandatory features in a group setting**\
 We have tried to model our process in the shown activity diagram. Our process was fairly consistent throughout the semester. When a new task or feature was introduced in the lecture, a group member would start on the task by creating a ticket for the task, and would then continue trying to develop this new feature or complete the task. It felt pretty natural for the members in the group to take on tasks during the project, as other members still might be working on the weekly task prior. If there were issues with implementing a feature or completing a task, the person working on it, would usually ask help from others in the group or ask a TA. When the task was done, a pull request was created and if approved, it would be merged to the `main` branch. Finally, the issue would be moved from In Progress to Done on the project board.
-![Project Board](/diagrams/png/ProjectBoard.png)
+![Project Board](diagrams/png/ProjectBoard.png)
 
 **Unresolved issues** \
 We managed to implement all required functionality of the project including a wild style feature, which we chose to be a like function. An issue we did not manage to solve was the `Fix like button sizing`. As the project is now, whenever a cheep is longer than two lines, the like button will resize accordingly, leading to an inconsistent layout. \
 Lastly, we had an old issue which is still open called `Adjust test suites`. It has remained open because the issue has been relevant throughout the semester, as we have continuously implemented new features which would need testing.
-![Teamwork](/diagrams/png/Teamwork.png)
+![Teamwork](diagrams/png/Teamwork.png)
 
 ### How to make _Chirp!_ work locally
 In order to run our project locally follow these steps:
