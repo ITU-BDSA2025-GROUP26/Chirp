@@ -12,34 +12,21 @@ numbersections: true
 ## Design and architecture
 
 ### Domain model
-
-Provide an illustration of your domain model.
-Make sure that it is correct and complete.
-In case you are using ASP.NET Identity, make sure to illustrate that accordingly.
-**Nanna har laver det men mangler indsættelse**
-The illustration shows our domain model and its dependencies. The domain model is used by ASP .NET's EF Core package to construct a relational database in SQLite containing Authors, the Cheeps they write and how to like Cheeps. Moreover, the Author class depends on ASP .NET's Identity package, specifically it inherits from `IdentityUser`. This combination of Identity and EF Core allows our application to have users (Authors) who can login, and see the Cheeps they have written and more.
+The illustration shows our domain model and its dependencies. The domain model is used by ASP .NET's EF Core package to construct a relational database in SQLite containing authors, the cheeps they write, and how to like cheeps. Moreover, the `Author` class depends on ASP .NET's Identity package, specifically it inherits from `IdentityUser`. This combination of Identity and EF Core allows our application to have users (Authors) who can login, and see the Cheeps they have written and more.\
 ![Domain Model](diagrams/png/Domain%20Model.png)
 
 
 ### Architecture — In the small
-Illustrate the organization of your code base. That is, illustrate which layers exist in your (onion) architecture. Make sure to illustrate which part of your code is residing in which layer.
-
-**Diagram has been made, just refer to the correct diagram.** \
-As seen in the illustration our code is structured after the Onion Architecture, and the code base is using the Repository Pattern. This structure helps us to separate backend logic (domain model, database queries etc.) from frontend logic (layout, HTTP methods such as GET and POST etc.), and it provides a clear structure to where each class should be placed.
+The onion architecture structure helps us to separate backend logic (domain model, database queries etc.) from frontend logic (layout, HTTP methods such as GET and POST etc.), and it provides a clear structure to where each class should be placed. \
+As seen in the illustration our code is structured after the Onion Architecture, and the code base is using the Repository Pattern.
+![Onion Architecture](diagrams/png/Simplified%20Onion%20Architecture.png) \
+The above diagram is a general and simplistic model of our onion architecture. We have also created a more detailed overview of the onion archittecture in the following UML-diagram. \
+![UML Onion Architecture](diagrams/png/UML%20OnionArchitecture.png)
 
 ### Architecture of deployed application
-
-Illustrate the architecture of your deployed application.
-Remember, you developed a client-server application.
-Illustrate the server component and to where it is deployed, illustrate a client component, and show how these communicate with each other. \
 Our Chirp application is a client-server application, meaning clients send HTTP requests to the server, which is then responsible for rendering the web pages, updating and persisting data changes in the database and redirection of the client through the application when needed. Our webserver is hosted by Azure App Service. The illustration shows SQLite as a separate component which is probably a bit misleading. In reality our database is a `db` file within our application, but we wanted to include the database when illustrating the deployed application.
 
 ### User activities
-
-Illustrate typical scenarios of a user journey through your _Chirp!_ application.
-That is, start illustrating the first page that is presented to a non-authorized user, illustrate what a non-authorized user can do with your _Chirp!_ application, and finally illustrate what a user can do after authentication.
-
-Make sure that the illustrations are in line with the actual behavior of your application. \
 **Register and Login** 
 
 **Create new Cheep** \
@@ -64,16 +51,22 @@ Some HTTP calls and responses, some calls and responses in C# and likely some mo
 As seen in the illustration, the workflows are triggered on push and pull requests. It starts with the first workflow, `dotnet.yml`, which goes basic steps such as restoring dependencies, building the project, installing Playwright and finishes with running unit - and integration tests. The tests need to pass in order to achieve a successful workflow run. \
 If the workflows are triggered on the `main` branch, GitHub Action runner will continue to `release.yml`. This workflow repeats restoring dependencies and building the solution. Afterwards it will prepare for deployment by publishing and uploading the web app. If the push is tagged, the workflow will also create a release. `release.yml` finishes by deploying the web app to Azure's App Service. 
 
-Our worflows ensure that no matter the branch, the code is always at least restored, built and tested when pushing to GitHub. Lastly, we have configured our `release.yml` to only run on our `main` branch, meaning only production ready code was deployed to our Azure site. \
+Our worflows ensure that no matter the branch, the code is always at least restored, built and tested when pushing to GitHub. Furthermore, we have configured our `release.yml` to only run on our `main` branch, meaning only production ready code was deployed to our Azure site. 
 
-
+**Issues with workflows** \
+We also made a workflow named `issue-labelling.yml`. The goal was to use the workflow to automatically move our issues across the project board, but we had issues making it work, and it was quickly discarded. We should have probably just deleted the workflow. \
+Lastly, we encountered an issue with our `release.yml` workflow when we created a new tag, as Azure would not let us login if there were a tag. This is an Azure side error and not an error with the workflow itself. We decided not to try and fix it, as we encountered the error late in the semester, and without the tag it will deploy normally.
 
 ### Team work
 
 **Show a screenshot of your project board right before hand-in.**
 Briefly describe which tasks are still unresolved, i.e., which features are missing from your applications or which functionality is incomplete.
 
-We have tried to model our process in the shown activity diagram. Our process was fairly consistent throughout the semester. When a new task or feature was introduced in the lecture, a group member would start on the task by creating a ticket for the task, and would then continue trying to develop this new feature or complete the task. It fell pretty natural for the members in the group to take on tasks during the project, as other members still might be working on the weekly task prior. If there were issues with implementing a feature or completing a task, the person working on it, would usually ask help from others in the group or ask a TA. When the task was done, a pull request was created and if approved, it would be merged to the `main` branch. Finally, the issue would be moved from In Progress to Done on the project board.
+**Handling of mandatory features in a group setting**\
+We have tried to model our process in the shown activity diagram. Our process was fairly consistent throughout the semester. When a new task or feature was introduced in the lecture, a group member would start on the task by creating a ticket for the task, and would then continue trying to develop this new feature or complete the task. It felt pretty natural for the members in the group to take on tasks during the project, as other members still might be working on the weekly task prior. If there were issues with implementing a feature or completing a task, the person working on it, would usually ask help from others in the group or ask a TA. When the task was done, a pull request was created and if approved, it would be merged to the `main` branch. Finally, the issue would be moved from In Progress to Done on the project board.
+
+**Unresolved issues** \
+We managed to implement all functionality of the project.
 
 ### How to make _Chirp!_ work locally
 In order to run our project locally follow these steps:
@@ -133,9 +126,9 @@ LLMs were definitely useful in the above mentioned cases and greatly helped the 
 A short list of the LLMs that we used: ChatGPT, GitHub CoPilot, Claude
 
 - [ ] "Design and architecture"
-    - [ ] "Domain model"
+    - [x] "Domain model"
     - [x] "Architecture — In the small"
-    - [ ] "Architecture of deployed application"
+    - [x] "Architecture of deployed application"
     - [ ] "User activities"
     - [ ] "Sequence of functionality/calls through Chirp!"
 - [ ] "Process"
@@ -146,12 +139,3 @@ A short list of the LLMs that we used: ChatGPT, GitHub CoPilot, Claude
 - [x] "Ethics"
     - [x] "License"
     - [x] "LLMs, ChatGPT, CoPilot, and others"
-- [x] Diagrams to make
-    - [x] Domain model
-    - [x] Organiazation of code
-    - [x] Deployed application (done ish)
-    - [x] User journey
-    - [x] UML sequence diagram of flow of data and messages in Chirp
-    - [x] UML activity diagram of GitHub workflows
-    - [x] Illustrate flow of groupwork
-    - [x] Find nice design for diagrams
