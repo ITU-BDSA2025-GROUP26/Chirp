@@ -35,7 +35,7 @@ The model shows the progression of a user from viewing the public timeline as a 
 
 **Create new Cheep** \
 This illustration shows a client's journey from the public timeline as a non-authenticated user to an authenticated user which can post Cheeps. A user can also post Cheeps from the user timeline page but is not shown in the diagram.\
-![Create new Cheep](diagrams/png/about-me-and-delete-me.png)
+![Create new Cheep](diagrams/png/user-activities-make-cheep.png)
 
 **About Me and Delete Me** \
 The flow starts by displaying the `public timeline`. The user navigates to the `login page`  and logs in, after which the `public timeline` is shown again, now with authenticated functionality enabled. From there, the user can navigate to the `About Me` page, where their `username`, `email`, `cheeps` and `follower/following` counts are displayed. \
