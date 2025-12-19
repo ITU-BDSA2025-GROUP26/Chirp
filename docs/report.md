@@ -19,8 +19,7 @@ In case you are using ASP.NET Identity, make sure to illustrate that accordingly
 **Nanna har laver det men mangler indsættelse**
 The illustration shows our domain model and its dependencies. The domain model is used by ASP .NET's EF Core package to construct a relational database in SQLite containing Authors, the Cheeps they write and how to like Cheeps. Moreover, the Author class depends on ASP .NET's Identity package, specifically it inherits from `IdentityUser`. This combination of Identity and EF Core allows our application to have users (Authors) who can login, and see the Cheeps they have written and more.
 
-![Domain Model](https://hackmd.io/_uploads/BkbxhaGmZe.png)
-![Domain Model](docs/diagrams/png/<Domain Model.png>)
+![Domain Model](docs/diagrams/png/Teamwork.png)
 
 
 ### Architecture — In the small
