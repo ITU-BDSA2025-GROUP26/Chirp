@@ -40,7 +40,7 @@ This illustration shows a client's journey from the public timeline as a non-aut
 **About Me and Delete Me** \
 The flow starts by displaying the `public timeline`. The user navigates to the `login page`  and logs in, after which the `public timeline` is shown again, now with authenticated functionality enabled. From there, the user can navigate to the `About Me` page, where their `username`, `email`, `cheeps` and `follower/following` counts are displayed. \
 From the `About Me` page, the user can choose to use the `Forget Me` functionality. This action triggers a confirmation alert to prevent accidental deletion. Once the deletion is confirmed, the user account is removed and the application returns to displaying the `public timeline` in a non-authenticated state. \
-![About Me and Delete Me](diagrams/png/AboutMeandDeleteMe)
+![About Me and Delete Me](diagrams/png/about-me-and-delete-me.png)
 
 ### Sequence of functionality/calls trough _Chirp!_
 
