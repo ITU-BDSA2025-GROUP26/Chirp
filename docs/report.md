@@ -31,7 +31,7 @@ Our Chirp application is a client-server application, meaning clients send HTTP 
 ### User activities
 **Register and Login** \
 The model shows the progression of a user from viewing the public timeline as a non-authenticated user to gaining access to other features such as follow, unfollow and like. The diagram shows the two different paths for either registration and login before being granted access to features. \
-![Register and Login](diagrams/png/User%20activites%20-%20Register%20and%20Login%.png)
+![Register and Login](diagrams/png/User%20activites%20-%20Register%20and%20Login.png)
 
 **Create new Cheep** \
 This illustration shows a client's journey from the public timeline as a non-authenticated user to an authenticated user which can post Cheeps. A user can also post Cheeps from the user timeline page but is not shown in the diagram.\
@@ -70,12 +70,12 @@ Lastly, we encountered an issue with our `release.yml` workflow when we created 
 ### Team work
 **Handling of mandatory features in a group setting**\
 We have tried to model our process in the shown activity diagram. Our process was fairly consistent throughout the semester. When a new task or feature was introduced in the lecture, a group member would start on the task by creating a ticket for the task, and would then continue trying to develop this new feature or complete the task. It felt pretty natural for the members in the group to take on tasks during the project, as other members still might be working on the weekly task prior. If there were issues with implementing a feature or completing a task, the person working on it, would usually ask help from others in the group or ask a TA. When the task was done, a pull request was created and if approved, it would be merged to the `main` branch. Finally, the issue would be moved from In Progress to Done on the project board.
-![Workflows](/diagrams/png/ProjectBoard.png)
+![Project Board](/diagrams/png/ProjectBoard.png)
 
 **Unresolved issues** \
 We managed to implement all required functionality of the project including a wild style feature, which we chose to be a like function. An issue we did not manage to solve was the `Fix like button sizing`. As the project is now, whenever a cheep is longer than two lines, the like button will resize accordingly, leading to an inconsistent layout. \
 Lastly, we had an old issue which is still open called `Adjust test suites`. It has remained open because the issue has been relevant throughout the semester, as we have continuously implemented new features which would need testing.
-![Workflows](/diagrams/png/Teamwork.png)
+![Teamwork](/diagrams/png/Teamwork.png)
 
 ### How to make _Chirp!_ work locally
 In order to run our project locally follow these steps:
